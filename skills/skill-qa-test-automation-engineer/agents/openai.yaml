@@ -1,0 +1,4 @@
+interface:
+  display_name: "QA Test Automation Engineer"
+  short_description: "Create production-ready QA Test Automation Engineer deliverables"
+  default_prompt: "Use $skill-qa-test-automation-engineer to analyze input/ and create production-ready engineering deliverables in output/."

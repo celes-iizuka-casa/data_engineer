@@ -1,0 +1,4 @@
+interface:
+  display_name: "Engineering Knowledge Curator"
+  short_description: "Engineering Knowledge Curator engineering workflow"
+  default_prompt: "Use $skill-engineering-knowledge-curator to analyze input/ and create production-ready engineering deliverables in output/."

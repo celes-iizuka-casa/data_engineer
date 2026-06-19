@@ -1,0 +1,4 @@
+interface:
+  display_name: "Data Engineer"
+  short_description: "Create production-ready Data Engineer deliverables"
+  default_prompt: "Use $skill-data-engineer to analyze input/ and create production-ready engineering deliverables in output/."

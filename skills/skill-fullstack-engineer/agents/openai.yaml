@@ -1,0 +1,4 @@
+interface:
+  display_name: "Fullstack Engineer"
+  short_description: "Create production-ready Fullstack Engineer deliverables"
+  default_prompt: "Use $skill-fullstack-engineer to analyze input/ and create production-ready engineering deliverables in output/."

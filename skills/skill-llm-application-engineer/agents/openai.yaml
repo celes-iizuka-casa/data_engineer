@@ -1,0 +1,4 @@
+interface:
+  display_name: "LLM Application Engineer"
+  short_description: "Create production-ready LLM Application Engineer deliverables"
+  default_prompt: "Use $skill-llm-application-engineer to analyze input/ and create production-ready engineering deliverables in output/."

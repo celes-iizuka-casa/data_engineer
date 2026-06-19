@@ -1,0 +1,4 @@
+interface:
+  display_name: "Engineering PMO"
+  short_description: "Create production-ready Engineering PMO deliverables"
+  default_prompt: "Use $skill-engineering-pmo to analyze input/ and create production-ready engineering deliverables in output/."

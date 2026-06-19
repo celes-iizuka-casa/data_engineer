@@ -1,0 +1,4 @@
+interface:
+  display_name: "Security Governance Engineer"
+  short_description: "Security Governance Engineer engineering workflow"
+  default_prompt: "Use $skill-security-governance-engineer to analyze input/ and create production-ready engineering deliverables in output/."

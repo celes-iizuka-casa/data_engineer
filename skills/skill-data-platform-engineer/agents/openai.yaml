@@ -1,0 +1,4 @@
+interface:
+  display_name: "Data Platform Engineer"
+  short_description: "Create production-ready Data Platform Engineer deliverables"
+  default_prompt: "Use $skill-data-platform-engineer to analyze input/ and create production-ready engineering deliverables in output/."

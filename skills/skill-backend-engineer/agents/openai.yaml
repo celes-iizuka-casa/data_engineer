@@ -1,0 +1,4 @@
+interface:
+  display_name: "Backend Engineer"
+  short_description: "Create production-ready Backend Engineer deliverables"
+  default_prompt: "Use $skill-backend-engineer to analyze input/ and create production-ready engineering deliverables in output/."

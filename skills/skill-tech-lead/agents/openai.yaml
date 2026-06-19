@@ -1,0 +1,4 @@
+interface:
+  display_name: "Tech Lead"
+  short_description: "Create production-ready Tech Lead deliverables"
+  default_prompt: "Use $skill-tech-lead to analyze input/ and create production-ready engineering deliverables in output/."

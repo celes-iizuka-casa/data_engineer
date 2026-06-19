@@ -1,0 +1,67 @@
+# Private task inputs and generated client deliverables
+/input/*
+!/input/README.md
+/output/*
+/projects/*
+
+# Local second-brain exports or copied vaults
+/second_brain/
+
+# Local Codex / editor / workspace state
+/.codex/
+/.agents/
+.DS_Store
+Thumbs.db
+
+# Secrets and credentials
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+id_rsa
+id_rsa.pub
+credentials.*
+secrets.*
+token.*
+*.token
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+.cache/
+.tmp/
+tmp/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Generated archives / large local artifacts
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.7z
+*.gz

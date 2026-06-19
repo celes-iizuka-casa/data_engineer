@@ -1,0 +1,4 @@
+interface:
+  display_name: "Cloud Infrastructure Engineer"
+  short_description: "Cloud Infrastructure Engineer engineering workflow"
+  default_prompt: "Use $skill-cloud-infrastructure-engineer to analyze input/ and create production-ready engineering deliverables in output/."

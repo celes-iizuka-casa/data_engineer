@@ -1,0 +1,4 @@
+interface:
+  display_name: "Integration Engineer"
+  short_description: "Create production-ready Integration Engineer deliverables"
+  default_prompt: "Use $skill-integration-engineer to analyze input/ and create production-ready engineering deliverables in output/."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Deliverable Quality Reviewer"
+  short_description: "Deliverable Quality Reviewer engineering workflow"
+  default_prompt: "Use $skill-deliverable-quality-reviewer to analyze input/ and create production-ready engineering deliverables in output/."

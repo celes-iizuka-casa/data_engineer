@@ -1,0 +1,4 @@
+interface:
+  display_name: "Forward Deployed Engineer"
+  short_description: "Forward Deployed Engineer workflow"
+  default_prompt: "Use $skill-forward-deployed-engineer to turn customer and field input into MVP scope, requirements, engineering handoff, and adoption deliverables in output/."

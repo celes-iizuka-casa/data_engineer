@@ -1,0 +1,4 @@
+interface:
+  display_name: "SRE Platform Engineer"
+  short_description: "Create production-ready SRE Platform Engineer deliverables"
+  default_prompt: "Use $skill-sre-platform-engineer to analyze input/ and create production-ready engineering deliverables in output/."

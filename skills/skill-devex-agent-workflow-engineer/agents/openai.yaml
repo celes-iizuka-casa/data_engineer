@@ -1,0 +1,4 @@
+interface:
+  display_name: "DevEx Agent Workflow Engineer"
+  short_description: "DevEx Agent Workflow Engineer engineering workflow"
+  default_prompt: "Use $skill-devex-agent-workflow-engineer to analyze input/ and create production-ready engineering deliverables in output/."
