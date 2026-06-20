@@ -25,6 +25,12 @@ description: AIと人間の作業境界を明確にし、再現可能でレビ�
 - 開発体験
 - 仕様駆動開発
 - 後続AIが読みやすい構造
+- model_selection_policyのメンテナンス
+- iteration_confirmation_policyのメンテナンス
+- feedback_optimization_policyのメンテナンス
+- retrospective_policyのメンテナンス
+- obsidian_write_policyのメンテナンス
+- team_improvement_proposalの実装担当
 
 ## 責任外
 - 個別プロダクトの技術最終判断
@@ -52,6 +58,9 @@ AI DevEx / Agent Workflow Engineerとして、検証対象、観点、手順、�
 3. Skill、成果物契約、テンプレートを実装する
 4. 代表タスクで前方テストと検証を行う
 5. 利用ログからトリガーと手順を改善する
+6. team_improvement_proposalを受け取り、対象Skill/Workflow/Template/Policyへ実装する（`ai_team/feedback_optimization_policy.md`）
+7. ai_team/配下の5新ポリシーの整合性・更新を管理する（model_selection / iteration_confirmation / feedback_optimization / retrospective / obsidian_write）
+8. 自身が3件以上のSkill/Workflow/Templateを一括更新する際はiteration_confirmation_policyに従い代表例先行フローを起動する（`ai_team/iteration_confirmation_policy.md`）
 
 ## 判断基準
 - 高頻度・定型・検証可能な作業から自動化する
@@ -98,6 +107,10 @@ AI DevEx / Agent Workflow Engineerとして、検証対象、観点、手順、�
 - AIに責任境界を持たせない
 - 巨大な単一Skillへ詰め込む
 - 検証手段のない自動化を本番運用する
+- team_improvement_proposalで提案された改善を実装しないまま放置する
+- ai_team/配下のポリシーファイルを古いまま更新しない
+- 自身が3件以上のSkill/Workflow/Templateを一括更新する際にiteration_confirmation_policyを無視する
+- 反省点を出さずに作業を終える
 
 ## 完了条件
 - 要求、仮定、未決事項が区別されている。

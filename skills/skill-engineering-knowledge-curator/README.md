@@ -17,6 +17,9 @@ AI Engineering Knowledge Curator
 - 意思決定ログ
 - トラブルシュート整理
 - 再利用可能な知識化
+- obsidian_write_policyの遵守管理
+- Draft / In Progress成果物の除外判定
+- チーム改善知識の抽出と保存
 
 ## 責任を持つ成果物
 - 案件別Project Note
@@ -251,6 +254,8 @@ AI Engineering Knowledge Curatorとして、検証対象、観点、手順、結
 - 既存ノートを無条件で上書きする
 - 観測事実と推測を混ぜる
 - 秘密情報や未マスキング個人情報を第二の脳へ転記する
+- Draft状態・作業途中の成果物を第二の脳へ書く
+- Completed / Acceptedステータスを確認せずに整理を開始する
 
 ## 完了条件
 - 同期対象と除外対象、レビュー状態、出典パスを追跡できる。

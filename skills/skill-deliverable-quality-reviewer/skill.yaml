@@ -211,6 +211,8 @@ prohibited_actions:
   - "専門ReviewerのBlockerを根拠なく解除する"
   - "総合点だけで重大欠陥を埋もれさせる"
   - "不明点や残存リスクを報告から省く"
+  - "繰り返し作業をいきなり全件対応する"
+  - "反省点を出さずに作業を終える"
 verdicts:
   - "PASS"
   - "PASS_WITH_CONDITIONS"

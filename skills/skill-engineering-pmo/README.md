@@ -18,6 +18,12 @@ AI Engineering PMO
 - 依存関係整理
 - 完了条件定義
 - output構成整理
+- 作業工程ごとのモデル提案
+- 繰り返し作業の判定
+- 代表例確認フローの起動
+- フィードバック解析の起動
+- タスク振り返りの起動
+- Knowledge Curatorの実行タイミング制御
 
 ## 責任を持つ成果物
 - work_plan.md
@@ -26,6 +32,12 @@ AI Engineering PMO
 - quality_review_request.md
 - execution_summary.md
 - questions.md
+- model_recommendation.md
+- iteration_plan.md（繰り返し作業時）
+- sample_output_for_review.md（繰り返し作業時）
+- task_retrospective.md
+- feedback_analysis.md（フィードバックあり時）
+- team_improvement_proposal.md（改善提案あり時）
 
 ## 責任を持たない領域
 - 技術方針の最終判断
