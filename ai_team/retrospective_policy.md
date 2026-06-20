@@ -38,7 +38,7 @@
 
 ## 作成する成果物
 
-- `output/task_retrospective.md`（フォーマット: `templates/task_retrospective_template.md`）
+- `output/task_retrospective.md`（フォーマット: `../templates/task_retrospective_template.md`）
 
 ## 完了条件
 
@@ -50,4 +50,4 @@
 ## 参照
 
 - `ai_team/feedback_optimization_policy.md`
-- `templates/task_retrospective_template.md`
+- `../templates/task_retrospective_template.md`

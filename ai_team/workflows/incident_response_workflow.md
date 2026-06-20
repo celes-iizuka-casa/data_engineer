@@ -41,3 +41,17 @@
 - 入力と出力のパスを明記する。
 - 仮定、未決事項、既知の制約、検証結果を添付する。
 - 次工程の責任者と完了条件を合意する。
+
+## 新方針との整合
+
+- **繰り返し作業**: 対象システム・再発防止策が3件以上の場合、`iteration_confirmation_policy.md` に従い代表例を先に確認する
+- **振り返り**: インシデント収束後に `retrospective_policy.md` に従い `output/task_retrospective.md` を作成する（`postmortem.md` と連動する）
+- **第二の脳整理**: 事後報告完了後、`obsidian_write_policy.md` のトリガーを満たした場合のみ Knowledge Curator が整理する
+- **フィードバック最適化**: 再発防止策についてセレスのフィードバックがある場合、`feedback_optimization_policy.md` に従い分析する
+
+## 参照
+
+- `ai_team/iteration_confirmation_policy.md`
+- `ai_team/retrospective_policy.md`
+- `ai_team/obsidian_write_policy.md`
+- `ai_team/feedback_optimization_policy.md`

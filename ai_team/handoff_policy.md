@@ -47,7 +47,7 @@ Role間の引き継ぎでは、入力、出力、仮定、未確認事項、検�
 P0/P1、証跡不足、未検証の本番影響、セキュリティ/データ損失/復旧不能リスクがある場合は差し戻す。
 
 ## 引き継ぎテンプレート
-`templates/role_handoff_template.md` を使う。
+`../templates/role_handoff_template.md` を使う。
 
 ## 完了条件
 次Roleが追加説明なしで判断または作業に入れる状態になっている。

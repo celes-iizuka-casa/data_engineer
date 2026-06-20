@@ -64,8 +64,8 @@
 
 ## 作成する成果物
 
-- `output/feedback_analysis.md`（フォーマット: `templates/feedback_analysis_template.md`）
-- `output/team_improvement_proposal.md`（フォーマット: `templates/team_improvement_proposal_template.md`）
+- `output/feedback_analysis.md`（フォーマット: `../templates/feedback_analysis_template.md`）
+- `output/team_improvement_proposal.md`（フォーマット: `../templates/team_improvement_proposal_template.md`）
 
 ## 完了条件
 
@@ -78,5 +78,5 @@
 
 - `ai_team/roles/engineering_pmo.md`
 - `ai_team/roles/devex_agent_workflow_engineer.md`
-- `templates/feedback_analysis_template.md`
-- `templates/team_improvement_proposal_template.md`
+- `../templates/feedback_analysis_template.md`
+- `../templates/team_improvement_proposal_template.md`

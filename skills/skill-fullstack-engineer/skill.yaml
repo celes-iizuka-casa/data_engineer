@@ -138,6 +138,8 @@ steps:
   - "認証、検証、監査ログを含む縦切りを実装する"
   - "自動テストとサンプルデータを追加する"
   - "実行手順、制約、次の分離候補を記録する"
+  - "繰り返し対象が3件以上の場合はPMOの判定に従い代表例先行確認フローを起動する（iteration_confirmation_policy.md参照）"
+  - "作業完了後にPMOへ自工程の改善点・判断ミス・注意点を申し送る（retrospective_policy.md参照）"
 decision_criteria:
   - "最重要フローをend-to-endで先に通す"
   - "管理機能を無制限に作り込まない"
@@ -195,3 +197,4 @@ prohibited_actions:
   - "UIだけ、APIだけで価値検証を完了とする"
   - "繰り返し作業をいきなり全件対応する"
   - "反省点を出さずに作業を終える"
+  - "iteration_confirmation_policyを無視して繰り返し作業を全件一括対応する"

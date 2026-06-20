@@ -111,7 +111,7 @@ AIエンジニアチームが、作業工程ごとに最適なモデルを選定
 ## 出力形式
 
 各タスクで必要に応じて `output/model_recommendation.md` を作成する。
-フォーマットは `templates/model_selection_template.md` を使う。
+フォーマットは `../templates/model_selection_template.md` を使う。
 
 ## 注意点
 
@@ -124,4 +124,4 @@ AIエンジニアチームが、作業工程ごとに最適なモデルを選定
 ## 参照
 
 - `ai_team/roles/engineering_pmo.md`
-- `templates/model_selection_template.md`
+- `../templates/model_selection_template.md`

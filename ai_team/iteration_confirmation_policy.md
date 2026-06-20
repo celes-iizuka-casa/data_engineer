@@ -67,8 +67,8 @@
 - `output/sample_output_for_review.md`（代表例の完成形）
 
 フォーマットはそれぞれ下記テンプレートを使う:
-- `templates/iteration_plan_template.md`
-- `templates/iteration_sample_review_template.md`
+- `../templates/iteration_plan_template.md`
+- `../templates/iteration_sample_review_template.md`
 
 ## 完了条件
 
@@ -81,5 +81,5 @@
 ## 参照
 
 - `ai_team/roles/engineering_pmo.md`
-- `templates/iteration_plan_template.md`
-- `templates/iteration_sample_review_template.md`
+- `../templates/iteration_plan_template.md`
+- `../templates/iteration_sample_review_template.md`

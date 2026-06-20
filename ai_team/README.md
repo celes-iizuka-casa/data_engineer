@@ -18,3 +18,8 @@
 - `handoff_policy.md`
 - `professional_response_templates.md`
 - `review/professional_quality_gate.md`
+- `iteration_confirmation_policy.md`
+- `retrospective_policy.md`
+- `obsidian_write_policy.md`
+- `feedback_optimization_policy.md`
+- `model_selection_policy.md`

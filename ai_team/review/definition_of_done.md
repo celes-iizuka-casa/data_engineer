@@ -10,3 +10,6 @@
 - 必要な検証が実施され、未検証項目が明記されている。
 - Quality Reviewerの最終判定がPASSまたはPASS_WITH_CONDITIONSである。
 - REWORK_REQUIREDまたはBLOCKEDの場合は完了扱いにしない。
+- 繰り返し作業の場合、`iteration_confirmation_policy.md` に従い代表例確認ゲートを通過している。
+- `retrospective_policy.md` に従い `output/task_retrospective.md` が作成されている。
+- `obsidian_write_policy.md` のトリガーを満たした場合、Knowledge Curatorによる整理が完了または予定されている。

@@ -255,3 +255,11 @@ AI Deliverable Quality Reviewerとして、検証対象、観点、手順、結�
 - セレス向けに結論、判断依頼、残存リスク、次の行動が簡潔に報告されている。
 - Professional Modeに応じた成果物、判断理由、リスク、未確認事項、次アクションが明記されている。
 - 非プロフェッショナルな感想、無根拠な同意、責任範囲外の断定が除去されている。
+
+## 参照
+
+- `ai_team/iteration_confirmation_policy.md`
+- `ai_team/retrospective_policy.md`
+- `ai_team/model_selection_policy.md`
+- `ai_team/obsidian_write_policy.md`
+- `ai_team/feedback_optimization_policy.md`

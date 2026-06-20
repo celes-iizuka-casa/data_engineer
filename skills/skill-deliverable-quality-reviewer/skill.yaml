@@ -149,6 +149,8 @@ steps:
   - "PASS、PASS_WITH_CONDITIONS、REWORK_REQUIRED、BLOCKEDのいずれかを判定する"
   - "セレス向けに結論、重要指摘、判断依頼、残存リスク、次の行動を報告する"
   - "指摘、再作業、見逃し、所要時間をreview_metrics.mdへ蓄積する"
+  - "繰り返し対象が3件以上の場合はPMOの判定に従い代表例先行確認フローを起動する（iteration_confirmation_policy.md参照）"
+  - "作業完了後にPMOへ自工程の改善点・判断ミス・注意点を申し送る（retrospective_policy.md参照）"
 decision_criteria:
   - "平均点よりP0・P1と必須ゲートを優先する"
   - "証跡がない主張は未確認として扱う"
@@ -223,3 +225,4 @@ severity_levels:
   - "P1: 提出・実装・リリース前の必須修正"
   - "P2: 条件付き承認可能。責任者と期限が必要"
   - "P3: 改善推奨。品質向上や将来負債の予防"
+  - "iteration_confirmation_policyを無視して繰り返し作業を全件一括対応する"

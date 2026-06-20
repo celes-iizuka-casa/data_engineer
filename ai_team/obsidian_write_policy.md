@@ -69,4 +69,4 @@
 ## 参照
 
 - `ai_team/roles/engineering_knowledge_curator.md`
-- `skills/skill-engineering-knowledge-curator/SKILL.md`
+- `../skills/skill-engineering-knowledge-curator/SKILL.md`

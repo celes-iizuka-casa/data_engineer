@@ -39,3 +39,17 @@
 - 入力と出力のパスを明記する。
 - 仮定、未決事項、既知の制約、検証結果を添付する。
 - 次工程の責任者と完了条件を合意する。
+
+## 新方針との整合
+
+- **繰り返し作業**: テストケース・検証対象が3件以上の場合、`iteration_confirmation_policy.md` に従い代表例を先に確認する
+- **モデル選定**: 検証・テスト生成の工程で `model_selection_policy.md` に従いモデルを使い分ける
+- **振り返り**: 検証完了後に `retrospective_policy.md` に従い `output/task_retrospective.md` を作成する
+- **第二の脳整理**: 検証完了後、`obsidian_write_policy.md` のトリガーを満たした場合のみ Knowledge Curator が整理する
+
+## 参照
+
+- `ai_team/iteration_confirmation_policy.md`
+- `ai_team/model_selection_policy.md`
+- `ai_team/retrospective_policy.md`
+- `ai_team/obsidian_write_policy.md`

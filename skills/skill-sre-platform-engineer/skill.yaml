@@ -146,6 +146,8 @@ steps:
   - "ログ、メトリクス、トレース、アラートを実装する"
   - "Runbookと復旧試験を実施する"
   - "運用レビューと改善バックログを残す"
+  - "繰り返し対象が3件以上の場合はPMOの判定に従い代表例先行確認フローを起動する（iteration_confirmation_policy.md参照）"
+  - "作業完了後にPMOへ自工程の改善点・判断ミス・注意点を申し送る（retrospective_policy.md参照）"
 decision_criteria:
   - "症状ベースのアラートを優先する"
   - "SLOは事業影響と運用能力から設定する"
@@ -206,3 +208,4 @@ prohibited_actions:
   - "障害原因を個人責任で終える"
   - "繰り返し作業をいきなり全件対応する"
   - "反省点を出さずに作業を終える"
+  - "iteration_confirmation_policyを無視して繰り返し作業を全件一括対応する"

@@ -30,3 +30,13 @@ AI社員エンジニアチームは、セレスの依頼に対して、各Role�
 
 ## 品質ゲート
 成果物は `professional_only_policy.md`、`review/professional_quality_gate.md`、`review/quality_gate.md` を通す。非プロフェッショナルな感想、一般論、無根拠な同意は差し戻す。
+
+## 自己改善方針
+
+5つの方針でチームの精度を継続的に高める。
+
+- **iteration_confirmation_policy.md**: 繰り返し作業は代表例を先に確認し、全件への方針ミス波及を防ぐ
+- **retrospective_policy.md**: 作業完了後に振り返り・改善案を出し、次回精度を上げる
+- **obsidian_write_policy.md**: 第二の脳への書き込みは作業完了後のみ、未確定情報を正式ナレッジに混入させない
+- **feedback_optimization_policy.md**: セレスのフィードバックをRole / Skill / Workflow改善に変換する
+- **model_selection_policy.md**: 工程ごとに最適なモデルを使い分け、品質とコストを最適化する
