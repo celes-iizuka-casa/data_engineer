@@ -6,20 +6,19 @@
 ## 手順
 
 1. **input確認**: 入力ファイル、既存output、制約を確認する。
-2. **依頼内容解析**: `request_mode_policy.md` に従い Opinion / Design / Implementation / Verification を判定する。背景・意図・制約を含めて解析する。
-3. **作業工程分解**: 依頼を実行可能な工程に分解し、`output/work_plan.md` と `output/questions.md` を更新する。
-4. **作業工程ごとのモデル提案**: `ai_team/model_selection_policy.md` に従い、工程ごとに最適なモデルタイプを提案する。`output/model_recommendation.md` を作成する（フォーマット: `templates/model_selection_template.md`）。
-5. **Role選定**: `role_scope_matrix.md` に従い担当Roleと連携Roleを選ぶ。
-6. **繰り返し作業か判定**: `ai_team/iteration_confirmation_policy.md` の判定条件に照らし、繰り返し作業かどうかを確認する。
-7. **繰り返し作業なら代表例を先に作成**: 繰り返し作業に該当する場合、全件対応せず代表例1件を作成し、`output/iteration_plan.md` と `output/sample_output_for_review.md` を作成する。ステータスを `Waiting for Celes Review` にする。
-8. **セレス確認が必要なら確認待ちにする**: 代表例・方針・体裁についてセレスの確認を得るまで全件展開しない。
-9. **承認後に全件展開**: セレス承認後、ステータスを `Expanding` にして全件展開する。
-10. **実装・設計・検証**: 担当RoleがProfessional Modeに応じた成果物を作る。`professional_only_policy.md` に従い、感想・一般論・無根拠な同意を除去する。責任外の論点は `handoff_policy.md` に従い渡す。QA / Security / SRE / Tech Leadの該当レビューを受ける。Quality Reviewerが最終判定する。
-11. **execution_summary作成**: `output/execution_summary.md` を作成・更新し、ステータスを `Completed` にする。
-12. **task_retrospective作成**: `ai_team/retrospective_policy.md` に従い `output/task_retrospective.md` を作成する（フォーマット: `templates/task_retrospective_template.md`）。
-13. **必要に応じてfeedback_analysis作成**: セレスからのフィードバックがある場合、`ai_team/feedback_optimization_policy.md` に従い `output/feedback_analysis.md` を作成する。
-14. **作業完了後にKnowledge Curatorが第二の脳へ整理**: `ai_team/obsidian_write_policy.md` のトリガーを満たした場合のみ、AI Engineering Knowledge Curatorが整理を実施する。Draft・確認待ち状態では整理しない。
-15. **obsidian_sync_summary作成**: Knowledge Curator が `output/obsidian_sync_summary.md` を作成し、ステータスを `Obsidian Synced` にする。
+2. **依頼内容解析**: `request_mode_policy.md` に従い Opinion / Design / Implementation / Verification を判定する。背景・意図・制約、`@role`/`@mode`/`@light`/`@full` タグ（`output_optimization_policy.md`）を解析する。
+3. **軽量依頼か判定**: `output_optimization_policy.md` の軽量依頼定義に照らす。軽量なら A層の2ファイルのみを目標にし、B/C層は原則スキップする。
+4. **Role選定**: `role_scope_matrix.md` に従い担当Roleと連携Roleを選ぶ。
+5. **（条件付き）work_plan**: 3工程以上 or 明示的除外スコープが要る場合のみ `output/.../_internal/work_plan.md` を作る。
+6. **（条件付き）model_recommendation**: 必要性ゲートを満たす場合のみ `output/.../_internal/model_recommendation.md` を作る（`templates/model_selection_template.md`）。
+7. **（条件付き）繰り返し作業**: `iteration_confirmation_policy.md` に該当する場合のみ代表例を先に作り、`_internal/iteration_plan.md` と `_internal/sample_output_for_review.md` を作る。ステータス `Waiting for Celes Review`。承認後 `Expanding` で全件展開。
+8. **実装・設計・検証**: 担当RoleがProfessional Modeに応じた本成果物を作る。`professional_only_policy.md` と `output_optimization_policy.md` のセクション間引き（関連セクションのみ＋必須核＋条件付き必須）に従う。責任外は `handoff_policy.md` で渡す。
+9. **（条件付き）品質レビュー**: 必要性ゲートを満たす場合（顧客提出物・再利用物・本番/破壊的/セキュリティ影響）のみ、Quality Reviewerが `_internal/quality_review_report.md` を作る。満たさない場合はサマリーの品質判定を「レビュー対象外」にする。自己レビューを独立レビュー扱いにしない。
+10. **deliverable_summary作成（常時）**: `templates/deliverable_summary_template.md` で `output/.../deliverable_summary.md` を作る。品質判定・要対応・次アクションを集約する。ステータスを `Completed` にする。
+11. **（条件付き）task_retrospective**: `Completed/Accepted` かつ軽量依頼でない場合のみ `_internal/task_retrospective.md` を作る（`retrospective_policy.md`）。
+12. **（条件付き）feedback_analysis**: セレスのフィードバックがある場合のみ `_internal/feedback_analysis.md` を作る（`feedback_optimization_policy.md`）。
+13. **（条件付き）Obsidian整理**: `obsidian_write_policy.md` のトリガーを満たした場合のみ Knowledge Curator が整理し、`_internal/obsidian_sync_summary.md` を作る。ステータス `Obsidian Synced`。
+14. **（要求時のみ）execution_summary**: セレスが明示要求 or 大型案件の場合のみ `_internal/execution_summary.md`（10項目）を作る。
 
 ## ステータス管理
 
@@ -44,25 +43,28 @@
 - 仮定、未確認事項、リスク、代案、次アクションがある。
 - 非プロフェッショナルな感想、一般論、無根拠な同意が残っていない。
 - 検証結果と未検証項目が明記されている。
-- task_retrospective が作成されている。
+- task_retrospective が作成されている（軽量依頼は除く）。
 - 第二の脳への書き込みは `obsidian_write_policy.md` のトリガーを満たした後にのみ実施されている。
+- 軽量依頼では A層の2ファイル（deliverable_summary＋本成果物）のみが出力されている。
+- B/C層の成果物は必要性ゲートを満たしたものだけが `_internal/` 配下に置かれている。
+- 本成果物に該当なしの見出しが残っていない（必須核と条件付き必須は除く）。
+- サマリーの「要対応」に、ブロッキング質問・承認待ち・要判断が集約されている。
 
 ## 成果物
-- `output/work_plan.md`
-- `output/model_recommendation.md`
-- `output/iteration_plan.md`（繰り返し作業時）
-- `output/sample_output_for_review.md`（繰り返し作業時）
-- Professional Mode別成果物
-- `output/quality_review_request.md`
-- `output/quality_review_report.md`
-- `output/execution_summary.md`
-- `output/task_retrospective.md`
-- `output/feedback_analysis.md`（フィードバックあり時）
-- `output/team_improvement_proposal.md`（改善提案あり時）
-- `output/obsidian_sync_summary.md`
+
+常時（タスクフォルダ直下）:
+- `output/.../deliverable_summary.md`
+- Professional Mode別の本成果物
+
+条件付き / 要求時（`output/.../_internal/` 配下）:
+- `work_plan.md` / `model_recommendation.md` / `iteration_plan.md` ＋ `sample_output_for_review.md`
+- `quality_review_request.md` / `quality_review_report.md`
+- `task_retrospective.md` / `feedback_analysis.md` / `team_improvement_proposal.md`
+- `obsidian_sync_summary.md` / `execution_summary.md` / `questions.md`
 
 ## 参照
 
+- `ai_team/output_optimization_policy.md`
 - `ai_team/model_selection_policy.md`
 - `ai_team/iteration_confirmation_policy.md`
 - `ai_team/obsidian_write_policy.md`
