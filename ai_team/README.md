@@ -23,3 +23,4 @@
 - `obsidian_write_policy.md`
 - `feedback_optimization_policy.md`
 - `model_selection_policy.md`
+- `output_optimization_policy.md`
