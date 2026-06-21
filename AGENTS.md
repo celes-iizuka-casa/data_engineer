@@ -5,19 +5,19 @@
 
 ## Required Start
 1. `input/` と既存 `output/` を確認する。
-2. 明示成果物、課題分類、MVP、制約、リスクを整理する。
-3. `output/work_plan.md` を作成または更新する。
+2. 明示成果物、課題分類、MVP、制約、リスク、`@role`/`@mode`/`@light`/`@full` タグを整理する。
+3. `output_optimization_policy.md` の軽量依頼判定を行う。軽量でなく3工程以上なら `_internal/work_plan.md` を作る（軽量なら作らない）。
 4. 必要な `skills/` を選び、作業を進める。
 
 ## Required Finish
-- 成果物は原則として `output/<client>/<YYYYMMDD>/<task-name>/` に保存する。
+- 成果物は `output/<client>/<YYYYMMDD>/<task-name>/` に保存する。常時はタスクフォルダ直下に `deliverable_summary.md` と本成果物の2点。条件付き/要求時の成果物は `_internal/` 配下に置く（`output_optimization_policy.md`）。
 - 顧客名や日付が特定できない場合だけ、合理的な仮名を置いて前提を明記する。
-- `templates/quality_review_request_template.md` を使い、対象、要件、差分、検証証跡、未実施事項を提出する。
-- AI Deliverable Quality Reviewerが `output/quality_review_report.md` を作成する。
-- 最終判定が `REWORK_REQUIRED` または `BLOCKED` の場合、完了扱いにせず、再作業内容または停止理由として報告する。
-- 顧客案件または再利用価値のある成果物は、AI Engineering Knowledge Curatorが第二の脳へ反映し、`output/obsidian_sync_summary.md` を更新する。
-- `output/execution_summary.md` と `output/questions.md` を更新する。
-- 実行したテスト、未実行テスト、残存リスクを明記する。
+- 本成果物は「関連セクションのみ＋モード別必須核＋条件付き必須」で作る（`professional_response_templates.md`）。
+- 品質レビューは必要性ゲートを満たす場合に実施する。満たさない場合はサマリーの品質判定を「レビュー対象外」にする。満たす場合は `templates/quality_review_request_template.md` で提出し、Reviewerが `_internal/quality_review_report.md` を作る。
+- 最終判定が `REWORK_REQUIRED` または `BLOCKED` の場合、完了扱いにせず、再作業内容または停止理由をサマリーの「要対応」に書く。
+- 顧客案件または再利用価値のある成果物は、`obsidian_write_policy.md` のトリガーを満たした場合のみ Knowledge Curator が第二の脳へ反映し、`_internal/obsidian_sync_summary.md` を更新する。
+- `deliverable_summary.md` を常時作成する。`execution_summary` と `questions` の独立ファイルは必要性ゲートを満たす時だけ作る。
+- 実行したテスト、未実行テスト、残存リスクをサマリーまたは本成果物に明記する。
 
 ## Engineering Rules
 - 最小構成を優先するが、認証認可、秘密管理、監視、再実行性、テストを省略しない。
@@ -34,3 +34,4 @@
 - 同じ結論や注意事項を言い換えて繰り返さない。
 - 抽象的なAI表現を避け、判断、理由、影響、次の行動を具体的に書く。
 - 顧客向け成果物では、専門用語を残しつつ、その意味が文脈から分かるように書く。
+- 本成果物は該当する見出しだけ出す。該当なしの見出しは省略する（必須核・条件付き必須は除く）。
