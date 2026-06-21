@@ -110,8 +110,7 @@ AIエンジニアチームが、作業工程ごとに最適なモデルを選定
 
 ## 出力形式
 
-各タスクで必要に応じて `output/model_recommendation.md` を作成する。
-フォーマットは `../templates/model_selection_template.md` を使う。
+`output_optimization_policy.md` の必要性ゲートに従う。2工程以上で必要能力が変わる、または高リスク/セキュリティ工程を含む場合のみ `output/.../_internal/model_recommendation.md` を作る（`../templates/model_selection_template.md`）。単一工程の軽量依頼では作らない。
 
 ## 注意点
 

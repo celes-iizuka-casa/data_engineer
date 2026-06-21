@@ -35,10 +35,11 @@
 - 作業ステータスが `Completed` または `Accepted` になった
 - 繰り返し作業の全件展開が完了した
 - セレスから最終フィードバックを受け取った
+- ただし `output_optimization_policy.md` の軽量依頼に該当する場合は作成しない。
 
 ## 作成する成果物
 
-- `output/task_retrospective.md`（フォーマット: `../templates/task_retrospective_template.md`）
+- `output/.../_internal/task_retrospective.md`（フォーマット: `../templates/task_retrospective_template.md`）
 
 ## 完了条件
 
