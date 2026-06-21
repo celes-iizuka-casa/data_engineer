@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '✅ タスク完了チェック: deliverable_summary.md を output/<client>/<date>/<task>/ に作成したか確認してください。Obsidian syncトリガー条件（Completed/Accepted + 顧客/再利用価値あり）を満たす場合はKnowledge Curatorを起動してください。'"
+          }
+        ]
+      }
+    ]
+  }
+}
