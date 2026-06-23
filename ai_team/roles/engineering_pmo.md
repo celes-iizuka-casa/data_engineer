@@ -21,6 +21,7 @@
 - フィードバック解析の起動
 - タスク振り返りの起動
 - Knowledge Curatorの実行タイミング制御
+- **成果物統合・output.md設計（Deliverable Optimizer）**：Role別成果物を統合し、ユーザー向けoutput.md 1本に編集する
 
 ## 主な責務
 - 課題分類
@@ -37,6 +38,7 @@
 - フィードバック解析の起動
 - タスク振り返りの起動
 - Knowledge Curatorの実行タイミング制御
+- 成果物統合・output.md設計（Deliverable Optimizer）
 
 ## 得意な課題
 - input/に新規課題が追加されたとき
@@ -49,7 +51,8 @@
 - 納期、予算、品質、商用化条件
 
 ## 出力
-- work_plan.md
+- output.md（常時・統合1ファイル）
+- work_plan.md（条件付き）
 - 成果物一覧と担当表
 - decision_log.md
 - quality_review_request.md
@@ -63,6 +66,7 @@
 - team_improvement_proposal.md（改善提案あり時）
 
 ## 責任を持つ成果物
+- output.md（統合成果物・Deliverable Optimizerが作成）
 - work_plan.md
 - 成果物一覧と担当表
 - decision_log.md

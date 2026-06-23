@@ -24,8 +24,10 @@ AI Engineering PMO
 - フィードバック解析の起動
 - タスク振り返りの起動
 - Knowledge Curatorの実行タイミング制御
+- 成果物統合・output.md設計（Deliverable Optimizer）
 
 ## 責任を持つ成果物
+- output.md（統合成果物・Deliverable Optimizerが作成）
 - work_plan.md
 - 成果物一覧と担当表
 - decision_log.md
@@ -56,6 +58,7 @@ AI Engineering PMO
 - 納期、予算、品質、商用化条件
 
 ## 出力
+- output.md（常時・統合1ファイル）
 - work_plan.md
 - 成果物一覧と担当表
 - decision_log.md

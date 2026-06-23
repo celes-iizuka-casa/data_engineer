@@ -17,7 +17,7 @@ description: 成果物の独立品質レビューを実行する。Design/Implem
 - 本番/破壊的変更を伴う
 - セキュリティ影響がある
 
-満たさない場合は deliverable_summary.md の「品質判定」を「レビュー対象外」にして終了する。
+満たさない場合は output.md の「品質判定」を「レビュー対象外」にして終了する。
 
 ## 禁止事項
 
@@ -65,7 +65,7 @@ description: 成果物の独立品質レビューを実行する。Design/Implem
 ## 出力
 
 - `output/.../_internal/quality_review_report.md`
-- deliverable_summary.md の「品質判定」フィールドを更新
+- output.md の「品質判定」フィールドを更新
 
 ## 完了条件
 

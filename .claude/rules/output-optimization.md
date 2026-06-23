@@ -10,11 +10,11 @@ paths:
 
 | 階層 | 内容 | 生成条件 |
 |---|---|---|
-| **A層（常時）** | `deliverable_summary.md` ＋ Roleの本成果物 | 毎回、タスクフォルダ直下 |
+| **A層（常時）** | `output.md`（本成果物・制御ブロックを内包した統合1ファイル） | 毎回、タスクフォルダ直下 |
 | **B層（条件付き）** | model_recommendation / iteration_plan＋sample / quality_review_report / task_retrospective / obsidian_sync_summary | 下記ゲートを満たした時だけ `_internal/` に作成 |
 | **C層（要求時）** | work_plan / quality_review_request / execution_summary / questions | セレスが明示要求した時のみ |
 
-## 軽量依頼（A層2ファイルのみ、B/C層全スキップ）
+## 軽量依頼（A層 output.md 1ファイルのみ、B/C層全スキップ）
 
 以下を**すべて**満たす場合:
 - 単一工程で完結
@@ -36,8 +36,7 @@ paths:
 
 ```
 output/<client>/<YYYYMMDD>/<task-name>/
-├── deliverable_summary.md      # A層（常時）
-├── <deliverable>.md            # A層（常時）
+├── output.md                   # A層（常時）—制御ブロック＋本成果物の統合1ファイル
 └── _internal/                  # B/C層（条件付き・普段は開かない）
     ├── quality_review_report.md
     └── ...

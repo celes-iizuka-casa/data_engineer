@@ -19,6 +19,7 @@ scope:
     - "フィードバック解析の起動"
     - "タスク振り返りの起動"
     - "Knowledge Curatorの実行タイミング制御"
+    - "成果物統合・output.md設計（Deliverable Optimizer）"
   does_not_own:
     - "技術方針の最終判断"
     - "実装詳細"
@@ -40,6 +41,7 @@ inputs:
   - "既存成果物と制約"
   - "納期、予算、品質、商用化条件"
 outputs:
+  - "output.md（常時・統合1ファイル）"
   - "work_plan.md"
   - "成果物一覧と担当表"
   - "decision_log.md"

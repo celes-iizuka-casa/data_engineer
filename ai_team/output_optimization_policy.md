@@ -8,30 +8,30 @@
 
 | 階層 | 中身 | 生成条件 |
 |---|---|---|
-| A. 常に渡す | `deliverable_summary.md` ＋ 選ばれたRoleの本成果物 | 毎回 |
+| A. 常に渡す | `output.md`（本成果物・制御ブロックを内包した統合1ファイル） | 毎回 |
 | B. 条件付き | model_recommendation / iteration_plan＋sample / quality_review_report / task_retrospective / obsidian_sync_summary | 下記ゲートを満たした時だけ |
 | C. 要求時のみ | work_plan / quality_review_request / execution_summary（10項目詳細）/ questions（全文） | セレスが明示要求した時、または内部参照用 |
+
+複数Roleが関与した場合も Role別成果物を並べず、Deliverable Optimizer（PMO）が統合して `output.md` 1本にまとめる（`deliverable_optimization_policy.md` 参照）。
 
 ## フォルダ構造
 
 ```
 output/<client>/<YYYYMMDD>/<task-name>/
-├── deliverable_summary.md      # まずこれだけ読めばいい（常時）
-├── <deliverable>.md            # Roleの本成果物・関連セクションのみ（常時）
+├── output.md                   # 1ファイルで意思決定できる（常時）
 └── _internal/                  # B/C層。普段は開かない
     ├── quality_review_report.md
     ├── model_recommendation.md
     └── ...
 ```
 
-A層の2ファイルはタスクフォルダ直下に置く。B/C層は必ず `_internal/` 配下に置く。
+A層は `output.md` 1ファイルのみ、タスクフォルダ直下に置く。B/C層は必ず `_internal/` 配下に置く。
 
 ## 必要性ゲート
 
 | 成果物 | 作る条件（満たした時だけ） | 満たさない時 |
 |---|---|---|
-| deliverable_summary | 常に | — |
-| Roleの本成果物 | 常に | — |
+| output.md | 常に | — |
 | work_plan | 3工程以上 or 明示的な除外スコープが要る依頼 | 作らない（サマリーの次アクションで代替） |
 | model_recommendation | 2工程以上で必要能力が変わる or 高リスク/セキュリティ工程を含む | 作らない |
 | iteration_plan + sample | `iteration_confirmation_policy` の繰り返し判定に該当 | 作らない |
@@ -70,7 +70,8 @@ A層の2ファイルはタスクフォルダ直下に置く。B/C層は必ず `_
 ## 参照
 
 - `ai_team/workflows/input_to_output_workflow.md`
-- `templates/deliverable_summary_template.md`
+- `ai_team/deliverable_optimization_policy.md`
+- `templates/output_template.md`
 - `ai_team/professional_response_templates.md`
 - `ai_team/iteration_confirmation_policy.md`
 - `ai_team/obsidian_write_policy.md`

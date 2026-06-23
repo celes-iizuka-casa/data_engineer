@@ -12,7 +12,7 @@ description: obsidian_write_policy.md のトリガー条件を満たした時だ
 ## 起動条件（obsidian_write_policy.md 正式書き込みトリガー）
 
 以下のいずれかを満たし、かつ顧客/再利用価値がある場合のみ起動する:
-- `output/.../deliverable_summary.md` のステータスが `Completed` / `Accepted`
+- `output/.../output.md` のステータスが `Completed` / `Accepted`
 - セレスが「第二の脳にまとめて」「Obsidianに整理して」と明示した
 
 **保留条件（動かない）:** Draft / In Progress / Waiting for Review / Waiting for Approval
@@ -34,7 +34,7 @@ description: obsidian_write_policy.md のトリガー条件を満たした時だ
 
 ## 実行手順
 
-1. deliverable_summary.md のステータスを確認する
+1. output.md のステータスを確認する
 2. 正式書き込みトリガーを満たしているか確認する（満たさなければ保留）
 3. `{{SECOND_BRAIN_ROOT}}` パスを確認する（存在しない場合はセレスに確認）
 4. 成果物を解析する

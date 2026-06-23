@@ -14,7 +14,7 @@
 7. **（条件付き）繰り返し作業**: `iteration_confirmation_policy.md` に該当する場合のみ代表例を先に作り、`_internal/iteration_plan.md` と `_internal/sample_output_for_review.md` を作る。ステータス `Waiting for Celes Review`。承認後 `Expanding` で全件展開。
 8. **実装・設計・検証**: 担当RoleがProfessional Modeに応じた本成果物を作る。`professional_only_policy.md` と `output_optimization_policy.md` のセクション間引き（関連セクションのみ＋必須核＋条件付き必須）に従う。責任外は `handoff_policy.md` で渡す。
 9. **（条件付き）品質レビュー**: 必要性ゲートを満たす場合（顧客提出物・再利用物・本番/破壊的/セキュリティ影響）のみ、Quality Reviewerが `_internal/quality_review_report.md` を作る。満たさない場合はサマリーの品質判定を「レビュー対象外」にする。自己レビューを独立レビュー扱いにしない。
-10. **deliverable_summary作成（常時）**: `templates/deliverable_summary_template.md` で `output/.../deliverable_summary.md` を作る。品質判定・要対応・次アクションを集約する。ステータスを `Completed` にする。
+10. **output.md作成（常時）**: `templates/output_template.md` で `output/.../output.md` を作る。複数Roleが関与した場合はDeliverable Optimizer（PMO）が各Role成果物を統合・編集する。制御ブロック（依頼の理解・担当Role/モード・出力モード・ステータス・品質判定・要対応）を先頭に置き、§1〜§5の構成で仕上げる。ステータスを `Completed` にする（`deliverable_optimization_policy.md` 参照）。
 11. **（条件付き）task_retrospective**: `Completed/Accepted` かつ軽量依頼でない場合のみ `_internal/task_retrospective.md` を作る（`retrospective_policy.md`）。
 12. **（条件付き）feedback_analysis**: セレスのフィードバックがある場合のみ `_internal/feedback_analysis.md` を作る（`feedback_optimization_policy.md`）。
 13. **（条件付き）Obsidian整理**: `obsidian_write_policy.md` のトリガーを満たした場合のみ Knowledge Curator が整理し、`_internal/obsidian_sync_summary.md` を作る。ステータス `Obsidian Synced`。
@@ -45,16 +45,15 @@
 - 検証結果と未検証項目が明記されている。
 - task_retrospective が作成されている（軽量依頼は除く）。
 - 第二の脳への書き込みは `obsidian_write_policy.md` のトリガーを満たした後にのみ実施されている。
-- 軽量依頼では A層の2ファイル（deliverable_summary＋本成果物）のみが出力されている。
+- 軽量依頼では A層の `output.md` 1ファイルのみが出力されている。
 - B/C層の成果物は必要性ゲートを満たしたものだけが `_internal/` 配下に置かれている。
 - 本成果物に該当なしの見出しが残っていない（必須核と条件付き必須は除く）。
-- サマリーの「要対応」に、ブロッキング質問・承認待ち・要判断が集約されている。
+- output.md 先頭ブロックの「要対応」に、ブロッキング質問・承認待ち・要判断が集約されている。
 
 ## 成果物
 
 常時（タスクフォルダ直下）:
-- `output/.../deliverable_summary.md`
-- Professional Mode別の本成果物
+- `output/.../output.md`（制御ブロック＋本成果物を統合した1ファイル）
 
 条件付き / 要求時（`output/.../_internal/` 配下）:
 - `work_plan.md` / `model_recommendation.md` / `iteration_plan.md` ＋ `sample_output_for_review.md`

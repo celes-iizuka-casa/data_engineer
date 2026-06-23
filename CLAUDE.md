@@ -26,7 +26,7 @@ Each mode has specific required sections (see `professional_response_templates.m
 3. **Classify**: Check `ai_team/request_mode_policy.md` to determine Professional Mode(s)
 4. **Decide scope**: Use `ai_team/output_optimization_policy.md` to determine if this is a "lightweight request" (skip work plan) or needs detailed planning
 5. **Execute**: Use the relevant `skills/skill-<role-name>/` to guide your work
-6. **Output**: Save to `output/<client>/<YYYYMMDD>/<task-name>/` with `deliverable_summary.md` + role's deliverable
+6. **Output**: Save to `output/<client>/<YYYYMMDD>/<task-name>/` with a single `output.md` (control block + deliverable integrated). Multiple roles → Deliverable Optimizer (PMO) merges into one file
 7. **Review**: If the request meets quality review gates (customer deliverable, production, breaking change, security), invoke the quality-reviewer agent for independent review
 8. **Sync**: If deliverable status is Completed/Accepted and has customer/reuse value, knowledge-curator syncs it to Obsidian second brain
 
@@ -79,8 +79,7 @@ python3 -m pytest tests/test_generate_spark_view_artifacts.py::test_view_rewrite
 │
 ├── input/                         # Requests, context, errors, code samples
 ├── output/                        # All deliverables: output/<client>/<YYYYMMDD>/<task>/
-│   ├── deliverable_summary.md     # Control-panel summary (always created)
-│   ├── <main-deliverable>.md
+│   ├── output.md                  # Integrated file (control block + deliverable, always created)
 │   └── _internal/                 # Optional: reviews, plans, retrospectives
 │
 ├── tests/                         # Unit & integration tests (pytest)
@@ -126,10 +125,10 @@ Before starting any work, familiarize yourself with:
 
 5. **Create the deliverable**
    - Save to `output/<client>/<YYYYMMDD>/<task-name>/`
-   - Always create `deliverable_summary.md` (control-panel view: what was asked, what was done, status, next steps)
-   - Create the main deliverable (`<name>.md`) using the appropriate template
-   - Use `professional_response_templates.md` to include only relevant sections + mode-specific mandatory sections
-   - See `ai_team/README.md` Required Finish section for exact structure
+   - Always create `output.md` using `templates/output_template.md` — control block (status, quality verdict, action items) + integrated deliverable in one file
+   - Multiple roles → Deliverable Optimizer (PMO) merges role outputs into one `output.md`
+   - Use `professional_response_templates.md` for mode-specific required sections
+   - See `deliverable_optimization_policy.md` for output modes, multi-role consolidation, and long-form rules
 
 6. **Evaluate quality review trigger**
    - Use `output_optimization_policy.md` table: does this deliverable meet any quality review gate?
@@ -138,7 +137,7 @@ Before starting any work, familiarize yourself with:
      - Production / breaking change?
      - Security impact?
    - If YES: invoke the **quality-reviewer** agent (independent, not self-review)
-   - If NO: set `deliverable_summary.md` status to "Review Exempt" and continue
+   - If NO: set `output.md` quality verdict field to "レビュー対象外" and continue
 
 7. **Publish & sync**
    - If status is Completed/Accepted + has customer/reuse value: **knowledge-curator** will sync to Obsidian second brain
@@ -167,8 +166,8 @@ Before starting any work, familiarize yourself with:
 
 Recent work (June 2026) added Claude's 7-method framework:
 
-- **Hooks** (`settings.json`): Stop hook reminds about deliverable_summary.md + Obsidian sync trigger
-- **Subagents** (`.claude/agents/`): quality-reviewer, knowledge-curator run independently
+- **Hooks** (`settings.json`): Stop hook reminds about output.md + Obsidian sync trigger
+- **Subagents** (`.claude/agents/`): quality-reviewer, knowledge-curator, deliverable-optimizer run independently
 - **Rules** (`.claude/rules/`): 
   - `engineering-guardrails.md` — always injected (7 rules + professional standards)
   - `output-optimization.md` — path-scoped to `output/**` (3-tier output rules)

@@ -4,7 +4,7 @@
 AI社員エンジニアチームは、セレスの依頼に対して、各Roleが専門領域のプロフェッショナルとして判断し、実務で使える成果物を作るチームである。
 
 ## Role一覧
-- AI Engineering PMO: 課題分類、作業分解、成果物管理
+- AI Engineering PMO: 課題分類、作業分解、成果物管理、成果物統合（Deliverable Optimizer）
 - AI Forward Deployed Engineer: 顧客・現場課題の整理、業務フロー理解、本質課題の抽出
 - AI Deliverable Quality Reviewer: 成果物横断レビュー、専門レビュー証跡確認、重大度判定
 - AI Engineering Knowledge Curator: 成果物のナレッジ化、Obsidian整理、MOC更新

@@ -10,14 +10,14 @@
 4. 必要な `skills/` を選び、作業を進める。
 
 ## Required Finish
-- 成果物は `output/<client>/<YYYYMMDD>/<task-name>/` に保存する。常時はタスクフォルダ直下に `deliverable_summary.md` と本成果物の2点。条件付き/要求時の成果物は `_internal/` 配下に置く（`output_optimization_policy.md`）。
+- 成果物は `output/<client>/<YYYYMMDD>/<task-name>/` に保存する。常時はタスクフォルダ直下に `output.md`（制御ブロック＋本成果物を統合した1ファイル）のみ。条件付き/要求時の成果物は `_internal/` 配下に置く（`output_optimization_policy.md`・`deliverable_optimization_policy.md`）。
 - 顧客名や日付が特定できない場合だけ、合理的な仮名を置いて前提を明記する。
-- 本成果物は「関連セクションのみ＋モード別必須核＋条件付き必須」で作る（`professional_response_templates.md`）。
-- 品質レビューは必要性ゲートを満たす場合に実施する。満たさない場合はサマリーの品質判定を「レビュー対象外」にする。満たす場合は `templates/quality_review_request_template.md` で提出し、Reviewerが `_internal/quality_review_report.md` を作る。
-- 最終判定が `REWORK_REQUIRED` または `BLOCKED` の場合、完了扱いにせず、再作業内容または停止理由をサマリーの「要対応」に書く。
+- 本成果物は「関連セクションのみ＋モード別必須核＋条件付き必須」で作る（`professional_response_templates.md`）。複数Roleが関与した場合はDeliverable Optimizer（PMO）が統合して `output.md` 1本にまとめる。
+- 品質レビューは必要性ゲートを満たす場合に実施する。満たさない場合は output.md 先頭ブロックの品質判定を「レビュー対象外」にする。満たす場合は `templates/quality_review_request_template.md` で提出し、Reviewerが `_internal/quality_review_report.md` を作る。
+- 最終判定が `REWORK_REQUIRED` または `BLOCKED` の場合、完了扱いにせず、再作業内容または停止理由を output.md 先頭ブロックの「要対応」に書く。
 - 顧客案件または再利用価値のある成果物は、`obsidian_write_policy.md` のトリガーを満たした場合のみ Knowledge Curator が第二の脳へ反映し、`_internal/obsidian_sync_summary.md` を更新する。
-- `deliverable_summary.md` を常時作成する。`execution_summary` と `questions` の独立ファイルは必要性ゲートを満たす時だけ作る。
-- 実行したテスト、未実行テスト、残存リスクをサマリーまたは本成果物に明記する。
+- `output.md` を常時作成する。`execution_summary` と `questions` の独立ファイルは必要性ゲートを満たす時だけ作る。
+- 実行したテスト、未実行テスト、残存リスクを output.md または本成果物に明記する。
 
 ## Engineering Rules
 - 最小構成を優先するが、認証認可、秘密管理、監視、再実行性、テストを省略しない。

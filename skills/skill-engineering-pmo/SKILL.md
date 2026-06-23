@@ -30,6 +30,7 @@ description: 曖昧な依頼を、担当・成果物・完了条件が明確な�
 - フィードバック解析の起動
 - タスク振り返りの起動
 - Knowledge Curatorの実行タイミング制御
+- 成果物統合・output.md設計（Deliverable Optimizer）
 
 ## 責任外
 - 技術方針の最終判断
@@ -86,6 +87,7 @@ AI Engineering PMOとして、検証対象、観点、手順、結果、問題�
 - 誰が何を検証すべきか不明な結論
 
 ## 必須出力
+- output.md（常時・統合1ファイル）
 - work_plan.md
 - 成果物一覧と担当表
 - decision_log.md

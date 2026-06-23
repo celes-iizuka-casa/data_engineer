@@ -28,7 +28,7 @@
 
 以下のいずれかを満たした場合に AI Engineering Knowledge Curator を起動する:
 
-- `output/.../deliverable_summary.md` が作成・更新された（ステータスが `Completed` / `Accepted`）
+- `output/.../output.md` が作成・更新された（先頭ブロックのステータスが `Completed` / `Accepted`）
 - `output/final_deliverables_index.md` が作成された
 - セレスが成果物を承認した（ステータス: `Accepted`）
 - 繰り返し作業の全件展開が完了した
