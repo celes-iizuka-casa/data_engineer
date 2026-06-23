@@ -8,9 +8,9 @@
 1. **input確認**: 入力ファイル、既存output、制約を確認する。
 2. **依頼内容解析**: `request_mode_policy.md` に従い Opinion / Design / Implementation / Verification を判定する。背景・意図・制約、`@role`/`@mode`/`@light`/`@full` タグ（`output_optimization_policy.md`）を解析する。
 3. **軽量依頼か判定**: `output_optimization_policy.md` の軽量依頼定義に照らす。軽量なら A層の2ファイルのみを目標にし、B/C層は原則スキップする。
-4. **Role選定**: `role_scope_matrix.md` に従い担当Roleと連携Roleを選ぶ。
+4. **Role選定・実行環境/モデル/工数判定**: `role_scope_matrix.md` に従い担当Roleと連携Roleを選ぶ。続けて各工程の実行環境（Claude Code / Codex / 併用）・モデル・工数を `runtime_selection_policy.md` と `model_effort_selection_policy.md` で判定する。採用結果は output.md 制御ブロックに表示する。
 5. **（条件付き）work_plan**: 3工程以上 or 明示的除外スコープが要る場合のみ `output/.../_internal/work_plan.md` を作る。
-6. **（条件付き）model_recommendation**: 必要性ゲートを満たす場合のみ `output/.../_internal/model_recommendation.md` を作る（`templates/model_selection_template.md`）。
+6. **（条件付き）execution_plan**: 2工程以上で実行環境/モデル/工数が変わる、または高リスク・セキュリティ・大規模改修・複数ファイル一括展開の場合のみ `output/.../_internal/execution_plan.md`（`templates/execution_plan_template.md`）に Role選定・実行環境・モデル・工数・理由を統合記録する。軽量依頼では作らず output.md 制御ブロックの記載で足りる（旧 `model_recommendation` はこれに統合）。
 7. **（条件付き）繰り返し作業**: `iteration_confirmation_policy.md` に該当する場合のみ代表例を先に作り、`_internal/iteration_plan.md` と `_internal/sample_output_for_review.md` を作る。ステータス `Waiting for Celes Review`。承認後 `Expanding` で全件展開。
 8. **実装・設計・検証**: 担当RoleがProfessional Modeに応じた本成果物を作る。`professional_only_policy.md` と `output_optimization_policy.md` のセクション間引き（関連セクションのみ＋必須核＋条件付き必須）に従う。責任外は `handoff_policy.md` で渡す。
 9. **（条件付き）品質レビュー**: 必要性ゲートを満たす場合（顧客提出物・再利用物・本番/破壊的/セキュリティ影響）のみ、Quality Reviewerが `_internal/quality_review_report.md` を作る。満たさない場合はサマリーの品質判定を「レビュー対象外」にする。自己レビューを独立レビュー扱いにしない。
@@ -56,6 +56,7 @@
 - `output/.../output.md`（制御ブロック＋本成果物を統合した1ファイル）
 
 条件付き / 要求時（`output/.../_internal/` 配下）:
+- `execution_plan.md`（実行環境・モデル・工数・Role選定の統合記録）
 - `work_plan.md` / `model_recommendation.md` / `iteration_plan.md` ＋ `sample_output_for_review.md`
 - `quality_review_request.md` / `quality_review_report.md`
 - `task_retrospective.md` / `feedback_analysis.md` / `team_improvement_proposal.md`
@@ -65,6 +66,9 @@
 
 - `ai_team/output_optimization_policy.md`
 - `ai_team/model_selection_policy.md`
+- `ai_team/model_effort_selection_policy.md`
+- `ai_team/runtime_selection_policy.md`
+- `ai_team/runtime_neutral_design_policy.md`
 - `ai_team/iteration_confirmation_policy.md`
 - `ai_team/obsidian_write_policy.md`
 - `ai_team/feedback_optimization_policy.md`

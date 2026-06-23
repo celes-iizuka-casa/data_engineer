@@ -20,6 +20,8 @@ AI Engineering Knowledge Curator
 - obsidian_write_policyの遵守管理
 - Draft / In Progress成果物の除外判定
 - チーム改善知識の抽出と保存
+- 実行計画（execution_plan）の第二の脳への整理
+- モデル・工数選定の有効性のナレッジ化
 
 ## 責任を持つ成果物
 - 案件別Project Note

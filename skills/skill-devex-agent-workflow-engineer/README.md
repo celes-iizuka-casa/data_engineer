@@ -25,6 +25,9 @@ AIと人間の作業境界を明確にし、再現可能でレビューしやす
 - retrospective_policyのメンテナンス
 - obsidian_write_policyのメンテナンス
 - team_improvement_proposalの実装担当
+- Claude Code / Codex 両対応の実行設計（runtime-neutral）
+- model_effort_selection_policy / runtime_selection_policy のメンテナンス
+- Codex / Claude Code 実行ガイドのメンテナンス
 
 ## 責任を持つ成果物
 - SKILL.md

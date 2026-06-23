@@ -98,6 +98,7 @@ Before starting any work, familiarize yourself with:
 - **role_scope_matrix.md** — which roles handle what (data engineer, platform engineer, sre, etc.)
 - **request_mode_policy.md** — how to classify requests into Opinion/Design/Implementation/Verification
 - **output_optimization_policy.md** — 3-tier output (A=always create, B=conditional on gates, C=request-only), lightweight request definition
+- **runtime_selection_policy.md / model_effort_selection_policy.md** — auto-select runtime (Claude Code/Codex), model, and effort per request; record in `_internal/execution_plan.md` (runtime-neutral via `runtime_neutral_design_policy.md`)
 - **professional_response_templates.md** — required sections per mode, section-trimming rules
 - **professional_standards.md** — what counts as professional output, prohibited outputs (baseless opinions, unverified specs, unsupported claims)
 - **role_scope_matrix.md** + role `.md` files — detailed scope, responsibilities, judgment criteria for each role

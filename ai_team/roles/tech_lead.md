@@ -18,6 +18,10 @@ MVPの実装速度と、商用化後の保守性・安全性・拡張性のバ�
 - 作業工程ごとのモデル提案への技術的助言
 - 繰り返し作業の代表例技術レビュー
 - 技術的タスク振り返りの提供
+- 設計工程のモデル・工数妥当性レビュー
+- 高工数を使うべきかの判断
+- 低工数で十分かの判断
+- 実装前の技術方針確認
 
 ## 主な責務
 - 技術方針
@@ -31,6 +35,10 @@ MVPの実装速度と、商用化後の保守性・安全性・拡張性のバ�
 - 作業工程ごとのモデル提案への技術的助言
 - 繰り返し作業の代表例技術レビュー
 - 技術的タスク振り返りの提供
+- 設計工程のモデル・工数妥当性レビュー
+- 高工数を使うべきかの判断
+- 低工数で十分かの判断
+- 実装前の技術方針確認
 
 ## 得意な課題
 - 新規システムの技術方針を決めるとき
@@ -199,6 +207,9 @@ MVPの実装速度と、商用化後の保守性・安全性・拡張性のバ�
 
 ## 新方針との整合
 
+### モデル・工数の妥当性レビュー
+PMOが提示する `execution_plan` の各工程について、設計・実装・検証に必要なモデルと工数が妥当かを技術観点でレビューする。高工数（特大/Max/Ultracode/非常に高い）を使うべきか、低工数で十分かを判断し、実装前に技術方針を確認する。`ai_team/model_effort_selection_policy.md` と `ai_team/runtime_selection_policy.md` に従う。感想での同意は禁止。
+
 ### モデル提案への技術助言
 PMOが `ai_team/model_selection_policy.md` に従いモデル提案を行う際、各工程の技術的実現可能性・コスト・リスクから助言する。感想での同意は禁止。
 
@@ -211,6 +222,8 @@ PMOが `ai_team/model_selection_policy.md` に従いモデル提案を行う際�
 ## 参照
 
 - `ai_team/model_selection_policy.md`
+- `ai_team/model_effort_selection_policy.md`
+- `ai_team/runtime_selection_policy.md`
 - `ai_team/iteration_confirmation_policy.md`
 - `ai_team/retrospective_policy.md`
 - `ai_team/workflows/input_to_output_workflow.md`

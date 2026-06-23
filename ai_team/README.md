@@ -23,4 +23,7 @@
 - `obsidian_write_policy.md`
 - `feedback_optimization_policy.md`
 - `model_selection_policy.md`
+- `model_effort_selection_policy.md`
+- `runtime_selection_policy.md`
+- `runtime_neutral_design_policy.md`
 - `output_optimization_policy.md`

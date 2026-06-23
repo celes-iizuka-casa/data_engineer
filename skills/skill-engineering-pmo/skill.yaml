@@ -20,6 +20,10 @@ scope:
     - "タスク振り返りの起動"
     - "Knowledge Curatorの実行タイミング制御"
     - "成果物統合・output.md設計（Deliverable Optimizer）"
+    - "AI社員Role選定"
+    - "実行環境選定（Claude Code / Codex / 併用）"
+    - "モデル選定・工数選定"
+    - "execution_plan作成"
   does_not_own:
     - "技術方針の最終判断"
     - "実装詳細"
@@ -42,6 +46,7 @@ inputs:
   - "納期、予算、品質、商用化条件"
 outputs:
   - "output.md（常時・統合1ファイル）"
+  - "execution_plan.md（実行環境・モデル・工数・Role選定の統合記録・条件付き）"
   - "work_plan.md"
   - "成果物一覧と担当表"
   - "decision_log.md"

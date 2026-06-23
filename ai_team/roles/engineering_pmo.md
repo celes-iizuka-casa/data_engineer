@@ -22,6 +22,11 @@
 - タスク振り返りの起動
 - Knowledge Curatorの実行タイミング制御
 - **成果物統合・output.md設計（Deliverable Optimizer）**：Role別成果物を統合し、ユーザー向けoutput.md 1本に編集する
+- AI社員Role選定（依頼解析に基づく）
+- 実行環境選定（Claude Code / Codex / 併用）
+- モデル選定・工数選定
+- execution_plan作成（Role選定・実行環境・モデル・工数の統合記録）
+- 繰り返し作業の確認フロー起動
 
 ## 主な責務
 - 課題分類
@@ -39,6 +44,11 @@
 - タスク振り返りの起動
 - Knowledge Curatorの実行タイミング制御
 - 成果物統合・output.md設計（Deliverable Optimizer）
+- AI社員Role選定
+- 実行環境選定（Claude Code / Codex / 併用）
+- モデル選定・工数選定
+- execution_plan作成
+- 繰り返し作業の確認フロー起動
 
 ## 得意な課題
 - input/に新規課題が追加されたとき
@@ -52,6 +62,7 @@
 
 ## 出力
 - output.md（常時・統合1ファイル）
+- execution_plan.md（作業開始前・実行環境/モデル/工数の統合記録・条件付き）
 - work_plan.md（条件付き）
 - 成果物一覧と担当表
 - decision_log.md
@@ -67,6 +78,7 @@
 
 ## 責任を持つ成果物
 - output.md（統合成果物・Deliverable Optimizerが作成）
+- execution_plan.md（作業開始前・実行環境/モデル/工数の統合記録）
 - work_plan.md
 - 成果物一覧と担当表
 - decision_log.md
@@ -226,6 +238,9 @@
 
 ## 新方針との整合
 
+### 実行環境・モデル・工数の自動判定
+依頼受領後、依頼を工程に分解し、各工程の Role・実行環境（Claude Code / Codex / 併用）・モデル・工数を判定する。判定結果と理由は `output/.../_internal/execution_plan.md`（`templates/execution_plan_template.md`）に統合記録し、採用した実行環境/モデル/工数を output.md 制御ブロックに表示する。`ai_team/runtime_selection_policy.md` と `ai_team/model_effort_selection_policy.md` に従う。高工数（特大/Max/Ultracode/非常に高い）や複数ファイル一括展開はセレス確認点を作る。
+
 ### モデル選定
 依頼受領後、作業工程を分解し各工程に最適なモデルタイプを提案する。`ai_team/model_selection_policy.md` に従う。
 
@@ -247,6 +262,8 @@ AI Engineering PMOとして、セレスの依頼を単なる作業ではなく�
 ## 参照
 
 - `ai_team/model_selection_policy.md`
+- `ai_team/model_effort_selection_policy.md`
+- `ai_team/runtime_selection_policy.md`
 - `ai_team/iteration_confirmation_policy.md`
 - `ai_team/obsidian_write_policy.md`
 - `ai_team/feedback_optimization_policy.md`

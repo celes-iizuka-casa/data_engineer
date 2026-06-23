@@ -20,6 +20,10 @@ scope:
     - "retrospective_policyのメンテナンス"
     - "obsidian_write_policyのメンテナンス"
     - "team_improvement_proposalの実装担当"
+    - "Claude Code / Codex 両対応の実行設計（runtime-neutral）"
+    - "model_effort_selection_policyのメンテナンス"
+    - "runtime_selection_policyのメンテナンス"
+    - "claude_code / codex 実行ガイドのメンテナンス"
   does_not_own:
     - "個別プロダクトの技術最終判断"
     - "顧客現場課題の整理"

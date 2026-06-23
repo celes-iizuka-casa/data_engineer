@@ -25,9 +25,14 @@ AI Engineering PMO
 - タスク振り返りの起動
 - Knowledge Curatorの実行タイミング制御
 - 成果物統合・output.md設計（Deliverable Optimizer）
+- AI社員Role選定
+- 実行環境選定（Claude Code / Codex / 併用）
+- モデル選定・工数選定
+- execution_plan作成
 
 ## 責任を持つ成果物
 - output.md（統合成果物・Deliverable Optimizerが作成）
+- execution_plan.md（実行環境・モデル・工数・Role選定の統合記録）
 - work_plan.md
 - 成果物一覧と担当表
 - decision_log.md

@@ -9,7 +9,7 @@
 | 階層 | 中身 | 生成条件 |
 |---|---|---|
 | A. 常に渡す | `output.md`（本成果物・制御ブロックを内包した統合1ファイル） | 毎回 |
-| B. 条件付き | model_recommendation / iteration_plan＋sample / quality_review_report / task_retrospective / obsidian_sync_summary | 下記ゲートを満たした時だけ |
+| B. 条件付き | execution_plan / model_recommendation / iteration_plan＋sample / quality_review_report / task_retrospective / obsidian_sync_summary | 下記ゲートを満たした時だけ |
 | C. 要求時のみ | work_plan / quality_review_request / execution_summary（10項目詳細）/ questions（全文） | セレスが明示要求した時、または内部参照用 |
 
 複数Roleが関与した場合も Role別成果物を並べず、Deliverable Optimizer（PMO）が統合して `output.md` 1本にまとめる（`deliverable_optimization_policy.md` 参照）。
@@ -32,6 +32,7 @@ A層は `output.md` 1ファイルのみ、タスクフォルダ直下に置く�
 | 成果物 | 作る条件（満たした時だけ） | 満たさない時 |
 |---|---|---|
 | output.md | 常に | — |
+| execution_plan | 2工程以上で実行環境/モデル/工数が変わる or 高リスク・セキュリティ・大規模改修・複数ファイル一括展開 | 作らない（output.md 制御ブロックの実行環境/モデル/工数記載で代替） |
 | work_plan | 3工程以上 or 明示的な除外スコープが要る依頼 | 作らない（サマリーの次アクションで代替） |
 | model_recommendation | 2工程以上で必要能力が変わる or 高リスク/セキュリティ工程を含む | 作らない |
 | iteration_plan + sample | `iteration_confirmation_policy` の繰り返し判定に該当 | 作らない |
@@ -77,3 +78,5 @@ A層は `output.md` 1ファイルのみ、タスクフォルダ直下に置く�
 - `ai_team/obsidian_write_policy.md`
 - `ai_team/retrospective_policy.md`
 - `ai_team/model_selection_policy.md`
+- `ai_team/model_effort_selection_policy.md`
+- `ai_team/runtime_selection_policy.md`

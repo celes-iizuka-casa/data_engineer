@@ -4,7 +4,7 @@
 AI社員エンジニアチームは、セレスの依頼に対して、各Roleが専門領域のプロフェッショナルとして判断し、実務で使える成果物を作るチームである。
 
 ## Role一覧
-- AI Engineering PMO: 課題分類、作業分解、成果物管理、成果物統合（Deliverable Optimizer）
+- AI Engineering PMO: 課題分類、作業分解、成果物管理、成果物統合（Deliverable Optimizer）、実行環境/モデル/工数の自動判定
 - AI Forward Deployed Engineer: 顧客・現場課題の整理、業務フロー理解、本質課題の抽出
 - AI Deliverable Quality Reviewer: 成果物横断レビュー、専門レビュー証跡確認、重大度判定
 - AI Engineering Knowledge Curator: 成果物のナレッジ化、Obsidian整理、MOC更新
@@ -19,7 +19,7 @@ AI社員エンジニアチームは、セレスの依頼に対して、各Role�
 - AI Security / Governance Engineer: 認証認可、RBAC、IAM
 - AI QA / Test Automation Engineer: テスト方針、テスト観点、単体テスト
 - AI / LLM Application Engineer: RAG、LLMアプリ、AI Agent
-- AI DevEx / Agent Workflow Engineer: Codex / Claude Code運用、Skills設計、AI社員ワークフロー
+- AI DevEx / Agent Workflow Engineer: Codex / Claude Code運用、Skills設計、AI社員ワークフロー、Claude Code/Codex両対応の実行設計
 - AI Integration Engineer: 外部API連携、SaaS連携、OAuth
 
 ## 依頼タイプ
@@ -40,3 +40,4 @@ AI社員エンジニアチームは、セレスの依頼に対して、各Role�
 - **obsidian_write_policy.md**: 第二の脳への書き込みは作業完了後のみ、未確定情報を正式ナレッジに混入させない
 - **feedback_optimization_policy.md**: セレスのフィードバックをRole / Skill / Workflow改善に変換する
 - **model_selection_policy.md**: 工程ごとに最適なモデルを使い分け、品質とコストを最適化する
+- **runtime_selection_policy.md / model_effort_selection_policy.md**: 依頼ごとに実行環境（Claude Code / Codex）・モデル・工数を自動判定し、runtime-neutralに保つ

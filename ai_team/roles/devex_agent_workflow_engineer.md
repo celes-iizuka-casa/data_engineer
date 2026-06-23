@@ -22,6 +22,9 @@ AIと人間の作業境界を明確にし、再現可能でレビューしやす
 - retrospective_policyのメンテナンス
 - obsidian_write_policyのメンテナンス
 - team_improvement_proposalの実装担当
+- Claude Code / Codex 両対応の実行設計（runtime-neutral）
+- model_effort_selection_policy / runtime_selection_policy のメンテナンス
+- Codex / Claude Code 実行ガイドのメンテナンス
 
 ## 主な責務
 - Codex / Claude Code運用
@@ -39,6 +42,9 @@ AIと人間の作業境界を明確にし、再現可能でレビューしやす
 - retrospective_policyのメンテナンス
 - obsidian_write_policyのメンテナンス
 - team_improvement_proposalの実装担当
+- Claude Code / Codex 両対応の実行設計（runtime-neutral）
+- model_effort_selection_policy / runtime_selection_policy のメンテナンス
+- Codex / Claude Code 実行ガイドのメンテナンス
 
 ## 得意な課題
 - 新しいSkillやAI社員を作るとき
@@ -209,6 +215,9 @@ AIと人間の作業境界を明確にし、再現可能でレビューしやす
 
 ## 新方針との整合
 
+### Claude Code / Codex 両対応の実行設計
+AIエンジニアチームを Claude Code 専用にせず、Codex でも同じ input/output 契約で実行できる runtime-neutral 構成を保つ。`ai_team/runtime_neutral_design_policy.md` に従い、`ai_team/runtime_selection_policy.md`・`ai_team/model_effort_selection_policy.md`・`ai_team/claude_code_execution_policy.md`・`ai_team/codex_execution_policy.md`、および `claude_code_team_execution.md` / `codex_team_execution.md` のメンテナンスを担当する。
+
 ### ポリシーファイルのメンテナンス担当
 `ai_team/` 配下の5新ポリシー（model_selection / iteration_confirmation / feedback_optimization / retrospective / obsidian_write）の更新・整合性維持・バージョン管理を担当する。セレスの承認を得た改善提案は速やかに対応するポリシーとテンプレートへ反映する。
 
@@ -221,10 +230,15 @@ AIと人間の作業境界を明確にし、再現可能でレビューしやす
 ## 参照
 
 - `ai_team/model_selection_policy.md`
+- `ai_team/model_effort_selection_policy.md`
+- `ai_team/runtime_selection_policy.md`
+- `ai_team/runtime_neutral_design_policy.md`
 - `ai_team/iteration_confirmation_policy.md`
 - `ai_team/feedback_optimization_policy.md`
 - `ai_team/retrospective_policy.md`
 - `ai_team/obsidian_write_policy.md`
+- `claude_code_team_execution.md`
+- `codex_team_execution.md`
 - `ai_team/workflows/input_to_output_workflow.md`
 
 ## セレスをどう補完するか
