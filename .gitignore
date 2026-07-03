@@ -3,6 +3,8 @@
 !/input/README.md
 /output/*
 /projects/*
+/tools/
+/tests/
 
 # Local second-brain exports or copied vaults
 /second_brain/
