@@ -25,35 +25,35 @@
 
 | 工程 | 文書 | テンプレート | 状態 | DP | AP | SY | APP | WEB | AI | INT | INF | OPS | POC |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 企画 | プロジェクト計画書 | `common/project_plan_template.md` | P2新規 | ◎ | ◎ | ◎ | ◎ | ◎ | ◎ | ◎ | ◎ | ◎ | −※1 |
-| 企画 | 現行調査・課題整理（As-Is） | `common/as_is_analysis_template.md` | P2新規 | ◎ | ◎ | ◎ | ○ | ○ | ○ | ◎ | ○ | ◎ | △ |
+| 企画 | プロジェクト計画書 | `common/project_plan_template.md` | 済 | ◎ | ◎ | ◎ | ◎ | ◎ | ◎ | ◎ | ◎ | ◎ | −※1 |
+| 企画 | 現行調査・課題整理（As-Is） | `common/as_is_analysis_template.md` | 済 | ◎ | ◎ | ◎ | ○ | ○ | ○ | ◎ | ○ | ◎ | △ |
 | 企画 | MVPスコープ | `../mvp_scope_template.md` | 既存 | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ | − | △ |
 | 企画 | ステークホルダーマップ | `../stakeholder_map_template.md` | 既存 | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ | △ |
 | 企画 | 成功指標定義 | `../success_metrics_template.md` | 既存 | ○ | ◎ | ○ | ○ | ○ | ◎ | ○ | ○ | ○ | ◎※2 |
-| 要件 | 要件定義書 | `../requirements_template.md` | P2強化 | ◎ | ◎ | ◎ | ◎ | ◎ | ◎ | ◎ | ◎ | ○ | △※1 |
-| 要件 | 非機能要件定義書 | `common/nonfunctional_requirements_template.md` | P2新規 | ◎ | ◎ | ◎ | ◎ | ○ | ◎ | ◎ | ◎ | ○ | △ |
-| 要件 | 業務フロー定義書 | `common/business_flow_template.md` | P2新規 | ○ | ○ | ◎ | ◎ | △ | ○ | ◎ | − | △ | △ |
+| 要件 | 要件定義書 | `../requirements_template.md` | 済 | ◎ | ◎ | ◎ | ◎ | ◎ | ◎ | ◎ | ◎ | ○ | △※1 |
+| 要件 | 非機能要件定義書 | `common/nonfunctional_requirements_template.md` | 済 | ◎ | ◎ | ◎ | ◎ | ○ | ◎ | ◎ | ◎ | ○ | △ |
+| 要件 | 業務フロー定義書 | `common/business_flow_template.md` | 済 | ○ | ○ | ◎ | ◎ | △ | ○ | ◎ | − | △ | △ |
 | 設計 | アーキテクチャ設計 | `../architecture_template.md` | 既存 | ◎ | ◎ | ◎ | ◎ | △ | ◎ | ○ | ◎ | − | ○ |
 | 設計 | 基本設計書 | `../basic_design_template.md` | 既存 | ◎ | ◎ | ◎ | ◎ | ○ | ◎ | ◎ | ○ | − | − |
 | 設計 | 詳細設計書 | `../detailed_design_template.md` | 既存 | ○ | ○ | ○ | ○ | △ | ○ | ○ | △ | − | − |
 | 設計 | API設計書 | `../api_design_template.md` | 既存 | △ | △ | ○ | ○ | △ | ○ | ◎ | △ | − | △ |
 | 設計 | DB設計書 | `../db_design_template.md` | 既存 | ○※3 | ○※3 | ◎ | ◎ | △ | ○ | △ | △ | − | △ |
-| 設計 | セキュリティ設計書 | `common/security_design_template.md` | P2新規 | ◎ | ◎ | ◎ | ◎ | ○ | ◎ | ◎ | ◎ | ○ | △ |
-| 設計 | インフラ・環境構成設計書 | `common/infrastructure_design_template.md` | P2新規 | ◎ | ◎ | ◎ | ◎ | ○ | ◎ | ○ | ○※4 | ○ | △ |
-| 設計 | バッチ・ジョブ設計書 | `common/batch_job_design_template.md` | P2新規 | ◎ | ◎ | ○ | △ | − | ○ | ○ | − | △ | − |
-| 設計 | 外部インターフェース設計書 | `common/external_interface_design_template.md` | P2新規 | ○ | ○ | ○ | ○ | △ | ○ | ○※4 | − | △ | − |
-| 実装 | 開発標準・規約 | `common/development_standards_template.md` | P2新規 | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ | △ | △ |
-| 実装 | 環境構築手順書 | `common/environment_setup_guide_template.md` | P2新規 | ◎ | ◎ | ◎ | ◎ | ○ | ◎ | ○ | ○ | ○ | ○ |
-| テスト | テスト計画書 | `../test_plan_template.md` | P2強化 | ◎ | ◎ | ◎ | ◎ | ○ | ◎ | ◎ | ○ | ○ | −※2 |
-| テスト | テスト仕様書・ケース | `common/test_specification_template.md` | P2新規 | ◎ | ◎ | ◎ | ◎ | ○ | ◎ | ◎ | ○ | ○ | − |
-| テスト | テスト結果報告書 | `common/test_result_report_template.md` | P2新規 | ◎ | ◎ | ◎ | ◎ | ○ | ◎ | ◎ | ○ | ○ | −※2 |
-| 移行 | リリース計画・手順書 | `common/release_plan_template.md` | P2新規 | ◎ | ◎ | ◎ | ◎ | ◎ | ◎ | ◎ | ◎ | ○ | − |
-| 移行 | データ移行計画書 | `common/data_migration_plan_template.md` | P2新規 | ○※5 | ○※5 | ○ | ○ | △ | △ | △ | △ | △ | − |
-| 運用 | 運用設計書 | `common/operation_design_template.md` | P2新規 | ◎ | ◎ | ◎ | ◎ | ○ | ◎ | ◎ | ◎ | ◎ | − |
-| 運用 | 監視・アラート設計書 | `common/monitoring_design_template.md` | P2新規 | ◎ | ◎ | ◎ | ◎ | ○ | ◎ | ○ | ◎ | ◎ | − |
-| 運用 | SLO/SLA定義書 | `common/slo_sla_definition_template.md` | P2新規 | ○ | ○ | ○ | ○ | △ | ○ | ○ | ○ | ◎ | − |
+| 設計 | セキュリティ設計書 | `common/security_design_template.md` | 済 | ◎ | ◎ | ◎ | ◎ | ○ | ◎ | ◎ | ◎ | ○ | △ |
+| 設計 | インフラ・環境構成設計書 | `common/infrastructure_design_template.md` | 済 | ◎ | ◎ | ◎ | ◎ | ○ | ◎ | ○ | ○※4 | ○ | △ |
+| 設計 | バッチ・ジョブ設計書 | `common/batch_job_design_template.md` | 済 | ◎ | ◎ | ○ | △ | − | ○ | ○ | − | △ | − |
+| 設計 | 外部インターフェース設計書 | `common/external_interface_design_template.md` | 済 | ○ | ○ | ○ | ○ | △ | ○ | ○※4 | − | △ | − |
+| 実装 | 開発標準・規約 | `common/development_standards_template.md` | 済 | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ | △ | △ |
+| 実装 | 環境構築手順書 | `common/environment_setup_guide_template.md` | 済 | ◎ | ◎ | ◎ | ◎ | ○ | ◎ | ○ | ○ | ○ | ○ |
+| テスト | テスト計画書 | `../test_plan_template.md` | 済 | ◎ | ◎ | ◎ | ◎ | ○ | ◎ | ◎ | ○ | ○ | −※2 |
+| テスト | テスト仕様書・ケース | `common/test_specification_template.md` | 済 | ◎ | ◎ | ◎ | ◎ | ○ | ◎ | ◎ | ○ | ○ | − |
+| テスト | テスト結果報告書 | `common/test_result_report_template.md` | 済 | ◎ | ◎ | ◎ | ◎ | ○ | ◎ | ◎ | ○ | ○ | −※2 |
+| 移行 | リリース計画・手順書 | `common/release_plan_template.md` | 済 | ◎ | ◎ | ◎ | ◎ | ◎ | ◎ | ◎ | ◎ | ○ | − |
+| 移行 | データ移行計画書 | `common/data_migration_plan_template.md` | 済 | ○※5 | ○※5 | ○ | ○ | △ | △ | △ | △ | △ | − |
+| 運用 | 運用設計書 | `common/operation_design_template.md` | 済 | ◎ | ◎ | ◎ | ◎ | ○ | ◎ | ◎ | ◎ | ◎ | − |
+| 運用 | 監視・アラート設計書 | `common/monitoring_design_template.md` | 済 | ◎ | ◎ | ◎ | ◎ | ○ | ◎ | ○ | ◎ | ◎ | − |
+| 運用 | SLO/SLA定義書 | `common/slo_sla_definition_template.md` | 済 | ○ | ○ | ○ | ○ | △ | ○ | ○ | ○ | ◎ | − |
 | 運用 | Runbook | `../runbook_template.md` | 既存 | ◎ | ◎ | ◎ | ◎ | △ | ◎ | ○ | ◎ | ◎ | − |
-| 運用 | 障害対応・ポストモーテム | `common/incident_postmortem_template.md` | P2新規 | ○ | ○ | ○ | ○ | △ | ○ | ○ | ○ | ◎ | − |
+| 運用 | 障害対応・ポストモーテム | `common/incident_postmortem_template.md` | 済 | ○ | ○ | ○ | ○ | △ | ○ | ○ | ○ | ◎ | − |
 
 ※1 PoCでは `poc/poc_plan_template.md` が計画・要件を兼ねる（本番向け文書の重さがPoCの速度を殺すため軽量版で代替）
 ※2 PoCの成功指標＝検証基準。テストは `poc/poc_result_report_template.md`（検証報告書）で代替

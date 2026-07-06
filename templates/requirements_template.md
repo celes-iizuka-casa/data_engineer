@@ -23,4 +23,7 @@
 ## 9. Operations and Support
 ## 10. MVP and Scale-out
 ## 11. Risks and Open Questions
-## 12. Approval
+## 12. Related Documents
+- Non-functional Requirements: `development/common/nonfunctional_requirements_template.md`（詳細な性能・可用性・セキュリティ等はこちらに記載し、本書§6は要約に留める）
+- Business Flow: `development/common/business_flow_template.md`
+## 13. Approval

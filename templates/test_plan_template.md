@@ -15,3 +15,6 @@
 ## 9. Regression Scope
 ## 10. Defect Handling
 ## 11. Residual Risk
+## 12. Related Documents
+- Test Specification (ケース詳細): `development/common/test_specification_template.md`
+- Test Result Report (実施結果): `development/common/test_result_report_template.md`
