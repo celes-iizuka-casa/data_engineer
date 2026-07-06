@@ -3,7 +3,8 @@
 !/input/README.md
 /output/*
 /projects/*
-/tools/
+/tools/*
+!/tools/validate_repository.py
 /tests/
 
 # Local second-brain exports or copied vaults

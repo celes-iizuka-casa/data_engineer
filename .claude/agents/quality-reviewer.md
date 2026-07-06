@@ -39,7 +39,7 @@ description: 成果物の独立品質レビューを実行する。Design/Implem
 
 - 判定の前に `ai_team/review/quality_scoring_rubric.md` の次元別アンカーで Quality Scorecard を採点する。
 - スコアから判定への変換は rubric の変換規則に従う。P0/P1 ゲートが常に優先。
-- 証跡のない次元は採点しない（0 = not reviewed のまま残し、BLOCKED 判定の材料にする）。
+- 証跡のない次元は採点しない（0 = not reviewed のまま残す）。0 はスコアではないため REWORK の根拠にしない。モード別の必須次元（rubric「必須次元（モード別）」参照）が 0 のまま残る場合のみ BLOCKED の材料にする。
 - 採点水準の基準例は `templates/examples/golden_sample_quality_review.md` を参照する。
 
 ## レビュー観点

@@ -47,8 +47,31 @@ P0/P1 ゲートが常に優先する（スコアで上書きしない）。
 |---|---|
 | 採点済み全次元が3以上、かつ P0/P1/P2 なし | PASS |
 | 採点済み全次元が2以上、かつ P0/P1 なし（P2 は責任者・期限付き） | PASS_WITH_CONDITIONS |
-| いずれかの次元が1以下、または P0/P1 あり | REWORK_REQUIRED |
-| 証跡不足で採点不能な必須次元がある、または専門Reviewerの未解除Blocker | BLOCKED |
+| 採点済みの次元に1がある、または P0/P1 あり | REWORK_REQUIRED |
+| 必須次元が0（証跡不足で採点不能）のまま残る、または専門Reviewerの未解除Blocker | BLOCKED |
+
+0（not reviewed）はスコアではなく「未採点」の状態を表す。0 を REWORK_REQUIRED の根拠にしない。必須次元が 0 のまま残る場合は BLOCKED、必須でない次元が 0 のまま残る場合はその旨を Excluded areas に記録して判定から除外する。
+
+## 必須次元（モード別）
+
+BLOCKED 判定の対象になる「必須次元」= そのモードで 0（not reviewed）のまま残してはならない次元。対象が構造的に存在しない場合のみ理由付き N/A にできる（証跡不足は N/A の理由にならない。証跡不足は 0 のままにして BLOCKED 材料にする）。
+
+**全モード共通の必須次元:**
+- Purpose and requirement fit
+- Factual accuracy and evidence
+- Cross-artifact consistency and traceability
+- Documentation and handover
+
+**モード別の追加必須次元:**
+
+| モード | 追加必須次元 |
+|---|---|
+| Opinion | Technical correctness and architecture |
+| Design | Technical correctness and architecture / Security, privacy, and governance / Reliability, operations, and recovery |
+| Implementation | Technical correctness and architecture / Test coverage and reproducibility / Security, privacy, and governance / Reliability, operations, and recovery |
+| Verification | Test coverage and reproducibility |
+
+上記以外の次元は、証跡があれば採点し、対象外なら理由付き N/A とする。
 
 ## 品質スコアの表記
 
