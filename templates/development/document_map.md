@@ -7,17 +7,17 @@
 
 | ID | 種別 | 主担当Role | セット表紙 |
 |---|---|---|---|
-| DP | データ基盤開発（利活用未確定を含む） | Data Engineer / Data Platform Engineer | `sets/data_platform.md`（Phase 3） |
-| AP | データ分析基盤開発（利活用: 分析） | Data Engineer / ML Engineer | `sets/analytics_platform.md`（Phase 3） |
-| SY | システム開発 | Backend Engineer / Tech Lead | `sets/system_development.md`（Phase 3） |
-| APP | アプリケーション開発 | Fullstack / Frontend Engineer | `sets/application_development.md`（Phase 3） |
-| WEB | Webコンテンツ開発 | Frontend Engineer / Product Manager | `sets/web_content.md`（Phase 3） |
-| AI | AI/ML・LLMアプリ開発（AIエージェント含む） | ML Engineer / LLM Application Engineer | `sets/ai_ml_llm.md`（Phase 3） |
-| INT | API連携・システム間統合 | Integration Engineer | `sets/integration.md`（Phase 3） |
-| INF | クラウドインフラ構築 | Cloud Infrastructure Engineer | `sets/cloud_infrastructure.md`（Phase 3） |
-| OPS | 運用保守案件 | SRE / Platform Engineer | `sets/maintenance.md`（Phase 3） |
-| POC | PoC・技術検証 | 案件内容による（Tech Lead が選定） | `sets/poc.md`（Phase 3） |
-| — | プロジェクト管理・報告（全種別横断） | Engineering PMO | `sets/project_management.md`（Phase 3） |
+| DP | データ基盤開発（利活用未確定を含む） | Data Engineer / Data Platform Engineer | `sets/data_platform.md` |
+| AP | データ分析基盤開発（利活用: 分析） | Data Engineer / ML Engineer | `sets/analytics_platform.md` |
+| SY | システム開発 | Backend Engineer / Tech Lead | `sets/system_development.md` |
+| APP | アプリケーション開発 | Fullstack / Frontend Engineer | `sets/application_development.md` |
+| WEB | Webコンテンツ開発 | Frontend Engineer / Product Manager | `sets/web_content.md` |
+| AI | AI/ML・LLMアプリ開発（AIエージェント含む） | ML Engineer / LLM Application Engineer | `sets/ai_ml_llm.md` |
+| INT | API連携・システム間統合 | Integration Engineer | `sets/integration.md` |
+| INF | クラウドインフラ構築 | Cloud Infrastructure Engineer | `sets/cloud_infrastructure.md` |
+| OPS | 運用保守案件 | SRE / Platform Engineer | `sets/maintenance.md` |
+| POC | PoC・技術検証 | 案件内容による（Tech Lead が選定） | `sets/poc.md` |
+| — | プロジェクト管理・報告（全種別横断） | Engineering PMO | `sets/project_management.md` |
 
 ## 共通コア文書 × 種別マトリクス
 
@@ -61,7 +61,7 @@
 ※4 INFは `cloud_infra/cloud_architecture_design_template.md`、INTは `integration/interface_inventory_design_template.md` が上位互換として代替
 ※5 既存データの移し替えがある案件では必須
 
-## 種別差分文書（Phase 3作成予定）
+## 種別差分文書
 
 ### DP: データ基盤開発 — `data_platform/`
 | 文書 | 必須/任意 | 理由 |
