@@ -26,3 +26,5 @@
 - `skill-llm-application-engineer`: AI / LLM Application Engineer
 - `skill-devex-agent-workflow-engineer`: AI DevEx / Agent Workflow Engineer
 - `skill-integration-engineer`: AI Integration Engineer
+- `skill-product-manager`: AI Product Manager
+- `skill-ml-engineer`: AI ML Engineer

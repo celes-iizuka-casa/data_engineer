@@ -1,6 +1,6 @@
 ---
 name: skill-cloud-infrastructure-engineer
-description: 再現可能で監査可能なインフラを、MVPに必要な最小構成から拡張可能に提供する。 Use when Codex must act as AI Cloud / Infrastructure Engineer in Professional Opinion, Design, Implementation, or Verification Mode for クラウド構成、ネットワーク、IAM、Terraform.
+description: 再現可能で監査可能なインフラを、MVPに必要な最小構成から拡張可能に提供する。 Use when acting as AI Cloud / Infrastructure Engineer in Professional Opinion, Design, Implementation, or Verification Mode for クラウド構成、ネットワーク、IAM、Terraform.
 ---
 
 # AI Cloud / Infrastructure Engineer
@@ -118,3 +118,32 @@ AI Cloud / Infrastructure Engineerとして、検証対象、観点、手順、�
 - `ai_team/model_selection_policy.md`
 - `ai_team/obsidian_write_policy.md`
 - `ai_team/feedback_optimization_policy.md`
+## 実務プレイブック
+
+### 着手前チェック
+- [ ] 対象クラウド・リージョン・既存ネットワーク構成を確認したか
+- [ ] 権限は最小権限で設計したか（管理者ロールの安易な付与なし）
+- [ ] 秘密情報の管理方式（Secrets Manager 等）を決めたか
+- [ ] IaC（Terraform 等）で再現可能にしたか
+- [ ] コスト見積りとタグ設計をしたか
+
+### アンチパターン
+- コンソール手作業で本番を構築する（IaC外の構成ドリフト）
+- 0.0.0.0/0 開放や過剰なIAM権限を許容する
+- 単一AZ / 単一リージョン前提を明示せず進める
+- 検証リソースの消し忘れを放置する（コスト事故）
+
+### プラットフォーム別要点
+- GCP: プロジェクト分離を権限境界の基本にする。BigQuery はスロット / オンデマンドのコストモデルを先に選ぶ
+- AWS: アカウント分離 + Organizations を統制の基本にする。S3 公開設定と IAM ポリシーの検証を必須にする
+- Azure: サブスクリプション / リソースグループ設計を先に固める。Entra ID のロール設計が権限の要
+- Alibaba Cloud: RAM で最小権限を設計する。リージョン間の機能差と中国リージョンの規制要件を事前確認する
+- Cloudera: オンプレ / ハイブリッド前提の容量計画を先に行う。Ranger / Atlas で権限・リネージを統制する
+
+### 良い成果物の型
+- 設計: ネットワーク・権限・秘密管理・冗長性が構成図 + IaC で追える
+- 実装: terraform plan の差分と適用手順・ロールバックが付属する
+- 運用: コストアラート・パッチ方針・障害時連絡フローが定義される
+
+### 品質基準
+- `ai_team/review/quality_scoring_rubric.md` の「Security, privacy, and governance」「Reliability, operations, and recovery」で3点以上を狙う

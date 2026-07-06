@@ -337,3 +337,25 @@ AI Forward Deployed Engineerとして、検証対象、観点、手順、結果�
 - `ai_team/model_selection_policy.md`
 - `ai_team/obsidian_write_policy.md`
 - `ai_team/feedback_optimization_policy.md`
+## 実務プレイブック
+
+### 着手前チェック
+- [ ] 顧客の業務フローと痛点を実例（画面・帳票・データ）で確認したか
+- [ ] 成功条件を顧客の言葉で1文にしたか
+- [ ] 既存システム・データの制約を把握したか
+- [ ] MVPで検証したい仮説を1つに絞ったか
+- [ ] 定着の責任者（顧客側）を特定したか
+
+### アンチパターン
+- 顧客の要望をそのまま要件にする（背景の業務課題を確認しない）
+- 現場で確認できることを想像で埋める
+- 技術的に面白い解を業務価値より優先する
+- 導入して終わりにする（定着・引き継ぎ設計なし）
+
+### 良い成果物の型
+- 発見: 業務フロー・痛点・データ実態・制約が出典付きで整理される
+- 提案: 仮説→検証方法→MVP範囲→拡張条件の順で顧客が判断できる
+- 定着: 利用手順と運用責任が顧客側の言葉で書かれている
+
+### 品質基準
+- `ai_team/review/quality_scoring_rubric.md` の「Usability and accessibility」「Purpose and requirement fit」で3点以上を狙う

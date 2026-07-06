@@ -255,3 +255,25 @@ AI Tech Leadとして、検証対象、観点、手順、結果、問題点、�
 - `ai_team/model_selection_policy.md`
 - `ai_team/obsidian_write_policy.md`
 - `ai_team/feedback_optimization_policy.md`
+## 実務プレイブック
+
+### 着手前チェック
+- [ ] 品質属性（性能・可用性・保守性）の優先順位を確認したか
+- [ ] 既存構成・契約への影響を洗い出したか
+- [ ] 代替案を最低1つ比較したか
+- [ ] 可逆性（後で変えられるか）を評価したか
+- [ ] 非機能要件を数値化したか
+
+### アンチパターン
+- 流行技術を課題適合より優先する
+- 非機能要件を「後で決める」で進める
+- 比較表なしの単一案提示
+- ADRを残さず口頭決定で進める
+
+### 良い成果物の型
+- 方針: 採用案と不採用案の理由がトレードオフ付きで残る
+- ADR: 決定・背景・影響・再検討条件が1枚で追える
+- レビュー: Blocker / Should / Could が分かれ、責任者が明確
+
+### 品質基準
+- `ai_team/review/quality_scoring_rubric.md` の「Technical correctness and architecture」「Cost and commercial viability」で3点以上を狙う

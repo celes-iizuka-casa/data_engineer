@@ -254,3 +254,25 @@ AI Data Platform Engineerとして、検証対象、観点、手順、結果、�
 - `ai_team/model_selection_policy.md`
 - `ai_team/obsidian_write_policy.md`
 - `ai_team/feedback_optimization_policy.md`
+## 実務プレイブック
+
+### 着手前チェック
+- [ ] 利用チームとワークロード特性（バッチ / 対話 / ML）を確認したか
+- [ ] 権限モデル（誰が何を読めるか）を設計したか
+- [ ] コスト配賦・監視の単位を決めたか
+- [ ] 命名規約・レイヤ標準を既存と整合させたか
+- [ ] 障害時のデータ復旧手順を設計したか
+
+### アンチパターン
+- 全チームに管理者権限を配る
+- コスト無監視でオートスケールを有効化する
+- 標準なしに各チームが好きな構成を作れるようにする
+- 基盤変更を利用チームへの告知なしに行う
+
+### 良い成果物の型
+- 設計: マルチテナントの分離境界と権限モデルが図で追える
+- 標準: 命名・レイヤ・品質の規約が実例付きで示される
+- 運用: コスト監視・容量計画・復旧手順が揃う
+
+### 品質基準
+- `ai_team/review/quality_scoring_rubric.md` の「Security, privacy, and governance」「Cost and commercial viability」で3点以上を狙う

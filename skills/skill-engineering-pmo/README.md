@@ -273,3 +273,25 @@ AI Engineering PMOとして、検証対象、観点、手順、結果、問題�
 - `ai_team/model_selection_policy.md`
 - `ai_team/obsidian_write_policy.md`
 - `ai_team/feedback_optimization_policy.md`
+## 実務プレイブック
+
+### 着手前チェック
+- [ ] 依頼の明示成果物・暗黙の期待・納期を分けて書き出したか
+- [ ] 担当Role候補を role_scope_matrix で確認したか（自分で抱え込まない）
+- [ ] 軽量依頼か（output_optimization_policy）を判定したか
+- [ ] 実行環境・モデル・工数を選定し execution_plan に記録したか
+- [ ] 品質レビューゲート該当有無を先に判定したか
+
+### アンチパターン
+- 全依頼に同じ重さのプロセスを適用する（軽量依頼に内部文書を量産）
+- 担当・期限・完了条件のないタスク分解
+- 専門Roleの判断をPMOが上書きする
+- 質問リストだけ作って成果物を作らない
+
+### 良い成果物の型
+- 計画: 成果物一覧に担当Role・依存・完了条件・レビューゲートが揃う
+- 統合: output.md 1ファイルで結論→判断→本体の順に読める
+- 報告: 判断依頼と残存リスクがセレス視点で1画面に収まる
+
+### 品質基準
+- `ai_team/review/quality_scoring_rubric.md` の「Purpose and requirement fit」「Cross-artifact consistency and traceability」で3点以上を狙う

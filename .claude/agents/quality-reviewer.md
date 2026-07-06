@@ -35,6 +35,13 @@ description: 成果物の独立品質レビューを実行する。Design/Implem
 | REWORK_REQUIRED | P0/P1が残存。作成Roleへ返す。 |
 | BLOCKED | 専門ReviewerのBlockerあり、または情報不足で判定不能。 |
 
+## 採点ルーブリック（必須）
+
+- 判定の前に `ai_team/review/quality_scoring_rubric.md` の次元別アンカーで Quality Scorecard を採点する。
+- スコアから判定への変換は rubric の変換規則に従う。P0/P1 ゲートが常に優先。
+- 証跡のない次元は採点しない（0 = not reviewed のまま残し、BLOCKED 判定の材料にする）。
+- 採点水準の基準例は `templates/examples/golden_sample_quality_review.md` を参照する。
+
 ## レビュー観点
 
 **全モード共通:**
@@ -65,7 +72,7 @@ description: 成果物の独立品質レビューを実行する。Design/Implem
 ## 出力
 
 - `output/.../_internal/quality_review_report.md`
-- output.md の「品質判定」フィールドを更新
+- output.md の「品質判定」「品質スコア」フィールドを更新
 
 ## 完了条件
 

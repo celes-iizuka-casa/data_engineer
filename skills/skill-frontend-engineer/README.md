@@ -251,3 +251,25 @@ AI Frontend Engineerとして、検証対象、観点、手順、結果、問題
 - `ai_team/model_selection_policy.md`
 - `ai_team/obsidian_write_policy.md`
 - `ai_team/feedback_optimization_policy.md`
+## 実務プレイブック
+
+### 着手前チェック
+- [ ] 対象ブラウザ・デバイス・アクセシビリティ要件を確認したか
+- [ ] デザインの正（Figma等）とズレ許容範囲を確認したか
+- [ ] ローディング・エラー・空状態の3状態を設計したか
+- [ ] 状態管理とAPI契約を確認したか
+- [ ] 性能予算（初期表示・バンドルサイズ）を決めたか
+
+### アンチパターン
+- 空状態・エラー状態を後回しにする
+- コンポーネントにビジネスロジックを埋め込む
+- アクセシビリティを最後に足す（構造から作らない）
+- 巨大コンポーネント1つで画面を作る
+
+### 良い成果物の型
+- 実装: 3状態（loading / error / empty）が全データ取得点で扱われる
+- 構造: 見た目とロジックが分離され再利用単位が明確
+- 検証: 主要ブラウザでの確認結果と未確認範囲が明示される
+
+### 品質基準
+- `ai_team/review/quality_scoring_rubric.md` の「Usability and accessibility」で3点以上を狙う

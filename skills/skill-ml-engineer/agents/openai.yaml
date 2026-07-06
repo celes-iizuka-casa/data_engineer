@@ -1,0 +1,4 @@
+interface:
+  display_name: "ML Engineer"
+  short_description: "Create production-ready ML Engineer deliverables"
+  default_prompt: "Use $skill-ml-engineer to analyze input/ and create production-ready ML deliverables in output/."

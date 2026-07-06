@@ -1,5 +1,16 @@
 {
   "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "INPUT=$(cat); echo \"$INPUT\" | grep -qE '(/skills/|/ai_team/|/templates/)' && touch \"$CLAUDE_PROJECT_DIR/.claude/.needs_validation\" || true"
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "matcher": "",
@@ -7,6 +18,10 @@
           {
             "type": "command",
             "command": "echo '✅ タスク完了チェック: output.md を output/<client>/<date>/<task>/ に作成したか確認してください（制御ブロック＋§1〜§5の統合1ファイル）。Obsidian syncトリガー条件（Completed/Accepted + 顧客/再利用価値あり）を満たす場合はKnowledge Curatorを起動してください。'"
+          },
+          {
+            "type": "command",
+            "command": "if [ -f \"$CLAUDE_PROJECT_DIR/.claude/.needs_validation\" ]; then rm -f \"$CLAUDE_PROJECT_DIR/.claude/.needs_validation\"; python3 \"$CLAUDE_PROJECT_DIR/tools/validate_repository.py\" || echo '❌ validate_repository.py FAILED — skills/roles/templates の構造契約が壊れています。修正してから完了扱いにしてください。'; fi"
           }
         ]
       }

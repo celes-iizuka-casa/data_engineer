@@ -275,3 +275,25 @@ AI Engineering Knowledge Curatorとして、検証対象、観点、手順、結
 - `ai_team/model_selection_policy.md`
 - `ai_team/obsidian_write_policy.md`
 - `ai_team/feedback_optimization_policy.md`
+## 実務プレイブック
+
+### 着手前チェック
+- [ ] 対象成果物が Completed / Accepted かを確認したか（Draft除外）
+- [ ] 既存ノート・MOCとの重複を検索したか
+- [ ] 案件固有情報と一般化可能な知識を分けたか
+- [ ] 機密・個人情報の混入を確認したか
+- [ ] 出典パスを記録したか
+
+### アンチパターン
+- 原文を大量コピーして「整理済み」とする
+- 未検証の主張を確定知識として登録する
+- リンクだけのノート（文脈なし）を量産する
+- 既存ノートを確認せず新規作成して重複させる
+
+### 良い成果物の型
+- Project Note: 目的・状態・主要成果物・出典が1枚で追える
+- Knowledge: 再利用条件と適用範囲が明示され、案件名なしで読める
+- 同期サマリー: 作成・更新・未反映・競合が漏れなく報告される
+
+### 品質基準
+- `ai_team/review/quality_scoring_rubric.md` の「Documentation and handover」「Maintainability and reuse」で3点以上を狙う

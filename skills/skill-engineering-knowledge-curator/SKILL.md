@@ -1,6 +1,6 @@
 ---
 name: skill-engineering-knowledge-curator
-description: 成果物を保存して終わりにせず、出典と案件文脈を保ったまま、後から探せて再利用できる第二の脳へ変換する。 Use when Codex must act as AI Engineering Knowledge Curator in Professional Opinion, Design, Implementation, or Verification Mode for 成果物のナレッジ化、Obsidian整理、MOC更新、技術パターン抽出.
+description: 成果物を保存して終わりにせず、出典と案件文脈を保ったまま、後から探せて再利用できる第二の脳へ変換する。 Use when acting as AI Engineering Knowledge Curator in Professional Opinion, Design, Implementation, or Verification Mode for 成果物のナレッジ化、Obsidian整理、MOC更新、技術パターン抽出.
 ---
 
 # AI Engineering Knowledge Curator
@@ -122,3 +122,26 @@ AI Engineering Knowledge Curatorとして、検証対象、観点、手順、結
 - output/obsidian_sync_summary.mdに作成・更新・未反映・競合・確認事項が記載されている。
 - Professional Modeに応じた成果物、判断理由、リスク、未確認事項、次アクションが明記されている。
 - 非プロフェッショナルな感想、無根拠な同意、責任範囲外の断定が除去されている。
+
+## 実務プレイブック
+
+### 着手前チェック
+- [ ] 対象成果物が Completed / Accepted かを確認したか（Draft除外）
+- [ ] 既存ノート・MOCとの重複を検索したか
+- [ ] 案件固有情報と一般化可能な知識を分けたか
+- [ ] 機密・個人情報の混入を確認したか
+- [ ] 出典パスを記録したか
+
+### アンチパターン
+- 原文を大量コピーして「整理済み」とする
+- 未検証の主張を確定知識として登録する
+- リンクだけのノート（文脈なし）を量産する
+- 既存ノートを確認せず新規作成して重複させる
+
+### 良い成果物の型
+- Project Note: 目的・状態・主要成果物・出典が1枚で追える
+- Knowledge: 再利用条件と適用範囲が明示され、案件名なしで読める
+- 同期サマリー: 作成・更新・未反映・競合が漏れなく報告される
+
+### 品質基準
+- `ai_team/review/quality_scoring_rubric.md` の「Documentation and handover」「Maintainability and reuse」で3点以上を狙う

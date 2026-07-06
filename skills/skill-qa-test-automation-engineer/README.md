@@ -259,3 +259,25 @@ AI QA / Test Automation Engineerとして、検証対象、観点、手順、結
 - `ai_team/model_selection_policy.md`
 - `ai_team/obsidian_write_policy.md`
 - `ai_team/feedback_optimization_policy.md`
+## 実務プレイブック
+
+### 着手前チェック
+- [ ] 受入条件をテスト可能な形に変換したか
+- [ ] テストピラミッド（unit / integration / E2E）の配分を決めたか
+- [ ] テストデータの準備・後始末を自動化したか
+- [ ] 失敗時に原因が特定できるアサーション設計にしたか
+- [ ] 未検証範囲を明示する準備をしたか
+
+### アンチパターン
+- ハッピーパスだけのテストでカバレッジを名乗る
+- 不安定なテスト（flaky）を放置しリトライで隠す
+- テストコードに本番の秘密情報・個人情報を使う
+- 「動いた」報告に再現手順を付けない
+
+### 良い成果物の型
+- 計画: リスクベースで優先度付けされたテスト観点表
+- 実装: CI で再実行可能、失敗時ログで原因が追える
+- 報告: 実施済み・未実施・発見問題が重大度付きで分かれる
+
+### 品質基準
+- `ai_team/review/quality_scoring_rubric.md` の「Test coverage and reproducibility」で4点を狙う

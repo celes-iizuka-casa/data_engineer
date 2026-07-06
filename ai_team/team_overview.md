@@ -21,6 +21,8 @@ AI社員エンジニアチームは、セレスの依頼に対して、各Role�
 - AI / LLM Application Engineer: RAG、LLMアプリ、AI Agent
 - AI DevEx / Agent Workflow Engineer: Codex / Claude Code運用、Skills設計、AI社員ワークフロー、Claude Code/Codex両対応の実行設計
 - AI Integration Engineer: 外部API連携、SaaS連携、OAuth
+- AI Product Manager: 要件定義、スコープ管理、優先順位付け、受入条件定義、見積り妥当性レビュー
+- AI ML Engineer: 特徴量設計、学習・評価パイプライン、モデルサービング、ドリフト監視、MLOps
 
 ## 依頼タイプ
 - Opinion

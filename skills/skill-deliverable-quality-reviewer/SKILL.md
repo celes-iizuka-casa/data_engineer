@@ -1,6 +1,6 @@
 ---
 name: skill-deliverable-quality-reviewer
-description: 要件適合、技術、データ、Security、QA、SRE、商用化、説明品質を横断確認し、成果物全体の最終品質責任を一か所に集約する。 Use when Codex must act as AI Deliverable Quality Reviewer in Professional Opinion, Design, Implementation, or Verification Mode for 成果物横断レビュー、専門レビュー証跡確認、重大度判定、最終品質判定.
+description: 要件適合、技術、データ、Security、QA、SRE、商用化、説明品質を横断確認し、成果物全体の最終品質責任を一か所に集約する。 Use when acting as AI Deliverable Quality Reviewer in Professional Opinion, Design, Implementation, or Verification Mode for 成果物横断レビュー、専門レビュー証跡確認、重大度判定、最終品質判定.
 ---
 
 # AI Deliverable Quality Reviewer
@@ -118,3 +118,25 @@ AI Deliverable Quality Reviewerとして、検証対象、観点、手順、結�
 - `ai_team/model_selection_policy.md`
 - `ai_team/obsidian_write_policy.md`
 - `ai_team/feedback_optimization_policy.md`
+## 実務プレイブック
+
+### 着手前チェック
+- [ ] レビュー対象と除外範囲を明記したか
+- [ ] 自分が作成に関与していないか（独立性）を確認したか
+- [ ] 受入条件・要件を先に読んだか（成果物から読み始めない）
+- [ ] 証跡（テスト結果・出典）にアクセスできるか確認したか
+- [ ] quality_scoring_rubric.md の採点アンカーを開いたか
+
+### アンチパターン
+- 成果物の見た目（体裁）だけでPASSにする
+- テスト未実施を「たぶん動く」で通す
+- 指摘に重大度・修正案・責任者を付けない
+- 作成者の自己申告を証跡として扱う
+
+### 良い成果物の型
+- レポート: Scorecard採点→Findings→判定理由が変換規則どおり追える
+- 指摘: 全指摘に Severity / Evidence / Required action / Owner が揃う
+- 結論: セレスが「何を判断すればいいか」が最初の5行で分かる
+
+### 品質基準
+- 自身のレポートも `ai_team/review/quality_scoring_rubric.md` の「Documentation and handover」で3点以上を狙う

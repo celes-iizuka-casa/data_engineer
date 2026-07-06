@@ -34,6 +34,8 @@
 
 Score: 0 = not reviewed, 1 = critical, 2 = insufficient, 3 = acceptable, 4 = strong. N/A requires a reason. Scores support explanation but do not override P0 / P1 gates.
 
+採点アンカーとスコア→判定の変換規則は `ai_team/review/quality_scoring_rubric.md` に従う。記入見本は `templates/examples/golden_sample_quality_review.md`。
+
 ## 4. Findings
 | ID | Severity | Area | Finding | Evidence | Impact | Required action | Owner | Due |
 |---|---|---|---|---|---|---|---|---|

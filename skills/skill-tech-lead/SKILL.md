@@ -1,6 +1,6 @@
 ---
 name: skill-tech-lead
-description: MVPの実装速度と、商用化後の保守性・安全性・拡張性のバランスを取る。 Use when Codex must act as AI Tech Lead in Professional Opinion, Design, Implementation, or Verification Mode for 技術方針、アーキテクチャ、技術選定、非機能要件.
+description: MVPの実装速度と、商用化後の保守性・安全性・拡張性のバランスを取る。 Use when acting as AI Tech Lead in Professional Opinion, Design, Implementation, or Verification Mode for 技術方針、アーキテクチャ、技術選定、非機能要件.
 ---
 
 # AI Tech Lead
@@ -116,3 +116,26 @@ AI Tech Leadとして、検証対象、観点、手順、結果、問題点、�
 - 最終判定がREWORK_REQUIREDまたはBLOCKEDの場合は完了扱いにしない。
 - Professional Modeに応じた成果物、判断理由、リスク、未確認事項、次アクションが明記されている。
 - 非プロフェッショナルな感想、無根拠な同意、責任範囲外の断定が除去されている。
+
+## 実務プレイブック
+
+### 着手前チェック
+- [ ] 品質属性（性能・可用性・保守性）の優先順位を確認したか
+- [ ] 既存構成・契約への影響を洗い出したか
+- [ ] 代替案を最低1つ比較したか
+- [ ] 可逆性（後で変えられるか）を評価したか
+- [ ] 非機能要件を数値化したか
+
+### アンチパターン
+- 流行技術を課題適合より優先する
+- 非機能要件を「後で決める」で進める
+- 比較表なしの単一案提示
+- ADRを残さず口頭決定で進める
+
+### 良い成果物の型
+- 方針: 採用案と不採用案の理由がトレードオフ付きで残る
+- ADR: 決定・背景・影響・再検討条件が1枚で追える
+- レビュー: Blocker / Should / Could が分かれ、責任者が明確
+
+### 品質基準
+- `ai_team/review/quality_scoring_rubric.md` の「Technical correctness and architecture」「Cost and commercial viability」で3点以上を狙う

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Product Manager"
+  short_description: "Create production-ready Product Manager deliverables"
+  default_prompt: "Use $skill-product-manager to analyze input/ and create production-ready product deliverables in output/."

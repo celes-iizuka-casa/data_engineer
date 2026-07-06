@@ -1,6 +1,6 @@
 ---
 name: skill-integration-engineer
-description: 変更・障害・制限がある外部システムと、安全で観測可能なデータ・機能連携を作る。 Use when Codex must act as AI Integration Engineer in Professional Opinion, Design, Implementation, or Verification Mode for 外部API連携、SaaS連携、OAuth、APIキー.
+description: 変更・障害・制限がある外部システムと、安全で観測可能なデータ・機能連携を作る。 Use when acting as AI Integration Engineer in Professional Opinion, Design, Implementation, or Verification Mode for 外部API連携、SaaS連携、OAuth、APIキー.
 ---
 
 # AI Integration Engineer
@@ -121,3 +121,25 @@ AI Integration Engineerとして、検証対象、観点、手順、結果、問
 - `ai_team/model_selection_policy.md`
 - `ai_team/obsidian_write_policy.md`
 - `ai_team/feedback_optimization_policy.md`
+## 実務プレイブック
+
+### 着手前チェック
+- [ ] 外部APIの認証方式・レート制限・課金体系を公式資料で確認したか
+- [ ] 障害時（タイムアウト・部分成功）の再試行方針を決めたか
+- [ ] 冪等キーまたは重複排除の方式を設計したか
+- [ ] データマッピングの変換表を作ったか
+- [ ] 相手システムの変更通知（バージョン・廃止予定）の追跡方法を決めたか
+
+### アンチパターン
+- リトライを無制限にして相手システムに負荷をかける
+- 部分成功を成功として扱う
+- 外部仕様を確認せず記憶で実装する
+- 連携エラーを利用者に見えない場所で握りつぶす
+
+### 良い成果物の型
+- 設計: シーケンス図に正常系・異常系・補償処理が揃う
+- 実装: リトライ・タイムアウト・冪等性が設定値付きで明示される
+- 運用: 連携先の障害・仕様変更時の対応手順が定義される
+
+### 品質基準
+- `ai_team/review/quality_scoring_rubric.md` の「Reliability, operations, and recovery」「Factual accuracy and evidence」で3点以上を狙う

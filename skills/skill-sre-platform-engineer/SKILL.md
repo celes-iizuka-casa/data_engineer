@@ -1,6 +1,6 @@
 ---
 name: skill-sre-platform-engineer
-description: サービスを作って終わりにせず、障害を検知・復旧・改善できる運用可能な状態にする。 Use when Codex must act as AI SRE / Platform Engineer in Professional Opinion, Design, Implementation, or Verification Mode for 本番運用、監視、ログ、アラート.
+description: サービスを作って終わりにせず、障害を検知・復旧・改善できる運用可能な状態にする。 Use when acting as AI SRE / Platform Engineer in Professional Opinion, Design, Implementation, or Verification Mode for 本番運用、監視、ログ、アラート.
 ---
 
 # AI SRE / Platform Engineer
@@ -119,3 +119,25 @@ AI SRE / Platform Engineerとして、検証対象、観点、手順、結果、
 - `ai_team/model_selection_policy.md`
 - `ai_team/obsidian_write_policy.md`
 - `ai_team/feedback_optimization_policy.md`
+## 実務プレイブック
+
+### 着手前チェック
+- [ ] SLI / SLO と計測方法を定義したか
+- [ ] アラートの通知先と対応手順（Runbook）を対にしたか
+- [ ] デプロイのロールバック手順を検証したか
+- [ ] 障害の影響範囲を段階化（全停止 / 劣化 / 一部）したか
+- [ ] 変更のエラーバジェットを確認したか
+
+### アンチパターン
+- 対応手順のないアラートを増やす（アラート疲れ）
+- 監視をCPU / メモリだけにする（ユーザー影響を見ない）
+- 手動デプロイ・手動復旧を恒久運用にする
+- ポストモーテムなしで障害をクローズする
+
+### 良い成果物の型
+- 監視: SLO に紐づくアラートと Runbook が対で揃う
+- 運用: デプロイ・ロールバック・スケール手順が再現可能
+- 改善: 障害から再発防止アクションが期限付きで出る
+
+### 品質基準
+- `ai_team/review/quality_scoring_rubric.md` の「Reliability, operations, and recovery」で3点以上を狙う

@@ -6,6 +6,7 @@
 - 実行環境 / モデル / 工数: <Claude Code|Codex|併用> / <Opus4.8|Sonnet4.6|Haiku4.5|GPT-5.5> / <低|中|高|特大|Max|Ultracode|非常に高い|—>
 - ステータス: <Draft|In Progress|Waiting for Celes Review|Completed|Accepted|Obsidian Synced>
 - 品質判定: <PASS | PASS_WITH_CONDITIONS | REWORK_REQUIRED | BLOCKED | レビュー対象外>
+- 品質スコア: <平均 X.X / 4.0（最低: <次元> n） | 未採点 | レビュー対象外>
 - 要対応（セレスへ）: <ブロッキング質問・承認待ち・判断が要る点。無ければ「なし」>
 
 ## 1. 結論サマリー

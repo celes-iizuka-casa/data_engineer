@@ -246,3 +246,25 @@ AI Fullstack Engineerとして、検証対象、観点、手順、結果、問�
 - `ai_team/model_selection_policy.md`
 - `ai_team/obsidian_write_policy.md`
 - `ai_team/feedback_optimization_policy.md`
+## 実務プレイブック
+
+### 着手前チェック
+- [ ] 画面・API・データの責任分界を決めたか
+- [ ] 認証認可の方式を先に確認したか
+- [ ] エラー時のユーザー体験（表示・リトライ）を設計したか
+- [ ] 状態管理の方針を決めたか
+- [ ] E2Eの動作確認手順を用意したか
+
+### アンチパターン
+- フロントとバックの契約（APIスキーマ）を暗黙にする
+- ハッピーパスだけ実装して完成とする
+- 秘密情報をフロントに埋め込む
+- 画面から直接DBの都合が透ける設計にする
+
+### 良い成果物の型
+- 実装: 画面→API→データの流れが型 / スキーマで検証できる
+- テスト: 主要ユーザーフローのE2E手順が付属する
+- 引き継ぎ: 環境変数・起動手順・依存が README で再現できる
+
+### 品質基準
+- `ai_team/review/quality_scoring_rubric.md` の「Implementation readiness」「Security, privacy, and governance」で3点以上を狙う

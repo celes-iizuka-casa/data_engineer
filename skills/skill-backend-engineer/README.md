@@ -255,3 +255,25 @@ AI Backend Engineerとして、検証対象、観点、手順、結果、問題�
 - `ai_team/model_selection_policy.md`
 - `ai_team/obsidian_write_policy.md`
 - `ai_team/feedback_optimization_policy.md`
+## 実務プレイブック
+
+### 着手前チェック
+- [ ] API契約（入出力・エラー形式・バージョニング）を先に定義したか
+- [ ] 認証認可・レート制限の方式を確認したか
+- [ ] トランザクション境界と整合性要件を決めたか
+- [ ] 冪等性が必要な操作を特定したか
+- [ ] ログ・監視で追跡できる設計にしたか
+
+### アンチパターン
+- エラーを握りつぶして200を返す
+- N+1クエリを放置する
+- 秘密情報をコード・ログに出す
+- 破壊的API変更を通知なしに行う
+
+### 良い成果物の型
+- API: 契約が明文化され、エラー形式が統一されている
+- 実装: 入力検証・エラー処理・ログが全エンドポイントで一貫している
+- テスト: 正常系・異常系・境界値がカバーされる
+
+### 品質基準
+- `ai_team/review/quality_scoring_rubric.md` の「Technical correctness and architecture」「Reliability, operations, and recovery」で3点以上を狙う

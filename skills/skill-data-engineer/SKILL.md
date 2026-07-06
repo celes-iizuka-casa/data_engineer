@@ -1,6 +1,6 @@
 ---
 name: skill-data-engineer
-description: 後続のBI、AI、RAG、分析チームが安全に再利用できるデータプロダクトを作る。 Use when Codex must act as AI Data Engineer in Professional Opinion, Design, Implementation, or Verification Mode for データ取得、外部データ連携、ETL / ELT、SQL変換.
+description: 後続のBI、AI、RAG、分析チームが安全に再利用できるデータプロダクトを作る。 Use when acting as AI Data Engineer in Professional Opinion, Design, Implementation, or Verification Mode for データ取得、外部データ連携、ETL / ELT、SQL変換、DWHテーブル設計、差分更新、データ品質.
 ---
 
 # AI Data Engineer
@@ -123,3 +123,29 @@ AI Data Engineerとして、検証対象、観点、手順、結果、問題点�
 - `ai_team/model_selection_policy.md`
 - `ai_team/obsidian_write_policy.md`
 - `ai_team/feedback_optimization_policy.md`
+
+## 実務プレイブック
+
+### 着手前チェック
+- [ ] ソースの主キー・粒度・タイムゾーンを実データで確認したか（想定で進めない）
+- [ ] 増分方式（追記 / 更新 / 削除検知）と遅延データの扱いを決めたか
+- [ ] 履歴要件（SCD / スナップショット / 上書き可）を依頼者に確認したか
+- [ ] 再実行・バックフィルをどの層から可能にするか決めたか
+- [ ] 個人情報・機密カラムの有無とマスキング要否を確認したか
+- [ ] 利用側（BI / AI / RAG）の想定クエリパターンを1つ以上確認したか
+
+### アンチパターン
+- SELECT * を下流契約にする（スキーマ変更で全下流が壊れる）
+- 生データを変換後に破棄する（再処理不能になる）
+- タイムゾーン未定義の timestamp を混在させる（JST / UTC 事故の典型）
+- 品質チェックを WARN のみにして黙って通す（欠損が本番で発覚する）
+- 冪等でない INSERT を再実行手順に含める（二重取り込み）
+
+### 良い成果物の型
+- 設計: 層構成（Raw/Staging/Core/Mart）、粒度、主キー、増分方式、削除検知、再実行手順が1枚で追える
+- 実装: DDL / SQL に加えて、品質テスト（件数・一意性・参照整合）と再実行手順が付属する
+- 検証: 件数リコンシリエーション（ソース vs 取込）と境界日付（月初・年末・DST）の確認結果を明示する
+
+### 品質基準
+- `ai_team/review/quality_scoring_rubric.md` の「Data quality and data contract」で3点以上を狙う
+- 見本: `templates/examples/golden_sample_output.md`

@@ -57,7 +57,7 @@ python3 -m pytest tests/test_generate_spark_view_artifacts.py::test_view_rewrite
 │   └── settings.json              # Hooks (e.g., Stop hook reminder)
 │
 ├── ai_team/                       # Policies & role definitions
-│   ├── roles/                     # 18 role definitions (data_engineer.md, etc.)
+│   ├── roles/                     # 19 role definitions (data_engineer.md, product_manager.md, etc.)
 │   ├── professional_standards.md  # What "professional" means, what output to exclude
 │   ├── role_scope_matrix.md       # Which roles handle which request types
 │   ├── request_mode_policy.md     # How to classify requests into Professional Modes
@@ -65,7 +65,7 @@ python3 -m pytest tests/test_generate_spark_view_artifacts.py::test_view_rewrite
 │   ├── professional_response_templates.md  # Required sections per mode
 │   └── obsidian_write_policy.md   # When to sync deliverables to second brain
 │
-├── skills/                        # 18 specialized skill definitions
+├── skills/                        # 19 specialized skill definitions
 │   ├── skill-<role-name>/         # Each skill guides how that role operates
 │   └── README.md                  # Skill index & activation rules
 │

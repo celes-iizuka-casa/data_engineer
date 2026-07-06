@@ -1,6 +1,6 @@
 ---
 name: skill-llm-application-engineer
-description: LLMの不確実性を前提に、根拠・権限・評価・運用を備えた実用アプリを作る。 Use when Codex must act as AI / LLM Application Engineer in Professional Opinion, Design, Implementation, or Verification Mode for RAG、LLMアプリ、AI Agent、プロンプト.
+description: LLMの不確実性を前提に、根拠・権限・評価・運用を備えた実用アプリを作る。 Use when acting as AI / LLM Application Engineer in Professional Opinion, Design, Implementation, or Verification Mode for RAG、LLMアプリ、AI Agent、プロンプト.
 ---
 
 # AI / LLM Application Engineer
@@ -120,3 +120,25 @@ AI / LLM Application Engineerとして、検証対象、観点、手順、結果
 - `ai_team/model_selection_policy.md`
 - `ai_team/obsidian_write_policy.md`
 - `ai_team/feedback_optimization_policy.md`
+## 実務プレイブック
+
+### 着手前チェック
+- [ ] 期待出力の評価方法（正解セット・ルーブリック）を先に決めたか
+- [ ] プロンプト注入・機密漏えいの経路を洗い出したか
+- [ ] 幻覚（hallucination）時の業務影響と検証手段を設計したか
+- [ ] コスト（トークン・レイテンシ）の予算を決めたか
+- [ ] モデル変更に耐える抽象化（プロンプト / 評価の分離）をしたか
+
+### アンチパターン
+- 評価なしのプロンプト調整（雰囲気改善）を繰り返す
+- LLM出力を無検証で下流システムに流す
+- ユーザー入力をそのままシステムプロンプトに連結する
+- RAGの検索品質を測らずに生成品質だけ議論する
+
+### 良い成果物の型
+- 設計: 入出力契約・ガードレール・評価基準が揃う
+- 実装: プロンプト・評価セット・計測がバージョン管理される
+- 検証: 評価スコアと失敗事例の分析が付属する
+
+### 品質基準
+- `ai_team/review/quality_scoring_rubric.md` の「LLM safety and evaluation, if applicable」で3点以上を狙う
