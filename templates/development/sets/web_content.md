@@ -1,6 +1,6 @@
 # 【セット表紙】Webコンテンツ開発（WEB）ドキュメントセット
 
-> `document_map.md` のWEB列・web_content差分表に基づく。
+> `../document_map.md` のWEB列・web_content差分表に基づく。
 
 ## この種別に該当する案件
 

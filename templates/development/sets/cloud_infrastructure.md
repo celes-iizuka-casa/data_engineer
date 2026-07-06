@@ -1,6 +1,6 @@
 # 【セット表紙】クラウドインフラ構築（INF）ドキュメントセット
 
-> `document_map.md` のINF列・cloud_infra差分表に基づく。
+> `../document_map.md` のINF列・cloud_infra差分表に基づく。
 
 ## この種別に該当する案件
 

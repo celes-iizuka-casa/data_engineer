@@ -21,7 +21,7 @@
 
 ## 共通コア文書 × 種別マトリクス
 
-テンプレートは `common/`（Phase 2作成予定）または既存 `templates/` 直下。
+テンプレートは `common/` または既存 `templates/` 直下。
 
 | 工程 | 文書 | テンプレート | 状態 | DP | AP | SY | APP | WEB | AI | INT | INF | OPS | POC |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -51,7 +51,7 @@
 | 移行 | データ移行計画書 | `common/data_migration_plan_template.md` | 済 | ○※5 | ○※5 | ○ | ○ | △ | △ | △ | △ | △ | − |
 | 運用 | 運用設計書 | `common/operation_design_template.md` | 済 | ◎ | ◎ | ◎ | ◎ | ○ | ◎ | ◎ | ◎ | ◎ | − |
 | 運用 | 監視・アラート設計書 | `common/monitoring_design_template.md` | 済 | ◎ | ◎ | ◎ | ◎ | ○ | ◎ | ○ | ◎ | ◎ | − |
-| 運用 | SLO/SLA定義書 | `common/slo_sla_definition_template.md` | 済 | ○ | ○ | ○ | ○ | △ | ○ | ○ | ○ | ◎ | − |
+| 運用 | SLO/SLA定義書 | `common/slo_sla_definition_template.md` | 済 | ○ | ○ | ○ | ○ | △ | ○ | ○ | ◎ | ◎ | − |
 | 運用 | Runbook | `../runbook_template.md` | 既存 | ◎ | ◎ | ◎ | ◎ | △ | ◎ | ○ | ◎ | ◎ | − |
 | 運用 | 障害対応・ポストモーテム | `common/incident_postmortem_template.md` | 済 | ○ | ○ | ○ | ○ | △ | ○ | ○ | ○ | ◎ | − |
 

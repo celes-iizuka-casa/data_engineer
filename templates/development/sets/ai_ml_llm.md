@@ -1,6 +1,6 @@
 # 【セット表紙】AI/ML・LLMアプリ開発（AI）ドキュメントセット
 
-> `document_map.md` のAI列・ai_ml_llm差分表に基づく。AIエージェント開発もここに含む。
+> `../document_map.md` のAI列・ai_ml_llm差分表に基づく。AIエージェント開発もここに含む。
 
 ## この種別に該当する案件
 

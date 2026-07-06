@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import re
 import subprocess
 from pathlib import Path
 
@@ -420,6 +421,141 @@ def validate_skills(validation: Validation) -> None:
                 validation.ok(f"Official validator passed: {skill}")
 
 
+DEV_TEMPLATES_DIR = "templates/development"
+DEV_TEMPLATE_LINK = re.compile(r"`([^`\s]+\.md)`")
+DEV_MATRIX_TYPES = ["DP", "AP", "SY", "APP", "WEB", "AI", "INT", "INF", "OPS", "POC"]
+DEV_TYPE_COVERS = {
+    "DP": "data_platform.md",
+    "AP": "analytics_platform.md",
+    "SY": "system_development.md",
+    "APP": "application_development.md",
+    "WEB": "web_content.md",
+    "AI": "ai_ml_llm.md",
+    "INT": "integration.md",
+    "INF": "cloud_infrastructure.md",
+    "OPS": "maintenance.md",
+    "POC": "poc.md",
+}
+
+
+def validate_development_templates(validation: Validation) -> None:
+    """Lock document_map.md and the actual template files to each other.
+
+    Contract: every backtick .md reference in document_map.md and the set
+    covers must resolve to a real file, and every template file under
+    templates/development/ must be indexed by document_map.md or a set cover.
+    """
+    base = ROOT / DEV_TEMPLATES_DIR
+    doc_map = validation.require_file(f"{DEV_TEMPLATES_DIR}/document_map.md")
+    validation.require_file(f"{DEV_TEMPLATES_DIR}/development_doc_standards.md")
+    validation.require_file(f"{DEV_TEMPLATES_DIR}/sets/set_cover_template.md")
+    if doc_map is None:
+        return
+
+    def check_links(source: Path, relative_to: Path, label: str) -> None:
+        broken = [
+            link
+            for link in DEV_TEMPLATE_LINK.findall(
+                source.read_text(encoding="utf-8")
+            )
+            if not (relative_to / link).resolve().is_file()
+        ]
+        for link in broken:
+            validation.fail(f"Broken template reference in {label}: {link}")
+        if not broken:
+            validation.ok(f"Template references resolve: {label}")
+
+    check_links(doc_map, base, f"{DEV_TEMPLATES_DIR}/document_map.md")
+
+    index_text = doc_map.read_text(encoding="utf-8")
+    sets_dir = base / "sets"
+    for cover in sorted(sets_dir.glob("*.md")):
+        if cover.name == "set_cover_template.md":
+            continue
+        if f"sets/{cover.name}" not in index_text:
+            validation.fail(
+                f"Set cover not listed in document_map.md: sets/{cover.name}"
+            )
+        else:
+            validation.ok(f"Set cover indexed in document_map.md: {cover.name}")
+        check_links(cover, sets_dir, f"{DEV_TEMPLATES_DIR}/sets/{cover.name}")
+        index_text += cover.read_text(encoding="utf-8")
+
+    for template_file in sorted(base.rglob("*_template.md")):
+        rel = template_file.relative_to(base).as_posix()
+        if rel == "sets/set_cover_template.md":
+            continue
+        if template_file.name not in index_text:
+            validation.fail(
+                "Template not indexed by document_map.md or a set cover: "
+                f"{DEV_TEMPLATES_DIR}/{rel}"
+            )
+        else:
+            validation.ok(f"Development template indexed: {rel}")
+
+    # Matrix <-> set cover consistency: every ◎ document per type must be
+    # listed in that type's set cover, and any listed mark must match the
+    # matrix (document_map.md is the source of truth).
+    matrix: dict[Path, dict[str, str]] = {}
+    for line in doc_map.read_text(encoding="utf-8").splitlines():
+        if not line.startswith("|"):
+            continue
+        cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
+        if len(cells) != 4 + len(DEV_MATRIX_TYPES):
+            continue
+        link = DEV_TEMPLATE_LINK.search(cells[2])
+        if link is None:
+            continue
+        matrix[(base / link.group(1)).resolve()] = {
+            type_id: cells[4 + idx][:1]
+            for idx, type_id in enumerate(DEV_MATRIX_TYPES)
+        }
+    if len(matrix) < 20:
+        validation.fail(
+            f"document_map.md matrix parse found only {len(matrix)} rows"
+        )
+    else:
+        validation.ok(f"document_map.md matrix parsed: {len(matrix)} rows")
+
+    for type_id, cover_name in DEV_TYPE_COVERS.items():
+        cover_path = sets_dir / cover_name
+        if not cover_path.is_file():
+            continue  # missing covers are reported by the set-cover loop
+        cover_marks: dict[Path, str] = {}
+        for line in cover_path.read_text(encoding="utf-8").splitlines():
+            if not line.startswith("|"):
+                continue
+            cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
+            if len(cells) < 6:
+                continue
+            link = DEV_TEMPLATE_LINK.search(cells[3])
+            if link is None:
+                continue
+            cover_marks[(sets_dir / link.group(1)).resolve()] = (
+                cells[4][:1] if cells[4] else ""
+            )
+        issues = 0
+        for target, marks in matrix.items():
+            if marks.get(type_id) == "◎" and target not in cover_marks:
+                validation.fail(
+                    f"Required (◎) document missing from sets/{cover_name}: "
+                    f"{target.name} (type {type_id})"
+                )
+                issues += 1
+        for target, mark in cover_marks.items():
+            expected = matrix.get(target, {}).get(type_id, "")
+            if expected and mark and mark != expected:
+                validation.fail(
+                    f"Mark mismatch in sets/{cover_name} for {target.name}: "
+                    f"cover={mark} document_map={expected}"
+                )
+                issues += 1
+        if not issues:
+            validation.ok(
+                f"Set cover consistent with document_map matrix: {cover_name}"
+            )
+
+
 def validate_repository() -> Validation:
     validation = Validation()
 
@@ -458,6 +594,8 @@ def validate_repository() -> Validation:
 
     for template in TEMPLATES:
         validation.require_file(f"templates/{template}")
+
+    validate_development_templates(validation)
 
     validate_yaml(validation, "skills/index.yaml")
     validate_skills(validation)

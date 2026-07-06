@@ -1,6 +1,6 @@
 # 【セット表紙】アプリケーション開発（APP）ドキュメントセット
 
-> `document_map.md` のAPP列・system_app差分表に基づく。
+> `../document_map.md` のAPP列・system_app差分表に基づく。
 
 ## この種別に該当する案件
 

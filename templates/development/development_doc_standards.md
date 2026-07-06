@@ -55,4 +55,4 @@ templates/development/
 ## 7. テンプレート自体の変更管理
 
 - テンプレート追加・変更時は `document_map.md` と該当セット表紙を同時更新する
-- Phase 4 以降、`tools/validate_repository.py` が本ディレクトリの構成（document_map と実ファイルの整合）を契約としてロックする予定
+- `tools/validate_repository.py` が本ディレクトリの構成を契約としてロックしている: (1) document_map.md・各セット表紙内のバッククォート参照パスが実在すること、(2) 本ディレクトリ配下の全 `*_template.md` が document_map.md またはいずれかのセット表紙から参照されていること、(3) 各セット表紙が document_map.md の対象種別表に載っていること。違反すると `python3 tools/validate_repository.py` が失敗する
