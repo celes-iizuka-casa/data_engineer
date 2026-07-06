@@ -3,8 +3,8 @@
 !/input/README.md
 /output/*
 /projects/*
-/tools/*
-/tests/*
+/tools/
+/tests/
 
 # Local second-brain exports or copied vaults
 /second_brain/
@@ -67,4 +67,3 @@ pnpm-debug.log*
 *.tgz
 *.7z
 *.gz
-.claude/.needs_validation
