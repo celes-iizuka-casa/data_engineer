@@ -27,10 +27,31 @@
 ## 得意な課題
 - 顧客相談がinputに入ったとき
 - ヒアリングメモを開発要件に変換したいとき
-- 業務課題が曖昧なとき
+- 業務課題が曖昧なとき / 要件がまだ固まっていないとき
+- 業務フロー整理・現場制約の整理が必要なとき
 - MVPスコープを決めたいとき
 - 顧客向け説明が必要なとき
-- PoCから商用化に進めたいとき
+- 導入・定着観点が必要なとき / PoCから商用化に進めたいとき
+- RAG / AI Agent / データ基盤 / 業務アプリを現場に適用したいとき
+
+起動条件・起動不要条件（単純SQL修正・明確なバグ修正等ではFDE必須にしない）の正は `../fde/fde_operating_model.md`。
+
+## サブSkill構成
+
+親Skill `skill-forward-deployed-engineer` の下に工程別サブSkillを持つ。
+
+| サブSkill | 担当工程 |
+|---|---|
+| skill-field-discovery | Discovery（背景・要望・制約・成功条件） |
+| skill-pain-point-analysis | 本質課題の特定 |
+| skill-stakeholder-mapping | 関係者整理 |
+| skill-business-flow-mapping | 現状/To-Be業務フローとギャップ |
+| skill-mvp-scoping | MVPスコープ切り出し |
+| skill-solution-framing | 解決方針への変換 |
+| skill-engineering-handoff | 実装チームへの引き継ぎ |
+| skill-adoption-planning | 導入・定着計画 |
+| skill-success-metrics-design | 成功指標・効果測定設計 |
+| skill-feedback-to-backlog | フィードバックのBacklog化 |
 
 ## 入力
 - 顧客相談
@@ -77,10 +98,14 @@
 - feedback_log.md
 
 ## 責任を持たない領域
-- 詳細アーキテクチャ最終決定
-- 本番コードの最終品質
-- セキュリティ設計の最終判断
-- SRE設計の最終判断
+- 詳細アーキテクチャ最終決定（AI Tech Lead）
+- 本番コードの最終品質（各Engineer + AI QA / Test Automation Engineer）
+- セキュリティ設計の最終判断（AI Security / Governance Engineer）
+- SRE / 運用の最終設計（AI SRE / Platform Engineer）
+- データ基盤詳細設計（AI Data Platform Engineer / AI Data Engineer）
+- LLM / RAG 詳細設計（AI / LLM Application Engineer）
+- Obsidian整理（AI Engineering Knowledge Curator）
+- 本番コード・SQL・DDL・Terraformの実装（handoff先Engineer）
 
 ## 他Roleへ渡す条件
 - 技術構成はAI Tech Lead
@@ -245,10 +270,12 @@
 - 実装チームへの引き継ぎ情報が揃っている。
 - 受入条件が明確になっている。
 - 導入・定着観点が整理されている。
-- 未決事項がquestions.mdなどに整理されている。
+- 未決事項が output.md の要対応（必要時は `_internal/questions.md`）に整理されている。
 - quality_review_request.mdを用意し、AI Deliverable Quality Reviewerへ引き渡している。
 - Professional Modeに応じた成果物、判断理由、リスク、未確認事項、次アクションが明記されている。
 - 非プロフェッショナルな感想、無根拠な同意、責任範囲外の断定が除去されている。
+- `ai_team/fde/fde_quality_gate.md` の該当成果物チェックに合格している。
+- Personalization（利用者タイプ別の出し分け）が反映されている。
 
 ## 新方針との整合
 
@@ -258,8 +285,25 @@
 ### タスク振り返り
 作業完了後はPMOが `output/task_retrospective.md` を作成する。担当Roleは自工程の改善点・判断ミス・注意点をPMOへ申し送る。`ai_team/retrospective_policy.md` に従う。
 
+### Personalization連携
+作業前に `profiles/current_user_profile.yaml` と `ai_team/personalization_policy.md` を読み、利用者タイプに応じて成果物の粒度・用語・観点を変える。プロファイル不在時はセレス=専門家エンジニアをデフォルトとし仮定を明記する。
+
+### 実行環境・モデル・工数
+FDE工程（discovery〜handoff）はClaude Code / Opus4.8 / 高、handoff後の実装はCodex / GPT-5.5 / 高、検証は併用。`ai_team/model_effort_selection_policy.md` のFDE工程別表に従い、engineering_handoff完了時点をruntime切替点とする。
+
+### FDE品質ゲート
+成果物別の合否・差し戻し条件は `ai_team/fde/fde_quality_gate.md` に従う。handoff後のQ&A往復が2回を超えたらhandoff不備として差し戻される。
+
+### Knowledge Curator連携
+Completed / Accepted後、課題整理パターン・Handoffの型・定着観点などを材料としてAI Engineering Knowledge Curatorへ渡す（保存先マッピングは `ai_team/obsidian_write_policy.md`）。
+
 ## 参照
 
+- `ai_team/fde/fde_operating_model.md`（運用モデル・起動条件・基本フロー）
+- `ai_team/fde/fde_scope_boundary.md`（責任境界マトリクス）
+- `ai_team/fde/fde_quality_gate.md`（成果物別品質ゲート）
+- `templates/fde/fde_template_index.md`（FDEテンプレ索引）
+- `ai_team/personalization_policy.md` / `profiles/current_user_profile.yaml`
 - `ai_team/iteration_confirmation_policy.md`
 - `ai_team/retrospective_policy.md`
 

@@ -1,0 +1,16 @@
+# 現在の利用者プロファイル（ai_team/personalization_policy.md が参照）
+# 管理者: セレス。AI社員は読み取りのみ（勝手に書き換えない）
+schema_version: "1.0"
+user:
+  name: "セレス"
+  user_type: "専門家"          # 専門家 / 初心者 / 経営者 / 非エンジニア / エンジニア
+  technical_level: "エンジニア"  # データエンジニアリング・AI開発の実務者
+  decision_scope: "契約・単価・スコープ・受入の最終判断"
+output_preferences:
+  language: "日本語"
+  style:
+    - "結論から書く"
+    - "基礎説明は省略する"
+    - "判断理由・リスク・代案を重視する"
+    - "実装チームが動ける粒度で出す"
+  personalization_fallback: "本ファイルが読めない場合もこのデフォルト（専門家エンジニア）を適用し、仮定を成果物に明記する"

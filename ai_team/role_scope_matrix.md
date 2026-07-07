@@ -29,3 +29,5 @@
 - **Product Manager**: 要件確定以降の最終版と更新責任を所有する。
 - Product Managerが起用されていない案件では、従来どおりFDEが最終責任を持つ。
 - 引き継ぎは `handoff_policy.md` の「FDE → Product Manager」経路に従う。
+
+FDEは親Skill `skill-forward-deployed-engineer` + サブSkill 10本（field-discovery / business-flow-mapping / stakeholder-mapping / pain-point-analysis / mvp-scoping / solution-framing / engineering-handoff / adoption-planning / success-metrics-design / feedback-to-backlog）で構成される。責任境界の詳細は `fde/fde_scope_boundary.md` の責任境界マトリクスを正とする。

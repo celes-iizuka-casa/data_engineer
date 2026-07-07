@@ -66,6 +66,17 @@
 12. source_mapを作成する
 13. `output/obsidian_sync_summary.md` を作成する
 
+## FDE知識の保存先マッピング
+
+FDE成果物（Completed / Accepted後）は以下に整理する:
+
+| FDE知識 | 保存先候補 |
+|---|---|
+| 顧客課題整理パターン / Field Discoveryの観点 | `02_Knowledge/fde/` |
+| Business Flow Mappingのパターン / MVPスコープの切り方 / Engineering Handoffの型 / 導入・定着の観点 / Success Metricsの設計パターン / Feedback Loopの改善パターン | `03_Patterns/fde_patterns/` |
+| FDEテンプレートの再利用形 | `06_Templates/fde/` |
+| MOC更新 | `00_MOC/engineering_moc.md` |
+
 ## 参照
 
 - `ai_team/roles/engineering_knowledge_curator.md`

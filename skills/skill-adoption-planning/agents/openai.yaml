@@ -1,0 +1,4 @@
+interface:
+  display_name: "Adoption Planning"
+  short_description: "Adoption planning for rollout training and operations"
+  default_prompt: "Use $skill-adoption-planning to design rollout, training, and operation plans that prevent build-and-forget in output/."

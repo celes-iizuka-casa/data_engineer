@@ -55,6 +55,7 @@
 
 ## 新方針との整合
 
+- **FDEサブSkill**: 本ワークフローの中核工程は `skill-mvp-scoping` が実行し、判断基準は `../fde/fde_mvp_scoping_guide.md` を併用する（最低ライン4種・仮説1つの原則）
 - **繰り返し作業**: ユーザーストーリー・受入条件が3件以上の場合、`iteration_confirmation_policy.md` に従い代表例を先に確認する
 - **モデル選定**: 依頼解析・方針策定・スコープ定義の各工程で `model_selection_policy.md` に従いモデルを使い分ける
 - **振り返り**: MVPスコープ確定後に `retrospective_policy.md` に従い `output/task_retrospective.md` を作成する
@@ -66,3 +67,4 @@
 - `ai_team/model_selection_policy.md`
 - `ai_team/retrospective_policy.md`
 - `ai_team/obsidian_write_policy.md`
+- `ai_team/fde/fde_mvp_scoping_guide.md`

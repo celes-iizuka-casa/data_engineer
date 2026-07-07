@@ -16,6 +16,9 @@
 - `role_scope_matrix.md`
 - `request_mode_policy.md`
 - `handoff_policy.md`
+- `personalization_policy.md`
+- `fde/fde_operating_model.md`（FDE運用モデル・起動条件）
+- `fde/fde_quality_gate.md`
 - `professional_response_templates.md`
 - `review/professional_quality_gate.md`
 - `iteration_confirmation_policy.md`

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Feedback to Backlog"
+  short_description: "Feedback triage into an improvement backlog"
+  default_prompt: "Use $skill-feedback-to-backlog to classify field feedback and produce improvement_backlog.md in output/."

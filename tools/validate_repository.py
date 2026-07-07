@@ -41,6 +41,17 @@ SKILLS = [
     "skill-integration-engineer",
     "skill-product-manager",
     "skill-ml-engineer",
+    # FDE sub-skills (parent: skill-forward-deployed-engineer)
+    "skill-field-discovery",
+    "skill-business-flow-mapping",
+    "skill-stakeholder-mapping",
+    "skill-pain-point-analysis",
+    "skill-mvp-scoping",
+    "skill-solution-framing",
+    "skill-engineering-handoff",
+    "skill-adoption-planning",
+    "skill-success-metrics-design",
+    "skill-feedback-to-backlog",
 ]
 
 ROLES = [
@@ -117,6 +128,11 @@ TEMPLATES = [
     "professional_verification_template.md",
     "role_handoff_template.md",
     "gap_analysis_template.md",
+    "fde/fde_template_index.md",
+    "fde/business_flow_template.md",
+    "fde/pain_point_analysis_template.md",
+    "fde/solution_framing_template.md",
+    "fde/customer_explanation_template.md",
     "examples/golden_sample_output.md",
     "examples/golden_sample_quality_review.md",
 ]
@@ -556,6 +572,106 @@ def validate_development_templates(validation: Validation) -> None:
             )
 
 
+FDE_DOCS_DIR = "ai_team/fde"
+FDE_DOC_HEADINGS = {
+    "fde_operating_model.md": [
+        "## FDEとは何か", "## FDEの目的", "## FDEが解く課題", "## FDEの基本フロー",
+        "## FDEの起動条件", "## FDEが出す成果物", "## FDEが連携するRole",
+        "## FDEがやること", "## FDEがやらないこと", "## FDEの完了条件",
+        "## よくある失敗", "## セレス向け運用上の注意", "## 他利用者向け運用上の注意",
+    ],
+    "fde_scope_boundary.md": [
+        "## FDEの守備範囲", "## FDEが責任を持つ成果物", "## FDEが責任を持たない領域",
+        "## PMOとの違い", "## Tech Leadとの違い", "## Product Managerとの違い",
+        "## Consultantとの違い", "## Solution Architectとの違い",
+        "## Customer Successとの違い", "## Data Engineerとの違い",
+        "## LLM Application Engineerとの違い", "## 他Roleへ引き継ぐ条件",
+        "## 責任境界マトリクス",
+    ],
+    "fde_discovery_checklist.md": [
+        "## 顧客背景", "## 業務背景", "## 表面的な要望", "## 本質課題", "## 利用者",
+        "## 意思決定者", "## 運用者", "## 現状業務フロー", "## 現場の痛み",
+        "## 手作業・属人化", "## データ発生源", "## 既存システム", "## 既存制約",
+        "## セキュリティ・権限", "## 成功条件", "## 受入条件", "## 導入時の懸念",
+        "## 未決事項", "## 次に確認すること",
+    ],
+    "fde_business_flow_mapping_guide.md": [
+        "## 目的", "## 現状業務フローの整理方法", "## To-Be業務フローの整理方法",
+        "## 業務フローで必ず見る観点", "## 手作業の洗い出し", "## データ断絶の洗い出し",
+        "## 承認・確認ポイント", "## 例外処理", "## システム連携ポイント",
+        "## 自動化できる箇所", "## 人間判断を残すべき箇所",
+        "## 業務フローから要件へ変換する方法",
+    ],
+    "fde_mvp_scoping_guide.md": [
+        "## 目的", "## MVPとは何か", "## MVPに含める条件", "## MVPから外す条件",
+        "## PoCでよい条件", "## 商用化前提にすべき条件", "## 初期リリース範囲",
+        "## 将来拡張範囲", "## やらないことリスト", "## 技術負債を避ける考え方",
+        "## 後回しにしてはいけない非機能要件", "## セキュリティ・運用・品質の最低ライン",
+        "## MVPスコープ判断チェックリスト", "## 例",
+    ],
+    "fde_engineering_handoff_guide.md": [
+        "## 目的", "## 引き継ぎが必要なタイミング", "## Tech Leadへ渡す情報",
+        "## Backend Engineerへ渡す情報", "## Frontend Engineerへ渡す情報",
+        "## Data Engineerへ渡す情報", "## Data Platform Engineerへ渡す情報",
+        "## LLM Application Engineerへ渡す情報", "## Integration Engineerへ渡す情報",
+        "## Security Engineerへ渡す情報", "## QA Engineerへ渡す情報",
+        "## SREへ渡す情報", "## Handoffに含めるべき情報",
+        "## Handoffでやってはいけないこと", "## Handoff完了条件",
+    ],
+    "fde_adoption_success_guide.md": [
+        "## 目的", "## 導入計画", "## 利用者整理", "## 利用シーン",
+        "## 初回利用までに必要なこと", "## 教育・説明", "## 運用ルール",
+        "## 定着リスク", "## 定着のための対策", "## 成功指標", "## 効果測定",
+        "## 利用状況の確認", "## 導入後の改善サイクル",
+        "## 作って終わりを防ぐチェックリスト",
+    ],
+    "fde_feedback_loop.md": [
+        "## 目的", "## フィードバックの種類", "## バグ", "## 仕様変更", "## 改善要望",
+        "## 運用課題", "## 教育課題", "## データ品質課題", "## セキュリティ課題",
+        "## 優先順位付け", "## Backlogへの変換方法",
+        "## Tech Lead / PMO / QA への連携", "## 次回改善への反映",
+        "## Knowledge Curatorへの連携",
+    ],
+    "fde_quality_gate.md": [
+        "## 目的", "## FDE成果物の品質基準", "## Discovery品質チェック",
+        "## Business Flow品質チェック", "## MVP Scope品質チェック",
+        "## Engineering Handoff品質チェック", "## Adoption Plan品質チェック",
+        "## Success Metrics品質チェック", "## Feedback Loop品質チェック",
+        "## Personalization反映チェック", "## セキュリティ・運用・データ品質チェック",
+        "## 不合格条件", "## 差し戻し条件", "## 完了条件",
+    ],
+}
+FDE_TEMPLATE_HEADINGS = {
+    "templates/engineering_handoff_template.md": [
+        "## 本質課題", "## 非スコープ", "## 現状業務フロー", "## To-Be業務フロー",
+        "## 成功指標", "## Tech Leadへの依頼", "## Backend Engineerへの依頼",
+        "## Frontend Engineerへの依頼", "## Data Engineerへの依頼",
+        "## Data Platform Engineerへの依頼",
+        "## LLM Application Engineerへの依頼",
+        "## Integration Engineerへの依頼", "## Security Engineerへの依頼",
+        "## QA Engineerへの依頼", "## SREへの依頼",
+    ],
+    "templates/mvp_scope_template.md": [
+        "## 後回しにしてはいけない非機能要件", "## セキュリティ最低ライン",
+        "## 運用最低ライン", "## データ品質最低ライン",
+    ],
+    "templates/field_discovery_template.md": [
+        "## データ発生源", "## セキュリティ・権限", "## 成功条件", "## 受入条件",
+    ],
+}
+
+
+def validate_fde_documents(validation: Validation) -> None:
+    """Lock the FDE operating docs, the personalization files, and the
+    strengthened FDE template sections to the approved contract."""
+    for name, headings in FDE_DOC_HEADINGS.items():
+        validate_headings(validation, f"{FDE_DOCS_DIR}/{name}", headings)
+    for path, headings in FDE_TEMPLATE_HEADINGS.items():
+        validate_headings(validation, path, headings)
+    validation.require_file("ai_team/personalization_policy.md")
+    validate_yaml(validation, "profiles/current_user_profile.yaml")
+
+
 def validate_repository() -> Validation:
     validation = Validation()
 
@@ -596,6 +712,8 @@ def validate_repository() -> Validation:
         validation.require_file(f"templates/{template}")
 
     validate_development_templates(validation)
+
+    validate_fde_documents(validation)
 
     validate_yaml(validation, "skills/index.yaml")
     validate_skills(validation)

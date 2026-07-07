@@ -1,0 +1,4 @@
+interface:
+  display_name: "Success Metrics Design"
+  short_description: "Success metrics design with baseline and measurement"
+  default_prompt: "Use $skill-success-metrics-design to design success metrics with baseline and measurement_plan.md in output/."

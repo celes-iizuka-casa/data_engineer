@@ -1,0 +1,4 @@
+interface:
+  display_name: "MVP Scoping"
+  short_description: "MVP scoping with non-scope and future extensions"
+  default_prompt: "Use $skill-mvp-scoping to carve out a minimal viable scope with non_scope.md and future_extension.md in output/."

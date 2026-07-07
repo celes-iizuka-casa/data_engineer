@@ -1,0 +1,4 @@
+interface:
+  display_name: "Pain Point Analysis"
+  short_description: "Pain point analysis to find the real problem"
+  default_prompt: "Use $skill-pain-point-analysis to separate surface requests from root causes and produce problem_statement.md in output/."

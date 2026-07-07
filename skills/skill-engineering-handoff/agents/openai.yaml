@@ -1,0 +1,4 @@
+interface:
+  display_name: "Engineering Handoff"
+  short_description: "Engineering handoff with role specific requests"
+  default_prompt: "Use $skill-engineering-handoff to convert FDE findings into engineering_handoff.md with role specific requests in output/."

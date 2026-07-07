@@ -23,6 +23,8 @@
 - `ai_team/handoff_policy.md`
 - `ai_team/professional_response_templates.md`
 - `ai_team/review/professional_quality_gate.md`
+- `ai_team/fde/fde_operating_model.md`（顧客・現場案件の入口: FDE運用モデル）
+- `templates/fde/fde_template_index.md`（FDEテンプレ索引）
 
 ## 検証
 ```bash

@@ -66,6 +66,7 @@ effort:
 - 複数SQLの一括修正方針と実装
 - Terraform moduleの設計と実装
 - 大きめのWebアプリ / 業務アプリ開発
+- FDE案件（discovery〜engineering_handoffはClaude Code、handoff後の実装はCodex。切替点はengineering_handoff完了時 — `model_effort_selection_policy.md` のFDE工程別表参照）
 
 推奨分担:
 

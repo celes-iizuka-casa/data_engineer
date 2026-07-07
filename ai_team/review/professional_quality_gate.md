@@ -20,6 +20,7 @@
 - 繰り返し作業の場合、代表例確認が完了しているか。
 - 作業工程ごとにモデルが適切に使い分けられているか。
 - 振り返り（`output/task_retrospective.md`）が作成されているか。
+- FDE成果物の場合、`../fde/fde_quality_gate.md` の成果物別チェック（特にEngineering HandoffのRole別依頼10種と受入条件の検証方法）に合格しているか。
 
 ## 判定
 - PASS: 必須観点を満たす。

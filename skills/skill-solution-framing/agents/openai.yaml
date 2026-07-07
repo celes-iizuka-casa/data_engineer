@@ -1,0 +1,4 @@
+interface:
+  display_name: "Solution Framing"
+  short_description: "Solution framing from problem to feasible options"
+  default_prompt: "Use $skill-solution-framing to convert a problem statement into compared solution options and recommended_approach.md in output/."

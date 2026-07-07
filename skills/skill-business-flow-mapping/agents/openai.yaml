@@ -1,0 +1,4 @@
+interface:
+  display_name: "Business Flow Mapping"
+  short_description: "Business flow mapping from as-is to to-be with gaps"
+  default_prompt: "Use $skill-business-flow-mapping to map current and target business flows and produce business_flow_gap.md in output/."

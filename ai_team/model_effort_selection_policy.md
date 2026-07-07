@@ -97,6 +97,22 @@ Role固定ではなく、依頼内容・工程・リスクに応じて調整す�
 
 繰り返し作業は `iteration_confirmation_policy.md` の代表例確認フローと組み合わせ、代表例設計→代表例実装→（セレス確認）→全件展開→全件検証の各工程で工数を変える。
 
+## FDE工程別の推奨（顧客・現場案件）
+
+FDE案件は工程ごとに実行環境を切り替える。**engineering_handoff完了時点がClaude Code→Codexのruntime切替点**。
+
+| FDE工程 | 実行環境 | モデル | 工数 |
+|---|---|---|---|
+| field_discovery / stakeholder_mapping / pain_point_analysis | Claude Code | Opus4.8 | 高 |
+| business_flow_mapping | Claude Code | Opus4.8 | 高 |
+| mvp_scoping / solution_framing | Claude Code | Opus4.8 | 高 |
+| engineering_handoff | Claude Code | Opus4.8 | 高 |
+| handoff後の実装 | Codex | GPT-5.5 | 高 |
+| 検証 | Claude Code + Codex | Opus4.8 / GPT-5.5 | 中 / 高 |
+| adoption_planning / success_metrics_design / feedback_to_backlog | Claude Code | Opus4.8 | 中〜高 |
+
+FDE自体のRole/Skill/ドキュメント改修（チーム改善）は上表でなく「大規模改修/超大規模」区分で判定する。
+
 ## エスカレーション条件（工数を上げる）
 
 以下に該当する場合、工数を上げる。

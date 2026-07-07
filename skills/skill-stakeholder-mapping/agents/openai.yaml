@@ -1,0 +1,4 @@
+interface:
+  display_name: "Stakeholder Mapping"
+  short_description: "Stakeholder mapping for users deciders and operators"
+  default_prompt: "Use $skill-stakeholder-mapping to map users, decision makers, and operators into stakeholder_map.md and decision_structure.md in output/."

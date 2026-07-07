@@ -1,0 +1,4 @@
+interface:
+  display_name: "Field Discovery"
+  short_description: "Field discovery workflow for customer consultations"
+  default_prompt: "Use $skill-field-discovery to turn customer consultations and hearing notes into field_discovery.md, customer_context.md, and discovery_questions.md in output/."
