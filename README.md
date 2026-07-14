@@ -36,8 +36,8 @@
 例:
 
 ```text
-input/Lograph/Looker_BigQuery_運用キャッチアップ依頼.md
-input/トヨテック/ClouderaのDataVizに関する初学者への共有.md
+input/example-client/data-platform-operations-request.md
+input/example-client/analytics-onboarding-request.md
 ```
 
 ### 2. Role選定
@@ -189,7 +189,7 @@ python3 -m pip install -r requirements-dev.txt
 python3 tools/validate_repository.py
 ```
 
-このコマンドはRole/Skill/Workflow/Templateに加え、Capability/Eval schema、canonical ownership、Provider neutrality、tracked private pathを確認します。
+このコマンドはRole/Skill/Workflow/Templateに加え、AI Employee / Skill lifecycle、Capability/Eval schema、canonical ownership、Provider neutrality、tracked private pathを確認します。
 
 ### 4. テストを実行する
 
@@ -197,6 +197,8 @@ python3 tools/validate_repository.py
 python3 -m unittest discover -s ai_team/tests -p 'test_*.py' -v
 python3 ai_team/evals/run_foundation_evals.py
 ```
+
+Foundation Evalの`PASS`はdeterministicな構造契約の合格を示す。実案件のTask success、human correction、token / cost、Role / Skill effectivenessは、live Evidenceがなければ`UNKNOWN — insufficient evidence`であり、synthetic fixtureから推測しない。
 
 root `tools/` の変換utilityとroot `tests/` は過去案件のlocal-only資産で、shared AI Team Coreの正本ではありません。
 
@@ -292,6 +294,8 @@ python3 ai_team/evals/run_foundation_evals.py
 - `ai_team/model_effort_selection_policy.md`: 現在Runtime内の非拘束effort基準
 - `ai_team/governance/canonical_sources.yaml`: 正本とdeprecated generator
 - `ai_team/capability_registry.yaml`: 19 Roleの構造化Capability
+- `ai_team/governance/ai_employee_lifecycle_registry.yaml`: 19 Roleのrevision、lifecycle、disposition、Evidence判断
+- `ai_team/evals/skill_eval_bindings.yaml`: 29 Skillのpositive / negative Eval binding
 - `ai_team/professional_response_templates.md`: モード別の成果物構成
 - `ai_team/review/professional_quality_gate.md`: 品質レビュー基準
 

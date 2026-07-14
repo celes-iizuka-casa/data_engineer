@@ -32,6 +32,14 @@ evidence = load_module(
 foundation_evals = load_module(
     "foundation_evals", "ai_team/evals/run_foundation_evals.py"
 )
+documentation_targets = load_module(
+    "documentation_targets",
+    "ai_team/evals/select_documentation_review_targets.py",
+)
+documentation_review_validator = load_module(
+    "documentation_review_validator",
+    "ai_team/evals/validate_documentation_semantic_review.py",
+)
 
 
 class PrivacyBoundaryTests(unittest.TestCase):
@@ -44,6 +52,12 @@ class PrivacyBoundaryTests(unittest.TestCase):
             "nested/_internal/review.md",
             "client/evidence/run.yaml",
             "nested/secrets/token.txt",
+            "raw/evidence.json",
+            "private/feedback.md",
+            "feedback/review.md",
+            "nested/raw_evidence/run.yaml",
+            "nested/private_feedback/review.md",
+            "nested/raw_feedback/comment.md",
             "credentials/aws/config",
             "tokens/access.txt",
             "secret/api.txt",
@@ -75,6 +89,75 @@ class PrivacyBoundaryTests(unittest.TestCase):
         result = validator.Validation()
         validator.validate_git_privacy(result, ROOT)
         self.assertEqual([], result.errors)
+
+    def test_shared_readme_uses_only_anonymous_input_examples(self) -> None:
+        text = (ROOT / "README.md").read_text(encoding="utf-8")
+        self.assertIn("input/example-client/", text)
+        self.assertIsNone(
+            validator.PRIVATE_README_INPUT_EXAMPLE_PATTERN.search(text)
+        )
+
+    def test_extended_high_confidence_secret_patterns(self) -> None:
+        samples = [
+            "ASIA" + "ABCDEFGHIJKLMNOP",
+            "github_pat_" + "A" * 40,
+            "sk-proj-" + "A" * 40,
+            "sk-ant-" + "A" * 40,
+            "sk-" + "A" * 40,
+            "-----BEGIN " + "DSA PRIVATE KEY-----",
+        ]
+        for sample in samples:
+            with self.subTest(prefix=sample.split("_")[0]):
+                self.assertTrue(
+                    any(
+                        pattern.search(sample)
+                        for pattern in validator.SECRET_CONTENT_PATTERNS
+                    )
+                )
+
+    def test_staged_provider_import_is_detected_after_worktree_is_sanitized(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            subprocess.run(["git", "init", "-q", str(root)], check=True)
+            target = root / "ai_team/evals/provider_probe.py"
+            target.parent.mkdir(parents=True)
+            target.write_text("import openai\n", encoding="utf-8")
+            subprocess.run(
+                ["git", "-C", str(root), "add", "ai_team/evals/provider_probe.py"],
+                check=True,
+            )
+            target.write_text("def local_only():\n    return True\n", encoding="utf-8")
+            result = validator.Validation()
+            validator.validate_cross_provider_code(result, root)
+            self.assertTrue(
+                any(
+                    "Git index: ai_team/evals/provider_probe.py" in item
+                    for item in result.errors
+                ),
+                result.errors,
+            )
+
+    def test_staged_runtime_cli_launch_is_detected(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            subprocess.run(["git", "init", "-q", str(root)], check=True)
+            target = root / "tools/runtime_probe.sh"
+            target.parent.mkdir(parents=True)
+            target.write_text("codex exec unsafe-switch\n", encoding="utf-8")
+            subprocess.run(
+                ["git", "-C", str(root), "add", "tools/runtime_probe.sh"],
+                check=True,
+            )
+            target.write_text("exit 0\n", encoding="utf-8")
+            result = validator.Validation()
+            validator.validate_cross_provider_code(result, root)
+            self.assertTrue(
+                any(
+                    "Git index: tools/runtime_probe.sh" in item
+                    for item in result.errors
+                ),
+                result.errors,
+            )
 
     def test_forced_add_of_ignored_unicode_path_is_detected(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -319,6 +402,42 @@ class ExecutionEvidenceTests(unittest.TestCase):
         self.assertEqual(first, second)
         self.assertRegex(first or "", r"^sha256:[0-9a-f]{64}$")
 
+    def test_role_revision_is_content_addressed(self) -> None:
+        first = validator.role_content_revision("tech_lead", ROOT)
+        second = validator.role_content_revision("tech_lead", ROOT)
+        self.assertEqual(first, second)
+        self.assertRegex(first or "", r"^sha256:[0-9a-f]{64}$")
+
+    def test_role_revision_includes_shared_common_contract(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            capability_target = root / "ai_team/capability_registry.yaml"
+            role_target = root / "ai_team/roles/tech_lead.md"
+            role_target.parent.mkdir(parents=True)
+            capability_target.write_text(
+                (ROOT / "ai_team/capability_registry.yaml").read_text(
+                    encoding="utf-8"
+                ),
+                encoding="utf-8",
+            )
+            role_target.write_text(
+                (ROOT / "ai_team/roles/tech_lead.md").read_text(
+                    encoding="utf-8"
+                ),
+                encoding="utf-8",
+            )
+            before = validator.role_content_revision("tech_lead", root)
+            data = yaml.safe_load(capability_target.read_text(encoding="utf-8"))
+            data["common_contract"]["required_evidence"].append(
+                "shared_contract_revision_probe"
+            )
+            capability_target.write_text(
+                yaml.safe_dump(data, allow_unicode=True, sort_keys=False),
+                encoding="utf-8",
+            )
+            after = validator.role_content_revision("tech_lead", root)
+            self.assertNotEqual(before, after)
+
     def test_shared_candidate_revision_is_deterministic(self) -> None:
         first = evidence.shared_candidate_revision(ROOT)
         second = evidence.shared_candidate_revision(ROOT)
@@ -460,6 +579,39 @@ class FoundationContractTests(unittest.TestCase):
         result = foundation_evals.run(ROOT)
         self.assertEqual("PASS", result["verdict"], result["results"])
         self.assertEqual(result["total"], result["passed"])
+        self.assertEqual("FOUNDATION_CONTRACT", result["verdict_scope"])
+        self.assertEqual("UNKNOWN", result["capability_effectiveness"]["status"])
+
+    def test_before_after_comparison_uses_same_contract(self) -> None:
+        result = foundation_evals.compare(
+            ROOT, ROOT, "baseline-test", "candidate-test"
+        )
+        self.assertEqual("PASS", result["verdict"])
+        self.assertTrue(result["same_contract_before_after"])
+        self.assertEqual(
+            "SAME_CONTRACT_FOUNDATION_REPLAY", result["comparison_kind"]
+        )
+        self.assertEqual([], result["regressions"])
+        self.assertEqual("UNKNOWN", result["capability_effectiveness"]["status"])
+
+    def test_foundation_contract_digest_covers_non_runner_assets(self) -> None:
+        self.assertIn(
+            "ai_team/evals/select_documentation_review_targets.py",
+            foundation_evals.FOUNDATION_CONTRACT_FILES,
+        )
+        self.assertIn(
+            "ai_team/governance/documentation_quality_policy.yaml",
+            foundation_evals.FOUNDATION_CONTRACT_FILES,
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            catalog = root / "ai_team/evals/eval_catalog.yaml"
+            catalog.parent.mkdir(parents=True)
+            catalog.write_text("schema_version: '1.0'\n", encoding="utf-8")
+            before = foundation_evals.foundation_contract_revision(root)
+            catalog.write_text("schema_version: '1.1'\n", encoding="utf-8")
+            after = foundation_evals.foundation_contract_revision(root)
+            self.assertNotEqual(before, after)
 
     def test_capability_and_skill_sets_match_repository(self) -> None:
         capability = yaml.safe_load(
@@ -470,29 +622,632 @@ class FoundationContractTests(unittest.TestCase):
                 encoding="utf-8"
             )
         )
-        self.assertEqual(
-            set(validator.ROLES), {item["id"] for item in capability["roles"]}
-        )
+        capability_role_ids = {item["id"] for item in capability["roles"]}
+        self.assertLessEqual(set(validator.ROLES), capability_role_ids)
         self.assertEqual(
             set(validator.SKILLS), {item["id"] for item in lifecycle["skills"]}
         )
         for item in lifecycle["skills"]:
             with self.subTest(skill=item["id"]):
                 self.assertEqual("ACTIVE", item["state"])
-                self.assertEqual("ACTIVE", item["candidate_state"])
                 self.assertEqual("UPDATE", item["disposition"])
-                self.assertEqual(
-                    validator.skill_content_revision(item["id"], ROOT),
-                    item["active_revision"],
-                )
                 self.assertEqual(
                     validator.skill_content_revision(item["id"], ROOT),
                     item["candidate_revision"],
                 )
-                self.assertEqual("promoted", item["transition"]["human_gate_status"])
-        decision = lifecycle["human_gate_decision"]
+                if item["candidate_state"] == "ACTIVE":
+                    self.assertEqual(
+                        validator.skill_content_revision(item["id"], ROOT),
+                        item["active_revision"],
+                    )
+                    self.assertEqual(
+                        "promoted", item["transition"]["human_gate_status"]
+                    )
+                else:
+                    self.assertIn(
+                        item["candidate_state"], {"CANDIDATE", "HUMAN_GATE"}
+                    )
+                    self.assertEqual(
+                        validator.skill_head_revision(item["id"], ROOT),
+                        item["active_revision"],
+                    )
+                    self.assertEqual(
+                        "pending", item["transition"]["human_gate_status"]
+                    )
+        self.assertIsNone(lifecycle["current_candidate_decision"])
+        decision = lifecycle["last_promotion_decision"]
         self.assertEqual("Celes", decision["decided_by"])
         self.assertEqual("PROMOTE", decision["decision"])
+        self.assertGreaterEqual(len(lifecycle["promotion_history"]), 2)
+        self.assertEqual(decision, lifecycle["promotion_history"][-1])
+
+    def test_ai_employee_lifecycle_covers_all_roles_without_fake_scores(self) -> None:
+        lifecycle = yaml.safe_load(
+            (
+                ROOT
+                / "ai_team/governance/ai_employee_lifecycle_registry.yaml"
+            ).read_text(encoding="utf-8")
+        )
+        capability = yaml.safe_load(
+            (ROOT / "ai_team/capability_registry.yaml").read_text(
+                encoding="utf-8"
+            )
+        )
+        self.assertEqual(
+            {item["id"] for item in capability["roles"]},
+            {item["id"] for item in lifecycle["roles"]},
+        )
+        self.assertLessEqual(
+            set(validator.ROLES), {item["id"] for item in lifecycle["roles"]}
+        )
+        self.assertEqual(
+            {"CREATE", "KEEP", "UPDATE", "MERGE", "SPLIT", "DEPRECATE", "UNKNOWN"},
+            set(lifecycle["dispositions"]),
+        )
+        lifecycle_states = set(lifecycle["lifecycle_states"])
+        dispositions = set(lifecycle["dispositions"])
+        decision_history = lifecycle["decision_history"]
+        for item in lifecycle["roles"]:
+            with self.subTest(role=item["id"]):
+                self.assertIn(item["state"], lifecycle_states)
+                self.assertIn(item["disposition"], dispositions)
+                self.assertIn(
+                    item["effectiveness"],
+                    {"not_evaluated", "baseline_pending", "evaluated"},
+                )
+                self.assertNotIn("score", item)
+                self.assertEqual(
+                    item["candidate_revision"] is None,
+                    item["candidate_state"] is None,
+                )
+                if item["candidate_revision"] is None:
+                    self.assertIn(item["state"], {"ACTIVE", "DEPRECATED"})
+                    self.assertNotIn("transition", item)
+                else:
+                    self.assertIn(item["candidate_state"], lifecycle_states)
+                    self.assertIsInstance(item.get("transition"), dict)
+                    self.assertEqual(
+                        [],
+                        validator.ai_employee_transition_failures(
+                            item, decision_history
+                        ),
+                    )
+
+    def test_ai_employee_transition_rejects_pending_gate_bypass(self) -> None:
+        revision = "sha256:" + "a" * 64
+        candidate = {
+            "id": "backend_engineer",
+            "state": "ACTIVE",
+            "active_revision": "sha256:" + "b" * 64,
+            "candidate_revision": revision,
+            "candidate_state": "HUMAN_GATE",
+            "transition": {
+                "from_state": "ACTIVE",
+                "from_revision": "sha256:" + "b" * 64,
+                "to_state": "HUMAN_GATE",
+                "candidate_revision": revision,
+                "evidence_refs": [""],
+                "before_after_eval_ref": "local-eval:before-after",
+                "independent_review_ref": " pending ",
+                "human_gate_status": "pending",
+                "celes_human_gate_ref": " pending ",
+            },
+        }
+        self.assertIn(
+            "missing_independent_review",
+            validator.ai_employee_transition_failures(candidate, []),
+        )
+        self.assertIn(
+            "missing_evidence_refs",
+            validator.ai_employee_transition_failures(candidate, []),
+        )
+        self.assertIn(
+            "premature_celes_gate_ref",
+            validator.ai_employee_transition_failures(candidate, []),
+        )
+
+    def test_ai_employee_active_promotion_requires_matching_celes_record(self) -> None:
+        revision = "sha256:" + "a" * 64
+        candidate = {
+            "id": "backend_engineer",
+            "state": "ACTIVE",
+            "active_revision": revision,
+            "disposition": "UPDATE",
+            "candidate_revision": revision,
+            "candidate_state": "ACTIVE",
+            "transition": {
+                "from_state": "ACTIVE",
+                "from_revision": "sha256:" + "b" * 64,
+                "to_state": "ACTIVE",
+                "candidate_revision": revision,
+                "evidence_refs": ["local-evidence:role-candidate"],
+                "before_after_eval_ref": "local-eval:before-after",
+                "independent_review_ref": "local-review:independent",
+                "human_gate_status": "promoted",
+                "celes_human_gate_ref": "Celes-HG-ROLE-001",
+            },
+        }
+        self.assertIn(
+            "missing_unique_decision_history",
+            validator.ai_employee_transition_failures(candidate, []),
+        )
+        history = [
+            {
+                "gate_id": "Celes-HG-ROLE-001",
+                "subject_id": "backend_engineer",
+                "from_revision": "sha256:" + "b" * 64,
+                "subject_revision": revision,
+                "target_state": "ACTIVE",
+                "disposition": "UPDATE",
+                "decision": "PROMOTE",
+                "before_after_eval_ref": "local-eval:before-after",
+                "independent_review_ref": "local-review:independent",
+                "evidence_refs": ["local-evidence:role-candidate"],
+            }
+        ]
+        self.assertEqual(
+            [], validator.ai_employee_transition_failures(candidate, history)
+        )
+        bypass = copy.deepcopy(candidate)
+        bypass["transition"]["evidence_refs"] = [""]
+        bypass["transition"]["before_after_eval_ref"] = " pending "
+        bypass["transition"]["independent_review_ref"] = " pending "
+        bypass["transition"]["celes_human_gate_ref"] = " pending "
+        bypass_history = [
+            {
+                "gate_id": " pending ",
+                "subject_id": "backend_engineer",
+                "from_revision": "sha256:" + "b" * 64,
+                "subject_revision": revision,
+                "target_state": "ACTIVE",
+                "disposition": "UPDATE",
+                "decision": "PROMOTE",
+                "before_after_eval_ref": " pending ",
+                "independent_review_ref": " pending ",
+                "evidence_refs": [""],
+            }
+        ]
+        self.assertEqual(
+            {
+                "missing_before_after_eval",
+                "missing_celes_gate_ref",
+                "missing_evidence_refs",
+                "missing_independent_review",
+            },
+            set(
+                validator.ai_employee_transition_failures(
+                    bypass, bypass_history
+                )
+            ),
+        )
+
+    def test_ai_employee_create_reject_and_rollback_paths_are_reachable(self) -> None:
+        candidate_revision = "sha256:" + "a" * 64
+        active_revision = "sha256:" + "b" * 64
+        create = {
+            "id": "new_specialist",
+            "state": "DISCOVERED",
+            "active_revision": None,
+            "candidate_revision": candidate_revision,
+            "candidate_state": "PROPOSED",
+            "transition": {
+                "from_state": "DISCOVERED",
+                "from_revision": None,
+                "to_state": "PROPOSED",
+                "candidate_revision": candidate_revision,
+                "evidence_refs": ["local-evidence:new-role-gap"],
+                "before_after_eval_ref": "pending",
+                "independent_review_ref": "pending",
+                "human_gate_status": "pending",
+                "celes_human_gate_ref": "pending",
+            },
+        }
+        self.assertEqual(
+            [], validator.ai_employee_transition_failures(create, [])
+        )
+
+        rejected = copy.deepcopy(create)
+        rejected.update(
+            {
+                "id": "backend_engineer",
+                "state": "ACTIVE",
+                "active_revision": active_revision,
+                "disposition": "UPDATE",
+                "candidate_state": "HUMAN_GATE",
+            }
+        )
+        rejected["transition"].update(
+            {
+                "from_state": "ACTIVE",
+                "from_revision": active_revision,
+                "to_state": "HUMAN_GATE",
+                "before_after_eval_ref": "local-eval:role",
+                "independent_review_ref": "local-review:role",
+                "human_gate_status": "rejected",
+                "celes_human_gate_ref": "Celes-HG-REJECT-001",
+            }
+        )
+        reject_history = [
+            {
+                "gate_id": "Celes-HG-REJECT-001",
+                "subject_id": "backend_engineer",
+                "from_revision": active_revision,
+                "subject_revision": candidate_revision,
+                "target_state": "HUMAN_GATE",
+                "disposition": "UPDATE",
+                "decision": "REJECT",
+                "before_after_eval_ref": "local-eval:role",
+                "independent_review_ref": "local-review:role",
+                "evidence_refs": ["local-evidence:new-role-gap"],
+            }
+        ]
+        self.assertEqual(
+            [],
+            validator.ai_employee_transition_failures(
+                rejected, reject_history
+            ),
+        )
+
+        rollback = copy.deepcopy(rejected)
+        rollback.update(
+            {
+                "state": "ACTIVE",
+                "active_revision": candidate_revision,
+                "candidate_state": "ACTIVE",
+            }
+        )
+        rollback["transition"].update(
+            {
+                "to_state": "ACTIVE",
+                "human_gate_status": "rolled_back",
+                "celes_human_gate_ref": "Celes-HG-ROLLBACK-001",
+            }
+        )
+        rollback_decision = {
+            "gate_id": "Celes-HG-ROLLBACK-001",
+            "subject_id": "backend_engineer",
+            "from_revision": active_revision,
+            "subject_revision": candidate_revision,
+            "target_state": "ACTIVE",
+            "disposition": "UPDATE",
+            "decision": "ROLLBACK",
+            "before_after_eval_ref": "local-eval:role",
+            "independent_review_ref": "local-review:role",
+            "evidence_refs": ["local-evidence:new-role-gap"],
+            "promoted_revision": active_revision,
+            "rollback_revision": candidate_revision,
+            "reason": "regression evidence",
+            "celes_decision": "ROLLBACK",
+        }
+        rollback_history = [
+            {
+                "gate_id": "Celes-HG-PROMOTE-PRIOR",
+                "subject_id": "backend_engineer",
+                "subject_revision": active_revision,
+                "decision": "PROMOTE",
+            },
+            rollback_decision,
+        ]
+        self.assertEqual(
+            [],
+            validator.ai_employee_transition_failures(
+                rollback, rollback_history
+            ),
+        )
+        rollback_decision["rollback_revision"] = active_revision
+        self.assertIn(
+            "rollback_revision_mismatch",
+            validator.ai_employee_transition_failures(
+                rollback, rollback_history
+            ),
+        )
+
+    def test_ai_employee_decision_history_is_append_only(self) -> None:
+        committed = [{"gate_id": "HG-1", "decision": "PROMOTE"}]
+        self.assertEqual(
+            [],
+            validator.missing_historical_decisions(
+                committed + [{"gate_id": "HG-2", "decision": "REJECT"}],
+                committed,
+            ),
+        )
+        mutated = [{"gate_id": "HG-1", "decision": "REWORK"}]
+        self.assertEqual(
+            committed,
+            validator.missing_historical_decisions(mutated, committed),
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            subprocess.run(["git", "init", "-q", str(root)], check=True)
+            target = (
+                root
+                / "ai_team/governance/ai_employee_lifecycle_registry.yaml"
+            )
+            target.parent.mkdir(parents=True)
+            target.write_text(
+                yaml.safe_dump({"decision_history": committed}),
+                encoding="utf-8",
+            )
+            subprocess.run(["git", "-C", str(root), "add", "."], check=True)
+            subprocess.run(
+                [
+                    "git", "-C", str(root), "-c", "user.name=Test",
+                    "-c", "user.email=test@example.invalid", "commit", "-q",
+                    "-m", "decision-history-fixture",
+                ],
+                check=True,
+            )
+            history = validator.historical_role_decision_records(root)
+            self.assertEqual(committed, history)
+            self.assertEqual(
+                committed,
+                validator.missing_historical_decisions([], history),
+            )
+
+    def test_ai_employee_canonical_change_requires_registered_candidate(self) -> None:
+        head_revision = "sha256:" + "a" * 64
+        current_revision = "sha256:" + "b" * 64
+        entry = {"candidate_revision": None}
+        self.assertEqual(
+            ["unregistered_canonical_change"],
+            validator.role_candidate_registration_failures(
+                entry, current_revision, head_revision
+            ),
+        )
+        entry["candidate_revision"] = current_revision
+        self.assertEqual(
+            [],
+            validator.role_candidate_registration_failures(
+                entry, current_revision, head_revision
+            ),
+        )
+        self.assertEqual(
+            ["candidate_without_revision_change"],
+            validator.role_candidate_registration_failures(
+                {"candidate_revision": head_revision},
+                head_revision,
+                head_revision,
+            ),
+        )
+        self.assertEqual(
+            [],
+            validator.role_candidate_registration_failures(
+                {
+                    "candidate_revision": head_revision,
+                    "candidate_state": "ACTIVE",
+                },
+                head_revision,
+                head_revision,
+                {
+                    "state": "ACTIVE",
+                    "candidate_revision": head_revision,
+                },
+            ),
+        )
+
+    def test_ai_employee_registry_state_change_requires_final_candidate(self) -> None:
+        previous = {
+            "state": "ACTIVE",
+            "active_revision": "sha256:" + "a" * 64,
+        }
+        direct = {
+            "state": "DEPRECATED",
+            "candidate_revision": None,
+            "candidate_state": None,
+        }
+        self.assertEqual(
+            ["unregistered_state_change"],
+            validator.role_registry_state_failures(direct, previous),
+        )
+        governed = {
+            "state": "DEPRECATED",
+            "candidate_revision": "sha256:" + "b" * 64,
+            "candidate_state": "DEPRECATED",
+            "transition": {
+                "from_state": "ACTIVE",
+                "human_gate_status": "promoted",
+            },
+        }
+        self.assertEqual(
+            [], validator.role_registry_state_failures(governed, previous)
+        )
+        governed["transition"]["from_state"] = "DISCOVERED"
+        self.assertEqual(
+            ["from_state_history_mismatch"],
+            validator.role_registry_state_failures(governed, previous),
+        )
+
+    def test_ai_employee_noop_update_cannot_be_promoted(self) -> None:
+        revision = "sha256:" + "a" * 64
+        changed_revision = "sha256:" + "b" * 64
+        previous = {
+            "state": "ACTIVE",
+            "active_revision": revision,
+            "candidate_revision": None,
+        }
+        no_op = {
+            "state": "ACTIVE",
+            "disposition": "UPDATE",
+            "candidate_revision": revision,
+            "candidate_state": "ACTIVE",
+        }
+        self.assertEqual(
+            ["candidate_without_revision_change"],
+            validator.role_candidate_registration_failures(
+                no_op, revision, revision, previous
+            ),
+        )
+        self.assertEqual(
+            ["unregistered_canonical_change"],
+            validator.role_candidate_registration_failures(
+                {"candidate_revision": None},
+                changed_revision,
+                changed_revision,
+                previous,
+            ),
+        )
+        previous["candidate_revision"] = revision
+        self.assertEqual(
+            [],
+            validator.role_candidate_registration_failures(
+                no_op, revision, revision, previous
+            ),
+        )
+
+        no_op_transition = {
+            "id": "backend_engineer",
+            "state": "ACTIVE",
+            "active_revision": revision,
+            "disposition": "UPDATE",
+            "candidate_revision": revision,
+            "candidate_state": "ACTIVE",
+            "transition": {
+                "from_state": "ACTIVE",
+                "from_revision": revision,
+                "to_state": "ACTIVE",
+                "candidate_revision": revision,
+                "evidence_refs": ["local-evidence:no-op"],
+                "before_after_eval_ref": "local-eval:no-op",
+                "independent_review_ref": "local-review:no-op",
+                "human_gate_status": "promoted",
+                "celes_human_gate_ref": "Celes-HG-NOOP",
+            },
+        }
+        self.assertIn(
+            "noop_candidate_revision",
+            validator.ai_employee_transition_failures(no_op_transition, []),
+        )
+
+    def test_ai_employee_postcommit_uses_prior_registry_snapshot(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            subprocess.run(["git", "init", "-q", str(root)], check=True)
+            target = (
+                root
+                / "ai_team/governance/ai_employee_lifecycle_registry.yaml"
+            )
+            target.parent.mkdir(parents=True)
+            baseline = {
+                "roles": [
+                    {
+                        "id": "backend_engineer",
+                        "state": "ACTIVE",
+                        "active_revision": "sha256:" + "a" * 64,
+                        "candidate_revision": None,
+                    }
+                ]
+            }
+            target.write_text(
+                yaml.safe_dump(baseline), encoding="utf-8"
+            )
+            subprocess.run(["git", "-C", str(root), "add", "."], check=True)
+            subprocess.run(
+                [
+                    "git", "-C", str(root), "-c", "user.name=Test",
+                    "-c", "user.email=test@example.invalid", "commit", "-q",
+                    "-m", "baseline-registry",
+                ],
+                check=True,
+            )
+            candidate = copy.deepcopy(baseline)
+            candidate["roles"][0]["state"] = "DEPRECATED"
+            target.write_text(
+                yaml.safe_dump(candidate), encoding="utf-8"
+            )
+            self.assertEqual(
+                "ACTIVE",
+                validator.role_lifecycle_previous_entries(root)
+                ["backend_engineer"]["state"],
+            )
+            subprocess.run(["git", "-C", str(root), "add", "."], check=True)
+            subprocess.run(
+                [
+                    "git", "-C", str(root), "-c", "user.name=Test",
+                    "-c", "user.email=test@example.invalid", "commit", "-q",
+                    "-m", "candidate-registry",
+                ],
+                check=True,
+            )
+            self.assertEqual(
+                "ACTIVE",
+                validator.role_lifecycle_previous_entries(root)
+                ["backend_engineer"]["state"],
+            )
+
+    def test_ai_employee_create_requires_all_concrete_criteria(self) -> None:
+        entry = {"disposition": "CREATE"}
+        self.assertEqual(
+            ["incomplete_create_criteria"],
+            validator.role_create_criteria_failures(entry),
+        )
+        entry["create_criteria"] = {
+            requirement: f"local-evidence:{requirement}"
+            for requirement in validator.ROLE_CREATE_REQUIREMENTS
+        }
+        self.assertEqual([], validator.role_create_criteria_failures(entry))
+        entry["create_criteria"][next(iter(validator.ROLE_CREATE_REQUIREMENTS))] = (
+            " pending "
+        )
+        self.assertEqual(
+            ["placeholder_create_evidence"],
+            validator.role_create_criteria_failures(entry),
+        )
+
+    def test_ai_employee_decision_timestamp_must_be_real_and_zoned(self) -> None:
+        self.assertTrue(
+            validator.valid_decision_timestamp("2026-07-14T12:00:00+09:00")
+        )
+        self.assertFalse(
+            validator.valid_decision_timestamp("2026-02-30T12:00:00+09:00")
+        )
+        self.assertFalse(
+            validator.valid_decision_timestamp("2026-07-14T12:00:00")
+        )
+
+    def test_foundation_eval_accepts_governed_role_candidate(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            capability_target = root / "ai_team/capability_registry.yaml"
+            lifecycle_target = (
+                root
+                / "ai_team/governance/ai_employee_lifecycle_registry.yaml"
+            )
+            lifecycle_target.parent.mkdir(parents=True)
+            capability_target.parent.mkdir(parents=True, exist_ok=True)
+            capability_target.write_text(
+                (ROOT / "ai_team/capability_registry.yaml").read_text(
+                    encoding="utf-8"
+                ),
+                encoding="utf-8",
+            )
+            lifecycle = yaml.safe_load(
+                (
+                    ROOT
+                    / "ai_team/governance/ai_employee_lifecycle_registry.yaml"
+                ).read_text(encoding="utf-8")
+            )
+            entry = lifecycle["roles"][0]
+            entry["candidate_revision"] = "sha256:" + "a" * 64
+            entry["candidate_state"] = "CANDIDATE"
+            entry["disposition"] = "UPDATE"
+            entry["transition"] = {
+                "from_state": "ACTIVE",
+                "from_revision": entry["active_revision"],
+                "to_state": "CANDIDATE",
+                "candidate_revision": entry["candidate_revision"],
+                "evidence_refs": ["local-evidence:test"],
+                "before_after_eval_ref": "pending",
+                "independent_review_ref": "pending",
+                "human_gate_status": "pending",
+                "celes_human_gate_ref": "pending",
+            }
+            lifecycle_target.write_text(
+                yaml.safe_dump(
+                    lifecycle, allow_unicode=True, sort_keys=False
+                ),
+                encoding="utf-8",
+            )
+            foundation_evals.ai_employee_lifecycle(root)
 
     def test_execution_and_human_gate_schemas_are_strict(self) -> None:
         execution_schema = json.loads(
@@ -517,16 +1272,42 @@ class FoundationContractTests(unittest.TestCase):
             {"canonical_promotion", "critical_operation"},
             set(human_gate["properties"]["decision_type"]["enum"]),
         )
-        self.assertEqual(2, len(human_gate["allOf"]))
+        self.assertEqual(3, len(human_gate["allOf"]))
+        self.assertEqual(
+            {"subject_revision", "before_after_eval_ref"},
+            set(human_gate["allOf"][0]["then"]["required"]),
+        )
 
     def test_all_required_engineering_scenarios_exist(self) -> None:
         golden = yaml.safe_load(
             (ROOT / "ai_team/evals/golden_cases.yaml").read_text(encoding="utf-8")
         )
-        self.assertEqual(15, len(golden["cases"]))
+        self.assertGreaterEqual(len(golden["cases"]), 22)
         self.assertEqual(
-            15, len({case["id"] for case in golden["cases"]})
+            len(golden["cases"]), len({case["id"] for case in golden["cases"]})
         )
+        covered_roles = {
+            role for case in golden["cases"] for role in case["expected_roles"]
+        }
+        capability = yaml.safe_load(
+            (ROOT / "ai_team/capability_registry.yaml").read_text(
+                encoding="utf-8"
+            )
+        )
+        capability_role_ids = {role["id"] for role in capability["roles"]}
+        self.assertEqual(capability_role_ids, covered_roles)
+        primary_skill_by_role = {
+            role["id"]: role["primary_skill"] for role in capability["roles"]
+        }
+        for case in golden["cases"]:
+            with self.subTest(case=case["id"]):
+                self.assertTrue(
+                    {
+                        primary_skill_by_role[role]
+                        for role in case["expected_roles"]
+                    }
+                    <= set(case["expected_skills"])
+                )
 
     def test_every_golden_case_includes_its_risk_gates(self) -> None:
         golden = yaml.safe_load(
@@ -584,6 +1365,238 @@ class FoundationContractTests(unittest.TestCase):
         self.assertEqual(
             ["expected_roles", "expected_skills"],
             foundation_evals.case_result_failures(case, result),
+        )
+
+    def test_agent_fixture_rejects_self_approval_and_missing_reviewer(self) -> None:
+        fixtures = yaml.safe_load(
+            (ROOT / "ai_team/evals/agent_skill_fixtures.yaml").read_text(
+                encoding="utf-8"
+            )
+        )
+        result = copy.deepcopy(
+            next(
+                item
+                for item in fixtures["agent_results"]
+                if item["fixture_id"] == "AF-API-HIGH-001"
+            )
+        )
+        result["actual"]["reviewers"].remove("security_governance_engineer")
+        result["actual"]["actions"].append("self_accept_security_risk")
+        self.assertEqual(
+            ["prohibited_actions", "reviewers"],
+            foundation_evals.agent_result_failures(result),
+        )
+
+    def test_skill_fixture_rejects_over_selection_and_context_overflow(self) -> None:
+        fixtures = yaml.safe_load(
+            (ROOT / "ai_team/evals/agent_skill_fixtures.yaml").read_text(
+                encoding="utf-8"
+            )
+        )
+        result = copy.deepcopy(
+            next(
+                item
+                for item in fixtures["skill_results"]
+                if item["fixture_id"] == "SF-BOUNDED-SQL-001"
+            )
+        )
+        result["actual"]["selected_skills"].append("skill-engineering-pmo")
+        result["actual"]["loaded_skills"].append("skill-engineering-pmo")
+        result["actual"]["context_files_loaded"] = 99
+        self.assertEqual(
+            ["context_efficiency", "not_selected_skills", "selected_skills"],
+            foundation_evals.skill_result_failures(result),
+        )
+        loaded_mismatch = copy.deepcopy(fixtures["skill_results"][0])
+        loaded_mismatch["actual"]["loaded_skills"].append(
+            "skill-engineering-pmo"
+        )
+        self.assertEqual(
+            ["loaded_skills"],
+            foundation_evals.skill_result_failures(loaded_mismatch),
+        )
+        negative = copy.deepcopy(fixtures["skill_results"][0])
+        negative["actual"]["context_files_loaded"] = -1
+        self.assertIn(
+            "context_efficiency",
+            foundation_evals.skill_result_failures(negative),
+        )
+        boolean = copy.deepcopy(fixtures["skill_results"][0])
+        boolean["actual"]["context_files_loaded"] = True
+        self.assertIn(
+            "context_efficiency",
+            foundation_evals.skill_result_failures(boolean),
+        )
+
+    def test_skill_eval_bindings_cover_every_skill(self) -> None:
+        bindings = yaml.safe_load(
+            (ROOT / "ai_team/evals/skill_eval_bindings.yaml").read_text(
+                encoding="utf-8"
+            )
+        )
+        self.assertEqual(
+            set(validator.SKILLS),
+            {entry["skill"] for entry in bindings["bindings"]},
+        )
+        fixtures = yaml.safe_load(
+            (ROOT / "ai_team/evals/agent_skill_fixtures.yaml").read_text(
+                encoding="utf-8"
+            )
+        )
+        golden = yaml.safe_load(
+            (ROOT / "ai_team/evals/golden_cases.yaml").read_text(
+                encoding="utf-8"
+            )
+        )
+        selected_by_case = {
+            case["id"]: set(case["expected_skills"])
+            for case in golden["cases"]
+        }
+        selected_by_case.update(
+            {
+                result["fixture_id"]: set(
+                    result["expected"]["selected_skills"]
+                )
+                for result in fixtures["skill_results"]
+            }
+        )
+        required_rubric = set(fixtures["skill_contract"]["required_dimensions"])
+        self.assertEqual(
+            required_rubric, set(bindings["required_rubric"])
+        )
+        for entry in bindings["bindings"]:
+            with self.subTest(skill=entry["skill"]):
+                self.assertEqual(
+                    [],
+                    foundation_evals.skill_binding_failures(
+                        entry, selected_by_case, required_rubric
+                    ),
+                )
+
+        bad = copy.deepcopy(bindings["bindings"][0])
+        bad["positive_case"] = "GC-ARCH-001"
+        self.assertIn(
+            "positive_case_does_not_select_skill",
+            foundation_evals.skill_binding_failures(
+                bad, selected_by_case, required_rubric
+            ),
+        )
+
+    def test_documentation_review_selector_expands_only_affected_contracts(self) -> None:
+        policy = yaml.safe_load(
+            (
+                ROOT / "ai_team/governance/documentation_quality_policy.yaml"
+            ).read_text(encoding="utf-8")
+        )
+        targets = documentation_targets.select_targets(
+            ["ai_team/roles/backend_engineer.md"], policy
+        )
+        self.assertIn("ai_team/roles/backend_engineer.md", targets)
+        self.assertIn("ai_team/capability_registry.yaml", targets)
+        self.assertIn(
+            "ai_team/governance/ai_employee_lifecycle_registry.yaml", targets
+        )
+        self.assertNotIn("skills/index.yaml", targets)
+        self.assertEqual(
+            ".claude/agents/reviewer.md",
+            documentation_targets.normalize_path(
+                "./.claude/agents/reviewer.md"
+            ),
+        )
+
+    def test_documentation_review_rejects_pass_with_blocking_finding(self) -> None:
+        record = {
+            "schema_version": "1.0",
+            "review_id": "DOC-REVIEW-TEST",
+            "timestamp": "2026-07-14T12:00:00+09:00",
+            "reviewer": "independent-test-reviewer",
+            "independent": True,
+            "trigger": "high_risk_change",
+            "changed_paths": ["ai_team/evals/eval_catalog.yaml"],
+            "review_targets": ["ai_team/evals/eval_catalog.yaml"],
+            "dimensions": ["accuracy"],
+            "findings": [
+                {
+                    "id": "DOC-P1-TEST",
+                    "severity": "P1",
+                    "target": "ai_team/evals/eval_catalog.yaml",
+                    "dimension": "accuracy",
+                    "finding": "test blocker",
+                    "evidence": "mutation fixture",
+                    "required_action": "fix before PASS",
+                }
+            ],
+            "verdict": "PASS",
+            "unknowns": [],
+        }
+        failures = documentation_review_validator.record_failures(record)
+        self.assertIn("blocking_finding_verdict", failures)
+        self.assertIn("pass_with_findings_or_unknowns", failures)
+
+    def test_documentation_review_dimensions_share_one_contract(self) -> None:
+        policy = yaml.safe_load(
+            (
+                ROOT / "ai_team/governance/documentation_quality_policy.yaml"
+            ).read_text(encoding="utf-8")
+        )
+        schema = json.loads(
+            (
+                ROOT
+                / "ai_team/evals/documentation_semantic_review.schema.json"
+            ).read_text(encoding="utf-8")
+        )
+        catalog = yaml.safe_load(
+            (ROOT / "ai_team/evals/eval_catalog.yaml").read_text(
+                encoding="utf-8"
+            )
+        )
+        expected = foundation_evals.DOCUMENTATION_REVIEW_DIMENSIONS
+        self.assertEqual(
+            expected,
+            set(policy["level_2_semantic"]["review_dimensions"]),
+        )
+        self.assertEqual(
+            expected,
+            set(schema["properties"]["dimensions"]["items"]["enum"]),
+        )
+        self.assertEqual(
+            expected,
+            set(
+                schema["properties"]["findings"]["items"]["properties"]
+                ["dimension"]["enum"]
+            ),
+        )
+        self.assertEqual(
+            expected, set(catalog["suites"]["documentation"]["dimensions"])
+        )
+        self.assertEqual(expected, documentation_review_validator.DIMENSIONS)
+
+    def test_documentation_review_malformed_dimensions_are_structured(self) -> None:
+        base = {
+            "schema_version": "1.0",
+            "review_id": "DOC-REVIEW-MALFORMED",
+            "timestamp": "2026-07-14T12:00:00+09:00",
+            "reviewer": "independent-test-reviewer",
+            "independent": True,
+            "trigger": "high_risk_change",
+            "changed_paths": ["ai_team/evals/eval_catalog.yaml"],
+            "review_targets": ["ai_team/evals/eval_catalog.yaml"],
+            "dimensions": None,
+            "findings": [],
+            "verdict": "PASS",
+            "unknowns": [],
+        }
+        self.assertIn(
+            "dimensions", documentation_review_validator.record_failures(base)
+        )
+        base["dimensions"] = [{}]
+        self.assertIn(
+            "dimensions", documentation_review_validator.record_failures(base)
+        )
+        base["dimensions"] = ["accuracy"]
+        base["timestamp"] = "2026-02-30T12:00:00+09:00"
+        self.assertIn(
+            "timestamp", documentation_review_validator.record_failures(base)
         )
 
 

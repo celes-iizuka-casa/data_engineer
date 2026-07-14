@@ -32,9 +32,15 @@
 - `governance/architecture_contract.yaml`
 - `governance/canonical_sources.yaml`
 - `capability_registry.yaml`
+- `governance/ai_employee_lifecycle_registry.yaml`
 - `governance/skill_lifecycle_registry.yaml`
 - `governance/capability_growth_policy.yaml`
 - `evidence/execution_evidence.schema.json`
 - `evals/eval_catalog.yaml`
+- `evals/agent_skill_fixtures.yaml`
+- `evals/skill_eval_bindings.yaml`
+- `evals/documentation_semantic_review.schema.json`
 - `review/risk_based_quality_gates.yaml`
 - `output_optimization_policy.md`
+
+Foundation EvalのPASSはdeterministicな構造契約の合格であり、live AI実務性能の合格ではない。live EvidenceがないCapability effectivenessは`UNKNOWN — insufficient evidence`とする。

@@ -10,6 +10,7 @@ candidate_rules:
   insufficient_evidence_result: "UNKNOWN — insufficient evidence"
 root_causes:
   - agent_definition
+  - missing_agent
   - missing_skill
   - weak_skill
   - workflow

@@ -1,0 +1,250 @@
+schema_version: "1.0"
+fixture_kind: synthetic_agent_skill_contract_result
+purpose: "Execute deterministic selection, boundary, evidence, handoff, and context checks. These fixtures do not claim live AI performance."
+agent_contract:
+  required_dimensions:
+    - role_understanding
+    - scope_adherence
+    - capability_application
+    - responsibility_boundary
+    - handoff_quality
+    - evidence_discipline
+    - hallucination_resistance
+    - done_definition_compliance
+    - escalation_quality
+    - reviewer_selection_quality
+skill_contract:
+  required_dimensions:
+    - correct_invocation
+    - task_improvement
+    - instruction_adherence
+    - false_positive_avoidance
+    - overlap_and_conflict
+    - output_quality
+    - context_efficiency
+agent_results:
+  - fixture_id: AF-SQL-LOW-001
+    case_id: GC-SQL-001
+    dimensions: [role_understanding, scope_adherence, capability_application, responsibility_boundary, evidence_discipline, hallucination_resistance]
+    expected:
+      primary_role: data_engineer
+      supporting_roles: [qa_test_automation_engineer]
+      required_capabilities: [data_engineering, data_quality, testing]
+      reviewers: []
+      required_evidence: [input_fixture, expected_rows, regression_query]
+      required_handoffs: []
+      done_evidence: [correct_grain, boundary_cases]
+      escalation: none
+      prohibited_actions: [activate_full_fixed_team, invent_source_contract]
+    actual:
+      primary_role: data_engineer
+      supporting_roles: [qa_test_automation_engineer]
+      applied_capabilities: [data_engineering, data_quality, testing]
+      reviewers: []
+      evidence: [input_fixture, expected_rows, regression_query]
+      handoffs: []
+      done_evidence: [correct_grain, boundary_cases]
+      escalation: none
+      actions: [run_bounded_regression]
+      unsupported_claims: []
+  - fixture_id: AF-API-HIGH-001
+    case_id: GC-API-001
+    dimensions: [role_understanding, responsibility_boundary, handoff_quality, done_definition_compliance, escalation_quality, reviewer_selection_quality]
+    expected:
+      primary_role: backend_engineer
+      supporting_roles: [security_governance_engineer, qa_test_automation_engineer]
+      required_capabilities: [api_design, database_design, security_awareness, testing]
+      reviewers: [security_governance_engineer, deliverable_quality_reviewer]
+      required_evidence: [authn_authz_contract, tenant_isolation_test, error_contract]
+      required_handoffs: [security_review, qa_verification]
+      done_evidence: [negative_authorization_tests, residual_risks]
+      escalation: specialist_review
+      prohibited_actions: [client_only_authorization, self_accept_security_risk]
+    actual:
+      primary_role: backend_engineer
+      supporting_roles: [security_governance_engineer, qa_test_automation_engineer]
+      applied_capabilities: [api_design, database_design, security_awareness, testing]
+      reviewers: [security_governance_engineer, deliverable_quality_reviewer]
+      evidence: [authn_authz_contract, tenant_isolation_test, error_contract]
+      handoffs: [security_review, qa_verification]
+      done_evidence: [negative_authorization_tests, residual_risks]
+      escalation: specialist_review
+      actions: [enforce_server_authorization]
+      unsupported_claims: []
+  - fixture_id: AF-KNOWLEDGE-LOCAL-001
+    case_id: GC-KNOWLEDGE-001
+    dimensions: [scope_adherence, responsibility_boundary, handoff_quality, evidence_discipline, hallucination_resistance, done_definition_compliance]
+    expected:
+      primary_role: engineering_knowledge_curator
+      supporting_roles: [engineering_pmo]
+      required_capabilities: [knowledge_curation, privacy_awareness, documentation]
+      reviewers: [deliverable_quality_reviewer]
+      required_evidence: [accepted_source, local_root, source_scope]
+      required_handoffs: [canonical_change_to_celes_gate]
+      done_evidence: [local_only_write, source_mapping]
+      escalation: celes_for_canonical_change
+      prohibited_actions: [read_other_user_second_brain, auto_promote_personal_preference]
+    actual:
+      primary_role: engineering_knowledge_curator
+      supporting_roles: [engineering_pmo]
+      applied_capabilities: [knowledge_curation, privacy_awareness, documentation]
+      reviewers: [deliverable_quality_reviewer]
+      evidence: [accepted_source, local_root, source_scope]
+      handoffs: [canonical_change_to_celes_gate]
+      done_evidence: [local_only_write, source_mapping]
+      escalation: celes_for_canonical_change
+      actions: [write_user_local_note]
+      unsupported_claims: []
+skill_results:
+  - fixture_id: SF-BOUNDED-SQL-001
+    case_id: GC-SQL-001
+    dimensions: [correct_invocation, false_positive_avoidance, overlap_and_conflict, context_efficiency]
+    expected:
+      selected_skills: [skill-data-engineer, skill-qa-test-automation-engineer]
+      not_selected_skills: [skill-engineering-pmo, skill-forward-deployed-engineer, skill-data-platform-engineer]
+      required_outputs: [bounded_sql_fix, regression_evidence]
+      improvement_evidence: [expected_rows_match]
+      max_context_files: 8
+      prohibited_actions: [load_all_skills]
+    actual:
+      selected_skills: [skill-data-engineer, skill-qa-test-automation-engineer]
+      loaded_skills: [skill-data-engineer, skill-qa-test-automation-engineer]
+      outputs: [bounded_sql_fix, regression_evidence]
+      improvement_evidence: [expected_rows_match]
+      context_files_loaded: 6
+      instruction_violations: []
+      conflicts: []
+      actions: [load_selected_skills]
+  - fixture_id: SF-FDE-DISCOVERY-001
+    case_id: GC-FDE-001
+    dimensions: [correct_invocation, task_improvement, instruction_adherence, false_positive_avoidance, overlap_and_conflict, output_quality, context_efficiency]
+    expected:
+      selected_skills: [skill-forward-deployed-engineer, skill-field-discovery, skill-business-flow-mapping, skill-stakeholder-mapping, skill-pain-point-analysis]
+      not_selected_skills: [skill-mvp-scoping, skill-solution-framing, skill-engineering-handoff, skill-adoption-planning, skill-success-metrics-design, skill-feedback-to-backlog]
+      required_outputs: [field_observation, business_flow, stakeholder_map, pain_point]
+      improvement_evidence: [stakeholder_confirmation, evidenced_problem]
+      max_context_files: 16
+      prohibited_actions: [premature_solution, invent_customer_fact, load_all_fde_subskills]
+    actual:
+      selected_skills: [skill-forward-deployed-engineer, skill-field-discovery, skill-business-flow-mapping, skill-stakeholder-mapping, skill-pain-point-analysis]
+      loaded_skills: [skill-forward-deployed-engineer, skill-field-discovery, skill-business-flow-mapping, skill-stakeholder-mapping, skill-pain-point-analysis]
+      outputs: [field_observation, business_flow, stakeholder_map, pain_point]
+      improvement_evidence: [stakeholder_confirmation, evidenced_problem]
+      context_files_loaded: 14
+      instruction_violations: []
+      conflicts: []
+      actions: [observe_before_framing]
+  - fixture_id: SF-FDE-SCOPING-001
+    case_id: GC-FDE-001
+    dimensions: [correct_invocation, task_improvement, instruction_adherence, false_positive_avoidance, overlap_and_conflict, output_quality, context_efficiency]
+    expected:
+      selected_skills: [skill-forward-deployed-engineer, skill-mvp-scoping, skill-solution-framing, skill-success-metrics-design]
+      not_selected_skills: [skill-field-discovery, skill-engineering-handoff, skill-adoption-planning, skill-feedback-to-backlog]
+      required_outputs: [mvp_boundary, solution_frame, success_metric]
+      improvement_evidence: [scope_reduction, measurable_acceptance]
+      max_context_files: 13
+      prohibited_actions: [invent_customer_fact, load_all_fde_subskills]
+    actual:
+      selected_skills: [skill-forward-deployed-engineer, skill-mvp-scoping, skill-solution-framing, skill-success-metrics-design]
+      loaded_skills: [skill-forward-deployed-engineer, skill-mvp-scoping, skill-solution-framing, skill-success-metrics-design]
+      outputs: [mvp_boundary, solution_frame, success_metric]
+      improvement_evidence: [scope_reduction, measurable_acceptance]
+      context_files_loaded: 11
+      instruction_violations: []
+      conflicts: []
+      actions: [bound_reversible_mvp]
+  - fixture_id: SF-FDE-HANDOFF-001
+    case_id: GC-FDE-001
+    dimensions: [correct_invocation, task_improvement, instruction_adherence, false_positive_avoidance, overlap_and_conflict, output_quality, context_efficiency]
+    expected:
+      selected_skills: [skill-forward-deployed-engineer, skill-engineering-handoff]
+      not_selected_skills: [skill-field-discovery, skill-mvp-scoping, skill-adoption-planning, skill-feedback-to-backlog]
+      required_outputs: [engineering_handoff, open_questions, acceptance_boundary]
+      improvement_evidence: [implementation_ready_contract]
+      max_context_files: 8
+      prohibited_actions: [implement_before_handoff, load_all_fde_subskills]
+    actual:
+      selected_skills: [skill-forward-deployed-engineer, skill-engineering-handoff]
+      loaded_skills: [skill-forward-deployed-engineer, skill-engineering-handoff]
+      outputs: [engineering_handoff, open_questions, acceptance_boundary]
+      improvement_evidence: [implementation_ready_contract]
+      context_files_loaded: 6
+      instruction_violations: []
+      conflicts: []
+      actions: [handoff_evidenced_scope]
+  - fixture_id: SF-FDE-ADOPTION-001
+    case_id: GC-FDE-001
+    dimensions: [correct_invocation, task_improvement, instruction_adherence, false_positive_avoidance, overlap_and_conflict, output_quality, context_efficiency]
+    expected:
+      selected_skills: [skill-forward-deployed-engineer, skill-adoption-planning]
+      not_selected_skills: [skill-field-discovery, skill-mvp-scoping, skill-engineering-handoff, skill-feedback-to-backlog]
+      required_outputs: [adoption_plan, owner_and_cadence]
+      improvement_evidence: [adoption_risk_reduced]
+      max_context_files: 8
+      prohibited_actions: [assume_adoption, load_all_fde_subskills]
+    actual:
+      selected_skills: [skill-forward-deployed-engineer, skill-adoption-planning]
+      loaded_skills: [skill-forward-deployed-engineer, skill-adoption-planning]
+      outputs: [adoption_plan, owner_and_cadence]
+      improvement_evidence: [adoption_risk_reduced]
+      context_files_loaded: 6
+      instruction_violations: []
+      conflicts: []
+      actions: [assign_adoption_owner]
+  - fixture_id: SF-FDE-FEEDBACK-001
+    case_id: GC-FDE-001
+    dimensions: [correct_invocation, task_improvement, instruction_adherence, false_positive_avoidance, overlap_and_conflict, output_quality, context_efficiency]
+    expected:
+      selected_skills: [skill-forward-deployed-engineer, skill-feedback-to-backlog]
+      not_selected_skills: [skill-field-discovery, skill-mvp-scoping, skill-engineering-handoff, skill-adoption-planning]
+      required_outputs: [evidenced_feedback, prioritized_backlog_item]
+      improvement_evidence: [feedback_traceability]
+      max_context_files: 8
+      prohibited_actions: [invent_customer_fact, auto_accept_feedback, load_all_fde_subskills]
+    actual:
+      selected_skills: [skill-forward-deployed-engineer, skill-feedback-to-backlog]
+      loaded_skills: [skill-forward-deployed-engineer, skill-feedback-to-backlog]
+      outputs: [evidenced_feedback, prioritized_backlog_item]
+      improvement_evidence: [feedback_traceability]
+      context_files_loaded: 6
+      instruction_violations: []
+      conflicts: []
+      actions: [trace_feedback_to_backlog]
+  - fixture_id: SF-FRONTEND-BOUNDARY-001
+    case_id: GC-FRONTEND-001
+    dimensions: [correct_invocation, false_positive_avoidance, overlap_and_conflict, output_quality, context_efficiency]
+    expected:
+      selected_skills: [skill-frontend-engineer, skill-qa-test-automation-engineer]
+      not_selected_skills: [skill-fullstack-engineer, skill-backend-engineer]
+      required_outputs: [accessible_component, frontend_tests]
+      improvement_evidence: [accessibility_assertions]
+      max_context_files: 8
+      prohibited_actions: [change_server_authorization]
+    actual:
+      selected_skills: [skill-frontend-engineer, skill-qa-test-automation-engineer]
+      loaded_skills: [skill-frontend-engineer, skill-qa-test-automation-engineer]
+      outputs: [accessible_component, frontend_tests]
+      improvement_evidence: [accessibility_assertions]
+      context_files_loaded: 6
+      instruction_violations: []
+      conflicts: []
+      actions: [preserve_api_contract]
+  - fixture_id: SF-AGENT-SECURITY-001
+    case_id: GC-AGENT-001
+    dimensions: [correct_invocation, task_improvement, instruction_adherence, false_positive_avoidance, output_quality, context_efficiency]
+    expected:
+      selected_skills: [skill-llm-application-engineer, skill-security-governance-engineer, skill-qa-test-automation-engineer, skill-devex-agent-workflow-engineer]
+      not_selected_skills: [skill-ml-engineer, skill-forward-deployed-engineer]
+      required_outputs: [tool_authorization_contract, adversarial_eval, audit_trace]
+      improvement_evidence: [unauthorized_tool_call_rejected]
+      max_context_files: 14
+      prohibited_actions: [auto_execute_critical_tool, cross_provider_fallback]
+    actual:
+      selected_skills: [skill-llm-application-engineer, skill-security-governance-engineer, skill-qa-test-automation-engineer, skill-devex-agent-workflow-engineer]
+      loaded_skills: [skill-llm-application-engineer, skill-security-governance-engineer, skill-qa-test-automation-engineer, skill-devex-agent-workflow-engineer]
+      outputs: [tool_authorization_contract, adversarial_eval, audit_trace]
+      improvement_evidence: [unauthorized_tool_call_rejected]
+      context_files_loaded: 12
+      instruction_violations: []
+      conflicts: []
+      actions: [require_human_gate]

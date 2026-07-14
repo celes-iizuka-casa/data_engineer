@@ -22,12 +22,32 @@ level_2_semantic:
     - accuracy
     - completeness
     - freshness
+    - stale_path
     - contradiction
     - duplication
+    - canonical_source_mismatch
+    - broken_link
+    - role_skill_mismatch
+    - stale_model_recommendation
+    - responsibility_clarity
+    - fragmentation
+    - cross_document_consistency
     - discoverability
     - ai_readability
     - human_readability
     - implementation_alignment
     - maintainability
-    - canonical_source_mismatch
+  target_selector: "ai_team/evals/select_documentation_review_targets.py"
+  review_record_schema: "ai_team/evals/documentation_semantic_review.schema.json"
+  review_record_validator: "ai_team/evals/validate_documentation_semantic_review.py"
+  raw_review_storage: "output/<client>/<date>/<task>/_internal only"
+  dependency_rules:
+    - when_changed: ["ai_team/roles/*.md", "ai_team/capability_registry.yaml"]
+      include: ["ai_team/capability_registry.yaml", "ai_team/governance/ai_employee_lifecycle_registry.yaml", "ai_team/role_scope_matrix.md"]
+    - when_changed: ["skills/**"]
+      include: ["skills/index.yaml", "ai_team/governance/skill_lifecycle_registry.yaml", "ai_team/evals/skill_eval_bindings.yaml"]
+    - when_changed: ["ai_team/workflows/*.md", "ai_team/*policy.md"]
+      include: ["ai_team/governance/canonical_sources.yaml", "ai_team/governance/documentation_quality_policy.yaml"]
+    - when_changed: ["ai_team/governance/**", "ai_team/evals/**", "tools/validate_repository.py"]
+      include: ["ai_team/README.md", "README.md", "ai_team/evals/eval_catalog.yaml", "ai_team/tests/test_ai_team_foundation.py"]
 unknown_policy: "Do not declare semantic correctness without review evidence."

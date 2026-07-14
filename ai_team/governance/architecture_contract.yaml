@@ -26,6 +26,10 @@ growth_authority:
   automatic_git_push: forbidden
   promotion_requires: [before_after_eval, independent_review, celes_human_gate]
 privacy:
+  local_filesystem_permissions:
+    directories: "0700"
+    files: "0600"
+    shared_group_exception: explicit_user_decision_only
   private_state:
     - "input/** except anonymous input/README.md scaffold"
     - "output/**"
@@ -33,6 +37,9 @@ privacy:
     - ".local/**"
     - "second_brain/**"
     - "evidence/**"
+    - "raw/** and private/**"
+    - "feedback/** and **/raw_feedback/**"
+    - "**/raw_evidence/** and **/private_feedback/**"
     - "client source and credentials"
   shared_state:
     - "ai_team/**"

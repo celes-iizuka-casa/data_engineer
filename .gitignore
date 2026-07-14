@@ -9,6 +9,14 @@
 /customer/
 /sources/
 /source/
+/raw/
+/private/
+/feedback/
+/raw_evidence/
+/private_feedback/
+/raw_feedback/
+/raw_reviewer_findings/
+/raw_retrospectives/
 /tools/*
 !/tools/validate_repository.py
 /tests/
@@ -36,6 +44,11 @@
 /**/tokens/
 /**/temp/
 /**/evidence/*
+/**/raw_evidence/
+/**/private_feedback/
+/**/raw_feedback/
+/**/raw_reviewer_findings/
+/**/raw_retrospectives/
 !/ai_team/evidence/execution_evidence.schema.json
 !/ai_team/evidence/new_execution_evidence.py
 /.claude/settings.local.json

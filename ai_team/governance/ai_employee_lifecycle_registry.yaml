@@ -1,0 +1,265 @@
+schema_version: "1.0"
+registry_kind: ai-employee-lifecycle
+revision_strategy:
+  algorithm: sha256
+  canonical_inputs:
+    - ai_team/capability_registry.yaml common_contract
+    - ai_team/roles/<role_id>.md
+    - matching ai_team/capability_registry.yaml role entry
+  value_format: "sha256:<hex>"
+lifecycle_states:
+  - DISCOVERED
+  - PROPOSED
+  - CANDIDATE
+  - EVALUATED
+  - INDEPENDENTLY_REVIEWED
+  - HUMAN_GATE
+  - ACTIVE
+  - DEPRECATED
+dispositions: [CREATE, KEEP, UPDATE, MERGE, SPLIT, DEPRECATE, UNKNOWN]
+effectiveness_states: [not_evaluated, baseline_pending, evaluated]
+unknown_result: "UNKNOWN — insufficient evidence"
+baseline_import:
+  repository_head: "437bfe2dabea28f08aa9750a6a8b848af20374f0"
+  observed_on: "2026-07-14"
+  immutable: true
+  rule: "Existing canonical Roles are imported as ACTIVE; registration alone is not a promotion."
+  role_revisions:
+    engineering_pmo: "sha256:e58fedbde14b1a9d63469a819ef800f831a4e7cd1a906e507eeadcd343e7f2d1"
+    forward_deployed_engineer: "sha256:07ff5ac100f509808f90fa3d323e28f31883e4159e2578e5ce6d4325fe67cc13"
+    deliverable_quality_reviewer: "sha256:87204887afa10f08711dadd212e17d8a57485276c608167fad6dd1d250957e73"
+    engineering_knowledge_curator: "sha256:1301c3ce95d8cc79ec79474018d06a8cd5bc88633bc82f3f1f845071bd9e02b5"
+    tech_lead: "sha256:f162824f3619304b13a2593ccee429dc3a065e350900b483a4912caae3a45ed4"
+    fullstack_engineer: "sha256:e4d8cd9566832c5d2c6c0d598e8358af1165a4d5a53be080d33bcca8d5e12c04"
+    frontend_engineer: "sha256:737050c76d62f1ea093610cccaa26498151bcc8fd3cb747dc8924b8f47a7fb5d"
+    backend_engineer: "sha256:325ca9d0cf27b395284f1ed692eda40ec6e087905c20981ebd35548928983d08"
+    data_engineer: "sha256:6d1c00265718f48fab4af486475d2a86b0ae780212bc4f44c130f68d990d7f17"
+    data_platform_engineer: "sha256:c539cc686435b20b399d321a10874b43e1448217b3162efa465b7bc8e1c5ac64"
+    cloud_infrastructure_engineer: "sha256:017620ce9b6a0398938cace9e8ec1fc84934421b1178807e759de8b75b7e8f05"
+    sre_platform_engineer: "sha256:19070aba9bc7d552802d7f66ed21c9749b77ab88e4ec9926402a5ef0945d45cb"
+    security_governance_engineer: "sha256:80592d0da855c1057923bbfd74f88f29159e055933629bc8b2205e4ffdee1589"
+    qa_test_automation_engineer: "sha256:1dd2fcf40ae5c3a9b4e2f4ee64564947573bffb6d38d8987be5290e08b34ac1b"
+    llm_application_engineer: "sha256:c509a44110ce9afce4a57a896ff43d09328dceda1d4202ddcca457aa35f75df5"
+    devex_agent_workflow_engineer: "sha256:78055b42962e5b51cee46f238d88f626c7d05308e92077496ccf9ac0ac8ec73b"
+    integration_engineer: "sha256:f4ce12bedb95d4933b5d7770c2e1138cea0cfbe00d7a1a3e6816768bb60acef6"
+    product_manager: "sha256:957537844b892afa31e1dd31970039b630b48d1f0ec250f00c9f289d5328fa08"
+    ml_engineer: "sha256:a18eb23a4d874a0f8dffc992684e01da4f601e1b10b945bb84aa6559d66d09ed"
+candidate_contract:
+  required_fields:
+    - candidate_revision
+    - evidence_refs
+    - transition
+  promotion_rule: "A changed or created Role cannot become ACTIVE without evaluation, independent review, and Celes Human Gate."
+transition_record_contract:
+  required_fields: [from_state, from_revision, to_state, candidate_revision, evidence_refs, before_after_eval_ref, independent_review_ref, human_gate_status, celes_human_gate_ref]
+  human_gate_status: [pending, promoted, rejected, rework, rolled_back]
+  rule: "Evaluation and review evidence must replace pending placeholders before the corresponding state; final activation, deprecation, rejection, rework, and rollback require a matching Celes decision."
+decision_history_contract:
+  decisions: [PROMOTE, REJECT, REWORK, ROLLBACK]
+  required_fields: [schema_version, gate_id, decision_type, subject_id, from_revision, subject_revision, target_state, disposition, decision, decided_by, timestamp, before_after_eval_ref, independent_review_ref, evidence_refs]
+  rollback_required_fields: [promoted_revision, rollback_revision, reason, evidence_refs, celes_decision]
+  persistence: append_only_across_reachable_git_history
+  mutation_or_deletion: forbidden
+decision_history: []
+decision_rules:
+  create_requires:
+    - evidenced_responsibility_or_capability_gap
+    - existing_role_update_cannot_resolve
+    - merge_or_split_cannot_resolve
+    - recurring_reuse_value
+    - clear_responsibility_boundary
+    - evaluable_contract
+    - overlap_explained
+  no_usage_is_not_deprecation_evidence: true
+  numeric_score_without_evidence: forbidden
+roles:
+  - id: engineering_pmo
+    active_revision: "sha256:e58fedbde14b1a9d63469a819ef800f831a4e7cd1a906e507eeadcd343e7f2d1"
+    state: ACTIVE
+    candidate_revision: null
+    candidate_state: null
+    disposition: KEEP
+    effectiveness: not_evaluated
+    decision_rationale: "Cross-role orchestration and deliverable integration remain distinct from specialist approval."
+    overlap_review: boundary_preserved
+    evidence_refs: ["ai_team/capability_registry.yaml#engineering_pmo", "ai_team/roles/engineering_pmo.md"]
+  - id: forward_deployed_engineer
+    active_revision: "sha256:07ff5ac100f509808f90fa3d323e28f31883e4159e2578e5ce6d4325fe67cc13"
+    state: ACTIVE
+    candidate_revision: null
+    candidate_state: null
+    disposition: KEEP
+    effectiveness: not_evaluated
+    decision_rationale: "Field discovery and engineering handoff remain distinct from implementation ownership."
+    overlap_review: boundary_preserved
+    evidence_refs: ["ai_team/capability_registry.yaml#forward_deployed_engineer", "ai_team/roles/forward_deployed_engineer.md"]
+  - id: deliverable_quality_reviewer
+    active_revision: "sha256:87204887afa10f08711dadd212e17d8a57485276c608167fad6dd1d250957e73"
+    state: ACTIVE
+    candidate_revision: null
+    candidate_state: null
+    disposition: KEEP
+    effectiveness: not_evaluated
+    decision_rationale: "Independent final quality judgment remains separated from primary artifact creation."
+    overlap_review: boundary_preserved
+    evidence_refs: ["ai_team/capability_registry.yaml#deliverable_quality_reviewer", "ai_team/roles/deliverable_quality_reviewer.md"]
+  - id: engineering_knowledge_curator
+    active_revision: "sha256:1301c3ce95d8cc79ec79474018d06a8cd5bc88633bc82f3f1f845071bd9e02b5"
+    state: ACTIVE
+    candidate_revision: null
+    candidate_state: null
+    disposition: KEEP
+    effectiveness: not_evaluated
+    decision_rationale: "Local knowledge curation remains separate from shared canonical promotion."
+    overlap_review: boundary_preserved
+    evidence_refs: ["ai_team/capability_registry.yaml#engineering_knowledge_curator", "ai_team/roles/engineering_knowledge_curator.md"]
+  - id: tech_lead
+    active_revision: "sha256:f162824f3619304b13a2593ccee429dc3a065e350900b483a4912caae3a45ed4"
+    state: ACTIVE
+    candidate_revision: null
+    candidate_state: null
+    disposition: KEEP
+    effectiveness: not_evaluated
+    decision_rationale: "Architecture and technical trade-off authority spans domains without replacing specialist implementation."
+    overlap_review: boundary_preserved
+    evidence_refs: ["ai_team/capability_registry.yaml#tech_lead", "ai_team/roles/tech_lead.md"]
+  - id: fullstack_engineer
+    active_revision: "sha256:e4d8cd9566832c5d2c6c0d598e8358af1165a4d5a53be080d33bcca8d5e12c04"
+    state: ACTIVE
+    candidate_revision: null
+    candidate_state: null
+    disposition: KEEP
+    effectiveness: not_evaluated
+    decision_rationale: "Vertical-slice MVP ownership remains bounded from deep frontend, backend, and platform specialization."
+    overlap_review: boundary_preserved
+    evidence_refs: ["ai_team/capability_registry.yaml#fullstack_engineer", "ai_team/roles/fullstack_engineer.md"]
+  - id: frontend_engineer
+    active_revision: "sha256:737050c76d62f1ea093610cccaa26498151bcc8fd3cb747dc8924b8f47a7fb5d"
+    state: ACTIVE
+    candidate_revision: null
+    candidate_state: null
+    disposition: KEEP
+    effectiveness: not_evaluated
+    decision_rationale: "Web UI, accessibility, and client-state responsibility remain distinct from server authorization."
+    overlap_review: boundary_preserved
+    evidence_refs: ["ai_team/capability_registry.yaml#frontend_engineer", "ai_team/roles/frontend_engineer.md"]
+  - id: backend_engineer
+    active_revision: "sha256:325ca9d0cf27b395284f1ed692eda40ec6e087905c20981ebd35548928983d08"
+    state: ACTIVE
+    candidate_revision: null
+    candidate_state: null
+    disposition: KEEP
+    effectiveness: not_evaluated
+    decision_rationale: "API, transaction, idempotency, and service implementation remain a coherent boundary."
+    overlap_review: boundary_preserved
+    evidence_refs: ["ai_team/capability_registry.yaml#backend_engineer", "ai_team/roles/backend_engineer.md"]
+  - id: data_engineer
+    active_revision: "sha256:6d1c00265718f48fab4af486475d2a86b0ae780212bc4f44c130f68d990d7f17"
+    state: ACTIVE
+    candidate_revision: null
+    candidate_state: null
+    disposition: KEEP
+    effectiveness: not_evaluated
+    decision_rationale: "Pipeline, modeling, data quality, and analytics engineering remain distinct from shared platform ownership."
+    overlap_review: boundary_preserved
+    evidence_refs: ["ai_team/capability_registry.yaml#data_engineer", "ai_team/roles/data_engineer.md"]
+  - id: data_platform_engineer
+    active_revision: "sha256:c539cc686435b20b399d321a10874b43e1448217b3162efa465b7bc8e1c5ac64"
+    state: ACTIVE
+    candidate_revision: null
+    candidate_state: null
+    disposition: KEEP
+    effectiveness: not_evaluated
+    decision_rationale: "Shared storage, compute, metadata, governance, and reliability standards remain a platform boundary."
+    overlap_review: boundary_preserved
+    evidence_refs: ["ai_team/capability_registry.yaml#data_platform_engineer", "ai_team/roles/data_platform_engineer.md"]
+  - id: cloud_infrastructure_engineer
+    active_revision: "sha256:017620ce9b6a0398938cace9e8ec1fc84934421b1178807e759de8b75b7e8f05"
+    state: ACTIVE
+    candidate_revision: null
+    candidate_state: null
+    disposition: KEEP
+    effectiveness: not_evaluated
+    decision_rationale: "IaC, networking, IAM implementation, and cloud provisioning remain distinct from SRE service ownership."
+    overlap_review: boundary_preserved
+    evidence_refs: ["ai_team/capability_registry.yaml#cloud_infrastructure_engineer", "ai_team/roles/cloud_infrastructure_engineer.md"]
+  - id: sre_platform_engineer
+    active_revision: "sha256:19070aba9bc7d552802d7f66ed21c9749b77ab88e4ec9926402a5ef0945d45cb"
+    state: ACTIVE
+    candidate_revision: null
+    candidate_state: null
+    disposition: KEEP
+    effectiveness: not_evaluated
+    decision_rationale: "SLO, observability, incident, release safety, and resilience remain a coherent operational boundary."
+    overlap_review: boundary_preserved
+    evidence_refs: ["ai_team/capability_registry.yaml#sre_platform_engineer", "ai_team/roles/sre_platform_engineer.md"]
+  - id: security_governance_engineer
+    active_revision: "sha256:80592d0da855c1057923bbfd74f88f29159e055933629bc8b2205e4ffdee1589"
+    state: ACTIVE
+    candidate_revision: null
+    candidate_state: null
+    disposition: KEEP
+    effectiveness: not_evaluated
+    decision_rationale: "Security specialist review and governance remain independent from implementer risk acceptance."
+    overlap_review: boundary_preserved
+    evidence_refs: ["ai_team/capability_registry.yaml#security_governance_engineer", "ai_team/roles/security_governance_engineer.md"]
+  - id: qa_test_automation_engineer
+    active_revision: "sha256:1dd2fcf40ae5c3a9b4e2f4ee64564947573bffb6d38d8987be5290e08b34ac1b"
+    state: ACTIVE
+    candidate_revision: null
+    candidate_state: null
+    disposition: KEEP
+    effectiveness: not_evaluated
+    decision_rationale: "Risk-based test design and reproducible quality evidence remain independent from implementation."
+    overlap_review: boundary_preserved
+    evidence_refs: ["ai_team/capability_registry.yaml#qa_test_automation_engineer", "ai_team/roles/qa_test_automation_engineer.md"]
+  - id: llm_application_engineer
+    active_revision: "sha256:c509a44110ce9afce4a57a896ff43d09328dceda1d4202ddcca457aa35f75df5"
+    state: ACTIVE
+    candidate_revision: null
+    candidate_state: null
+    disposition: KEEP
+    effectiveness: not_evaluated
+    decision_rationale: "RAG, agent, prompt, guardrail, and LLM evaluation remain distinct from general ML lifecycle ownership."
+    overlap_review: boundary_preserved
+    evidence_refs: ["ai_team/capability_registry.yaml#llm_application_engineer", "ai_team/roles/llm_application_engineer.md"]
+  - id: devex_agent_workflow_engineer
+    active_revision: "sha256:78055b42962e5b51cee46f238d88f626c7d05308e92077496ccf9ac0ac8ec73b"
+    state: ACTIVE
+    candidate_revision: null
+    candidate_state: null
+    disposition: KEEP
+    effectiveness: not_evaluated
+    decision_rationale: "Agent workflow, Skill, validator, and developer experience ownership remain distinct from product implementation."
+    overlap_review: boundary_preserved
+    evidence_refs: ["ai_team/capability_registry.yaml#devex_agent_workflow_engineer", "ai_team/roles/devex_agent_workflow_engineer.md"]
+  - id: integration_engineer
+    active_revision: "sha256:f4ce12bedb95d4933b5d7770c2e1138cea0cfbe00d7a1a3e6816768bb60acef6"
+    state: ACTIVE
+    candidate_revision: null
+    candidate_state: null
+    disposition: KEEP
+    effectiveness: not_evaluated
+    decision_rationale: "External contracts, retries, compatibility, and cross-system integration remain a coherent boundary."
+    overlap_review: boundary_preserved
+    evidence_refs: ["ai_team/capability_registry.yaml#integration_engineer", "ai_team/roles/integration_engineer.md"]
+  - id: product_manager
+    active_revision: "sha256:957537844b892afa31e1dd31970039b630b48d1f0ec250f00c9f289d5328fa08"
+    state: ACTIVE
+    candidate_revision: null
+    candidate_state: null
+    disposition: KEEP
+    effectiveness: not_evaluated
+    decision_rationale: "Product value, priority, and acceptance responsibility remain distinct from technical delivery governance."
+    overlap_review: boundary_preserved
+    evidence_refs: ["ai_team/capability_registry.yaml#product_manager", "ai_team/roles/product_manager.md"]
+  - id: ml_engineer
+    active_revision: "sha256:a18eb23a4d874a0f8dffc992684e01da4f601e1b10b945bb84aa6559d66d09ed"
+    state: ACTIVE
+    candidate_revision: null
+    candidate_state: null
+    disposition: KEEP
+    effectiveness: not_evaluated
+    decision_rationale: "Dataset, training, evaluation, serving, and model monitoring remain distinct from LLM application behavior."
+    overlap_review: boundary_preserved
+    evidence_refs: ["ai_team/capability_registry.yaml#ml_engineer", "ai_team/roles/ml_engineer.md"]

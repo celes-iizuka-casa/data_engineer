@@ -5,9 +5,11 @@ from __future__ import annotations
 
 import json
 import hashlib
+import os
 import re
 import subprocess
 import tempfile
+from datetime import datetime
 from pathlib import Path, PurePosixPath
 from urllib.parse import unquote
 
@@ -80,6 +82,51 @@ ROLES = [
     "ml_engineer",
 ]
 
+ROLE_LIFECYCLE_BASELINE_HEAD = (
+    "437bfe2dabea28f08aa9750a6a8b848af20374f0"
+)
+ROLE_LIFECYCLE_BASELINE_REVISIONS = {
+    "engineering_pmo": "sha256:e58fedbde14b1a9d63469a819ef800f831a4e7cd1a906e507eeadcd343e7f2d1",
+    "forward_deployed_engineer": "sha256:07ff5ac100f509808f90fa3d323e28f31883e4159e2578e5ce6d4325fe67cc13",
+    "deliverable_quality_reviewer": "sha256:87204887afa10f08711dadd212e17d8a57485276c608167fad6dd1d250957e73",
+    "engineering_knowledge_curator": "sha256:1301c3ce95d8cc79ec79474018d06a8cd5bc88633bc82f3f1f845071bd9e02b5",
+    "tech_lead": "sha256:f162824f3619304b13a2593ccee429dc3a065e350900b483a4912caae3a45ed4",
+    "fullstack_engineer": "sha256:e4d8cd9566832c5d2c6c0d598e8358af1165a4d5a53be080d33bcca8d5e12c04",
+    "frontend_engineer": "sha256:737050c76d62f1ea093610cccaa26498151bcc8fd3cb747dc8924b8f47a7fb5d",
+    "backend_engineer": "sha256:325ca9d0cf27b395284f1ed692eda40ec6e087905c20981ebd35548928983d08",
+    "data_engineer": "sha256:6d1c00265718f48fab4af486475d2a86b0ae780212bc4f44c130f68d990d7f17",
+    "data_platform_engineer": "sha256:c539cc686435b20b399d321a10874b43e1448217b3162efa465b7bc8e1c5ac64",
+    "cloud_infrastructure_engineer": "sha256:017620ce9b6a0398938cace9e8ec1fc84934421b1178807e759de8b75b7e8f05",
+    "sre_platform_engineer": "sha256:19070aba9bc7d552802d7f66ed21c9749b77ab88e4ec9926402a5ef0945d45cb",
+    "security_governance_engineer": "sha256:80592d0da855c1057923bbfd74f88f29159e055933629bc8b2205e4ffdee1589",
+    "qa_test_automation_engineer": "sha256:1dd2fcf40ae5c3a9b4e2f4ee64564947573bffb6d38d8987be5290e08b34ac1b",
+    "llm_application_engineer": "sha256:c509a44110ce9afce4a57a896ff43d09328dceda1d4202ddcca457aa35f75df5",
+    "devex_agent_workflow_engineer": "sha256:78055b42962e5b51cee46f238d88f626c7d05308e92077496ccf9ac0ac8ec73b",
+    "integration_engineer": "sha256:f4ce12bedb95d4933b5d7770c2e1138cea0cfbe00d7a1a3e6816768bb60acef6",
+    "product_manager": "sha256:957537844b892afa31e1dd31970039b630b48d1f0ec250f00c9f289d5328fa08",
+    "ml_engineer": "sha256:a18eb23a4d874a0f8dffc992684e01da4f601e1b10b945bb84aa6559d66d09ed",
+}
+ROLE_TRANSITION_FIELDS = {
+    "from_state",
+    "from_revision",
+    "to_state",
+    "candidate_revision",
+    "evidence_refs",
+    "before_after_eval_ref",
+    "independent_review_ref",
+    "human_gate_status",
+    "celes_human_gate_ref",
+}
+ROLE_CREATE_REQUIREMENTS = {
+    "evidenced_responsibility_or_capability_gap",
+    "existing_role_update_cannot_resolve",
+    "merge_or_split_cannot_resolve",
+    "recurring_reuse_value",
+    "clear_responsibility_boundary",
+    "evaluable_contract",
+    "overlap_explained",
+}
+
 WORKFLOWS = [
     "input_to_output_workflow.md",
     "field_discovery_to_solution_workflow.md",
@@ -101,6 +148,7 @@ FOUNDATION_FILES = [
     "ai_team/governance/architecture_contract.yaml",
     "ai_team/governance/canonical_sources.yaml",
     "ai_team/governance/capability_growth_policy.yaml",
+    "ai_team/governance/ai_employee_lifecycle_registry.yaml",
     "ai_team/governance/skill_lifecycle_registry.yaml",
     "ai_team/governance/documentation_quality_policy.yaml",
     "ai_team/governance/human_gate.schema.json",
@@ -110,6 +158,11 @@ FOUNDATION_FILES = [
     "ai_team/evals/eval_catalog.yaml",
     "ai_team/evals/golden_cases.yaml",
     "ai_team/evals/case_fixtures.yaml",
+    "ai_team/evals/agent_skill_fixtures.yaml",
+    "ai_team/evals/skill_eval_bindings.yaml",
+    "ai_team/evals/documentation_semantic_review.schema.json",
+    "ai_team/evals/validate_documentation_semantic_review.py",
+    "ai_team/evals/select_documentation_review_targets.py",
     "ai_team/evals/run_foundation_evals.py",
     "ai_team/review/risk_based_quality_gates.yaml",
     "ai_team/tests/test_ai_team_foundation.py",
@@ -133,6 +186,14 @@ PRIVATE_TOP_LEVEL = {
     "client",
     "sources",
     "source",
+    "raw",
+    "private",
+    "feedback",
+    "raw_evidence",
+    "private_feedback",
+    "raw_feedback",
+    "raw_reviewer_findings",
+    "raw_retrospectives",
 }
 PRIVATE_TRACKED_ALLOWLIST = {"input/README.md"}
 PRIVATE_SHARED_EVIDENCE_ALLOWLIST = {
@@ -157,6 +218,11 @@ PRIVATE_PATH_COMPONENTS = {
     ".ssh",
     ".aws",
     ".gnupg",
+    "raw_evidence",
+    "private_feedback",
+    "raw_feedback",
+    "raw_reviewer_findings",
+    "raw_retrospectives",
 }
 SECRET_SUFFIXES = {".pem", ".key", ".p12", ".pfx", ".crt", ".cer"}
 REQUIRED_IGNORE_RULES = {
@@ -182,6 +248,14 @@ REQUIRED_IGNORE_RULES = {
     "/customer/",
     "/sources/",
     "/source/",
+    "/raw/",
+    "/private/",
+    "/feedback/",
+    "/raw_evidence/",
+    "/private_feedback/",
+    "/raw_feedback/",
+    "/raw_reviewer_findings/",
+    "/raw_retrospectives/",
     "/.ssh/",
     "/.aws/",
     "/.gnupg/",
@@ -193,6 +267,11 @@ REQUIRED_IGNORE_RULES = {
     "/**/tokens/",
     "/**/temp/",
     "/**/evidence/*",
+    "/**/raw_evidence/",
+    "/**/private_feedback/",
+    "/**/raw_feedback/",
+    "/**/raw_reviewer_findings/",
+    "/**/raw_retrospectives/",
     "/.claude/settings.local.json",
     "/.claude/.needs_validation",
 }
@@ -212,6 +291,14 @@ PRIVATE_GITIGNORE_SENTINELS = {
     "customer/example-client/request.md",
     "sources/example-client/source.txt",
     "source/example-client/source.txt",
+    "raw/evidence.json",
+    "private/feedback.md",
+    "feedback/review.md",
+    "raw_evidence/run.yaml",
+    "private_feedback/review.md",
+    "raw_feedback/comment.md",
+    "raw_reviewer_findings/finding.md",
+    "raw_retrospectives/task.md",
     ".local/evidence/run.yaml",
     "evidence/run.yaml",
     "ai_team/evidence/customer-run.yaml",
@@ -225,6 +312,11 @@ PRIVATE_GITIGNORE_SENTINELS = {
     "nested/.local/state.yaml",
     "nested/second_brain/private.md",
     "nested/evidence/run.yaml",
+    "nested/raw_evidence/run.yaml",
+    "nested/private_feedback/review.md",
+    "nested/raw_feedback/comment.md",
+    "nested/raw_reviewer_findings/finding.md",
+    "nested/raw_retrospectives/task.md",
     "nested/secrets/key.txt",
     "nested/credentials/account.json",
     "nested/tokens/access.txt",
@@ -245,16 +337,24 @@ ANONYMOUS_INPUT_README_SHA256 = (
     "955bc0f273b9c36bd148f01998102dbf44c2e2559c5c8461919029c3a22ad64b"
 )
 SECRET_CONTENT_PATTERNS = (
-    re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"),
+    re.compile(r"-----BEGIN (?:RSA |EC |DSA |OPENSSH )?PRIVATE KEY-----"),
     re.compile(r"\bAKIA[A-Z0-9]{16}\b"),
+    re.compile(r"\bASIA[A-Z0-9]{16}\b"),
     re.compile(r"\bAIza[0-9A-Za-z_-]{35}\b"),
     re.compile(r"\bgh[pousr]_[0-9A-Za-z]{36,255}\b"),
+    re.compile(r"\bgithub_pat_[0-9A-Za-z_]{20,255}\b"),
     re.compile(r"\bxox[baprs]-[0-9A-Za-z-]{10,255}\b"),
+    re.compile(r"\bsk-proj-[0-9A-Za-z_-]{20,255}\b"),
+    re.compile(r"\bsk-ant-[0-9A-Za-z_-]{20,255}\b"),
+    re.compile(r"\bsk-(?!proj-|ant-)[0-9A-Za-z_-]{20,255}\b"),
 )
 PERSONAL_ABSOLUTE_PATH_PATTERNS = (
     re.compile("/" + "Users" + r"/[A-Za-z0-9._-]+/"),
     re.compile("/" + "home" + r"/[A-Za-z0-9._-]+/"),
     re.compile(r"[A-Za-z]:\\" + "Users" + r"\\[^\\\s]+\\"),
+)
+PRIVATE_README_INPUT_EXAMPLE_PATTERN = re.compile(
+    r"\binput/(?!example-client/|<client>/|README\.md\b)[^\s`/]+/"
 )
 
 TEMPLATES = [
@@ -587,8 +687,90 @@ def gitignore_effective_ignored_paths(raw: bytes) -> set[str]:
         }
 
 
+def validate_cross_provider_code(
+    validation: Validation, root: Path = ROOT
+) -> None:
+    """Scan both worktree candidates and Git-index blobs for provider calls."""
+    code_suffixes = {
+        ".py", ".js", ".mjs", ".cjs", ".ts", ".tsx", ".sh", ".zsh",
+        ".json",
+    }
+    code_patterns = (
+        re.compile(r"^\s*(?:from|import)\s+(?:openai|anthropic)\b", re.M),
+        re.compile(
+            r"(?:from\s+|require\s*\(|import\s*\()"
+            r"[\"'](?:openai|@anthropic-ai/sdk)[\"']"
+        ),
+        re.compile(r"https://api\.(?:openai|anthropic)\.com", re.I),
+        re.compile(r"^\s*(?:exec\s+)?(?:claude|codex)(?:\s|$)", re.M),
+        re.compile(
+            r"subprocess\.(?:run|Popen|call|check_call|check_output)\s*\(\s*"
+            r"\[\s*[\"'](?:claude|codex)[\"']"
+        ),
+        re.compile(
+            r"(?:spawn|execFile|execSync|exec|system)\s*\(\s*"
+            r"[\"'](?:claude|codex)(?:[\"']|\s)"
+        ),
+    )
+    try:
+        tracked = set(git_tracked_files(root))
+        untracked = set(git_untracked_files(root))
+    except (OSError, RuntimeError) as exc:
+        validation.fail(
+            f"Cannot enumerate shared code for provider scan (fail closed): {exc}"
+        )
+        return
+
+    def is_shared_code(relative: str) -> bool:
+        return (
+            private_tracked_reason(relative) is None
+            and Path(relative).suffix.lower() in code_suffixes
+        )
+
+    violations: list[tuple[str, str]] = []
+    for relative in sorted(tracked):
+        if not is_shared_code(relative):
+            continue
+        try:
+            content = git_index_blob(relative, root).decode("utf-8")
+        except (OSError, RuntimeError, UnicodeDecodeError) as exc:
+            validation.fail(
+                f"Cannot inspect Git-index provider code {relative} "
+                f"(fail closed): {exc}"
+            )
+            continue
+        if any(pattern.search(content) for pattern in code_patterns):
+            violations.append(("Git index", relative))
+    for relative in sorted(tracked | untracked):
+        if not is_shared_code(relative):
+            continue
+        target = root / relative
+        if not target.is_file():
+            continue
+        try:
+            content = target.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError) as exc:
+            validation.fail(
+                f"Cannot inspect worktree provider code {relative} "
+                f"(fail closed): {exc}"
+            )
+            continue
+        if any(pattern.search(content) for pattern in code_patterns):
+            violations.append(("working tree", relative))
+    for source, relative in violations:
+        validation.fail(
+            f"Cross-provider invocation code is forbidden in {source}: {relative}"
+        )
+    if not violations:
+        validation.ok(
+            "Cross-provider invocation is absent from Git index and worktree code"
+        )
+
+
 def canonical_pattern_matches(relative_path: str, pattern: str) -> bool:
     """Match manifest globs, including files directly under a /**/* root."""
+    if "/" not in pattern:
+        return relative_path == pattern
     if pattern.endswith("/**/*"):
         prefix = pattern[:-5].rstrip("/")
         return relative_path.startswith(prefix + "/")
@@ -611,6 +793,22 @@ def skill_content_revision(skill_id: str, root: Path = ROOT) -> str | None:
     return f"sha256:{digest.hexdigest()}"
 
 
+def configured_role_ids(root: Path = ROOT) -> list[str]:
+    """Read the current canonical Role IDs, retaining the baseline minimum."""
+    target = root / "ai_team" / "capability_registry.yaml"
+    try:
+        data = yaml.safe_load(target.read_text(encoding="utf-8"))
+    except (OSError, yaml.YAMLError):
+        return list(ROLES)
+    entries = data.get("roles", []) if isinstance(data, dict) else []
+    ids = [
+        str(entry.get("id"))
+        for entry in entries
+        if isinstance(entry, dict) and entry.get("id")
+    ]
+    return ids if ids else list(ROLES)
+
+
 def skill_head_revision(skill_id: str, root: Path = ROOT) -> str | None:
     """Derive the active Skill revision from the canonical committed HEAD."""
     digest = hashlib.sha256()
@@ -628,6 +826,506 @@ def skill_head_revision(skill_id: str, root: Path = ROOT) -> str | None:
         digest.update(result.stdout)
         digest.update(b"\0")
     return f"sha256:{digest.hexdigest()}"
+
+
+def role_content_revision(role_id: str, root: Path = ROOT) -> str | None:
+    """Derive a Role revision from shared contract, identity, and capability."""
+    capability_path = root / "ai_team" / "capability_registry.yaml"
+    role_path = root / "ai_team" / "roles" / f"{role_id}.md"
+    if not capability_path.is_file() or not role_path.is_file():
+        return None
+    try:
+        capability = yaml.safe_load(capability_path.read_text(encoding="utf-8"))
+    except (OSError, yaml.YAMLError):
+        return None
+    entries = capability.get("roles", []) if isinstance(capability, dict) else []
+    entry = next(
+        (
+            item
+            for item in entries
+            if isinstance(item, dict) and item.get("id") == role_id
+        ),
+        None,
+    )
+    if entry is None:
+        return None
+    digest = hashlib.sha256()
+    digest.update(b"common_contract\0")
+    digest.update(
+        yaml.safe_dump(
+            capability.get("common_contract", {}),
+            allow_unicode=True,
+            sort_keys=True,
+        ).encode("utf-8")
+    )
+    digest.update(b"\0")
+    digest.update(b"role_document\0")
+    digest.update(role_path.read_bytes())
+    digest.update(b"\0capability_entry\0")
+    digest.update(
+        yaml.safe_dump(
+            entry,
+            allow_unicode=True,
+            sort_keys=True,
+        ).encode("utf-8")
+    )
+    digest.update(b"\0")
+    return f"sha256:{digest.hexdigest()}"
+
+
+def role_git_revision(
+    role_id: str, revision: str, root: Path = ROOT
+) -> str | None:
+    """Derive a Role revision from a canonical Git revision."""
+    role_result = subprocess.run(
+        [
+            "git", "-C", str(root), "show",
+            f"{revision}:ai_team/roles/{role_id}.md",
+        ],
+        check=False,
+        capture_output=True,
+    )
+    capability_result = subprocess.run(
+        [
+            "git", "-C", str(root), "show",
+            f"{revision}:ai_team/capability_registry.yaml",
+        ],
+        check=False,
+        capture_output=True,
+    )
+    if role_result.returncode or capability_result.returncode:
+        return None
+    try:
+        capability = yaml.safe_load(capability_result.stdout.decode("utf-8"))
+    except (UnicodeDecodeError, yaml.YAMLError):
+        return None
+    entries = capability.get("roles", []) if isinstance(capability, dict) else []
+    entry = next(
+        (
+            item
+            for item in entries
+            if isinstance(item, dict) and item.get("id") == role_id
+        ),
+        None,
+    )
+    if entry is None:
+        return None
+    digest = hashlib.sha256()
+    digest.update(b"common_contract\0")
+    digest.update(
+        yaml.safe_dump(
+            capability.get("common_contract", {}),
+            allow_unicode=True,
+            sort_keys=True,
+        ).encode("utf-8")
+    )
+    digest.update(b"\0")
+    digest.update(b"role_document\0")
+    digest.update(role_result.stdout)
+    digest.update(b"\0capability_entry\0")
+    digest.update(
+        yaml.safe_dump(
+            entry,
+            allow_unicode=True,
+            sort_keys=True,
+        ).encode("utf-8")
+    )
+    digest.update(b"\0")
+    return f"sha256:{digest.hexdigest()}"
+
+
+def role_head_revision(role_id: str, root: Path = ROOT) -> str | None:
+    """Derive the active Role revision from the canonical committed HEAD."""
+    return role_git_revision(role_id, "HEAD", root)
+
+
+def non_pending_reference(value: object) -> bool:
+    """Return true only for an evidence reference that is not a placeholder."""
+    if not isinstance(value, str):
+        return False
+    normalized = value.strip()
+    return bool(normalized) and normalized.casefold() not in {
+        "pending", "tbd", "todo", "unknown", "unavailable", "n/a", "na",
+        "none", "null",
+    }
+
+
+def valid_reference_list(value: object) -> bool:
+    """Require a non-empty list of concrete, non-placeholder references."""
+    return (
+        isinstance(value, list)
+        and bool(value)
+        and all(non_pending_reference(item) for item in value)
+    )
+
+
+def valid_decision_timestamp(value: object) -> bool:
+    """Require a real ISO-8601 timestamp with an explicit timezone."""
+    if not isinstance(value, str) or not re.fullmatch(
+        r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:Z|[+-]\d{2}:\d{2})",
+        value,
+    ):
+        return False
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return False
+    return parsed.tzinfo is not None
+
+
+def role_candidate_registration_failures(
+    entry: dict,
+    current_revision: str | None,
+    head_revision: str | None,
+    previous_entry: dict | None = None,
+) -> list[str]:
+    """Require every canonical Role revision change to be a registered candidate."""
+    candidate_revision = entry.get("candidate_revision")
+    failures: list[str] = []
+    if current_revision != head_revision and candidate_revision != current_revision:
+        failures.append("unregistered_canonical_change")
+    previous_active_revision = (
+        previous_entry.get("active_revision")
+        if previous_entry is not None
+        else None
+    )
+    canonical_changed_from_previous = (
+        current_revision is not None
+        and current_revision != previous_active_revision
+    )
+    if canonical_changed_from_previous and candidate_revision != current_revision:
+        failures.append("unregistered_canonical_change")
+    if candidate_revision is not None and current_revision == head_revision:
+        candidate_state = entry.get("candidate_state")
+        final_candidate = candidate_state in {"ACTIVE", "DEPRECATED"}
+        progressed_candidate = (
+            previous_entry is not None
+            and previous_entry.get("candidate_revision") == candidate_revision
+        )
+        governed_state_change = (
+            previous_entry is not None
+            and previous_entry.get("state") != candidate_state
+        )
+        governed_create = (
+            previous_entry is None and entry.get("disposition") == "CREATE"
+        )
+        content_changed_from_previous = canonical_changed_from_previous
+        if not final_candidate or not (
+            progressed_candidate
+            or governed_state_change
+            or governed_create
+            or content_changed_from_previous
+        ):
+            failures.append("candidate_without_revision_change")
+    return sorted(set(failures))
+
+
+def role_create_criteria_failures(entry: dict) -> list[str]:
+    """Require evidence for every strict CREATE criterion and nowhere else."""
+    criteria = entry.get("create_criteria")
+    if entry.get("disposition") != "CREATE":
+        return [] if criteria in (None, {}) else ["criteria_on_non_create"]
+    if not isinstance(criteria, dict) or set(criteria) != ROLE_CREATE_REQUIREMENTS:
+        return ["incomplete_create_criteria"]
+    if not all(non_pending_reference(reference) for reference in criteria.values()):
+        return ["placeholder_create_evidence"]
+    return []
+
+
+def role_registry_state_failures(
+    entry: dict, previous_entry: dict | None
+) -> list[str]:
+    """Prevent direct Role activation/deprecation outside a final candidate."""
+    if previous_entry is None:
+        return []
+    candidate_state = entry.get("candidate_state")
+    transition = entry.get("transition")
+    final_candidate = (
+        entry.get("candidate_revision") is not None
+        and candidate_state in {"ACTIVE", "DEPRECATED"}
+        and isinstance(transition, dict)
+        and transition.get("human_gate_status") in {"promoted", "rolled_back"}
+    )
+    failures: list[str] = []
+    if not final_candidate and entry.get("state") != previous_entry.get("state"):
+        failures.append("unregistered_state_change")
+    if entry.get("candidate_revision") is not None and isinstance(
+        transition, dict
+    ):
+        previous_transition = previous_entry.get("transition")
+        if (
+            previous_entry.get("candidate_revision")
+            == entry.get("candidate_revision")
+            and isinstance(previous_transition, dict)
+        ):
+            expected_from_state = previous_transition.get("from_state")
+        else:
+            expected_from_state = previous_entry.get("state")
+        if transition.get("from_state") != expected_from_state:
+            failures.append("from_state_history_mismatch")
+    return sorted(failures)
+
+
+def ai_employee_transition_failures(
+    entry: dict, decision_history: list[dict]
+) -> list[str]:
+    """Validate the state-specific Role candidate and Celes decision contract."""
+    role_id = str(entry.get("id", ""))
+    candidate_revision = entry.get("candidate_revision")
+    candidate_state = entry.get("candidate_state")
+    transition = entry.get("transition")
+    failures: list[str] = []
+    if candidate_revision is None:
+        if transition not in (None, {}):
+            failures.append("transition_without_candidate")
+        return failures
+    allowed_candidate_states = {
+        "DISCOVERED", "PROPOSED", "CANDIDATE", "EVALUATED",
+        "INDEPENDENTLY_REVIEWED", "HUMAN_GATE", "ACTIVE", "DEPRECATED",
+    }
+    if candidate_state not in allowed_candidate_states:
+        failures.append("invalid_candidate_state")
+    if not isinstance(transition, dict) or set(transition) != ROLE_TRANSITION_FIELDS:
+        failures.append("incomplete_transition")
+        return failures
+    if transition.get("from_state") not in allowed_candidate_states:
+        failures.append("invalid_from_state")
+    if (
+        candidate_state not in {"ACTIVE", "DEPRECATED"}
+        and transition.get("from_state") != entry.get("state")
+    ):
+        failures.append("from_state_mismatch")
+    if transition.get("to_state") != candidate_state:
+        failures.append("to_state_mismatch")
+    from_revision = transition.get("from_revision")
+    if from_revision is not None and (
+        not isinstance(from_revision, str)
+        or not re.fullmatch(r"sha256:[0-9a-f]{64}", from_revision)
+    ):
+        failures.append("invalid_from_revision")
+    if (
+        candidate_state not in {"ACTIVE", "DEPRECATED"}
+        and entry.get("active_revision") != from_revision
+    ):
+        failures.append("from_revision_mismatch")
+    if transition.get("candidate_revision") != candidate_revision:
+        failures.append("candidate_revision_mismatch")
+    if (
+        entry.get("disposition") in {"UPDATE", "MERGE", "SPLIT"}
+        and from_revision == candidate_revision
+    ):
+        failures.append("noop_candidate_revision")
+    if entry.get("disposition") == "CREATE" and from_revision is not None:
+        failures.append("create_from_revision_must_be_null")
+    if not valid_reference_list(transition.get("evidence_refs")):
+        failures.append("missing_evidence_refs")
+    gate_status = transition.get("human_gate_status")
+    before_after_ref = transition.get("before_after_eval_ref")
+    independent_ref = transition.get("independent_review_ref")
+    celes_ref = transition.get("celes_human_gate_ref")
+    pending_states = {
+        "DISCOVERED", "PROPOSED", "CANDIDATE", "EVALUATED",
+        "INDEPENDENTLY_REVIEWED",
+    }
+    if candidate_state in pending_states:
+        if gate_status != "pending":
+            failures.append("human_gate_not_pending")
+        if celes_ref != "pending":
+            failures.append("premature_celes_gate_ref")
+    if candidate_state in {"DISCOVERED", "PROPOSED", "CANDIDATE", "EVALUATED"}:
+        if independent_ref != "pending":
+            failures.append("premature_independent_review")
+    if candidate_state in {
+        "EVALUATED", "INDEPENDENTLY_REVIEWED", "HUMAN_GATE", "ACTIVE",
+        "DEPRECATED",
+    } and not non_pending_reference(before_after_ref):
+        failures.append("missing_before_after_eval")
+    if candidate_state in {
+        "INDEPENDENTLY_REVIEWED", "HUMAN_GATE", "ACTIVE", "DEPRECATED",
+    } and not non_pending_reference(independent_ref):
+        failures.append("missing_independent_review")
+    decision_by_status = {
+        "promoted": "PROMOTE",
+        "rejected": "REJECT",
+        "rework": "REWORK",
+        "rolled_back": "ROLLBACK",
+    }
+    if candidate_state == "HUMAN_GATE" and gate_status not in {
+        "pending", "rejected", "rework",
+    }:
+        failures.append("invalid_human_gate_outcome")
+    if candidate_state in {"ACTIVE", "DEPRECATED"}:
+        if gate_status not in {"promoted", "rolled_back"}:
+            failures.append("missing_human_promotion")
+        if entry.get("state") != candidate_state:
+            failures.append("final_role_state_mismatch")
+        if entry.get("active_revision") != candidate_revision:
+            failures.append("promoted_revision_mismatch")
+    if gate_status in decision_by_status:
+        if not non_pending_reference(celes_ref):
+            failures.append("missing_celes_gate_ref")
+        expected_decision = decision_by_status[gate_status]
+        matching_decisions = [
+            decision
+            for decision in decision_history
+            if isinstance(decision, dict)
+            and decision.get("subject_id") == role_id
+            and decision.get("subject_revision") == candidate_revision
+            and decision.get("decision") == expected_decision
+        ]
+        if len(matching_decisions) != 1:
+            failures.append("missing_unique_decision_history")
+        else:
+            decision = matching_decisions[0]
+            if decision.get("gate_id") != celes_ref:
+                failures.append("celes_gate_ref_mismatch")
+            if decision.get("from_revision") != from_revision:
+                failures.append("decision_from_revision_mismatch")
+            if decision.get("target_state") != candidate_state:
+                failures.append("decision_target_state_mismatch")
+            if decision.get("disposition") != entry.get("disposition"):
+                failures.append("decision_disposition_mismatch")
+            if decision.get("before_after_eval_ref") != before_after_ref:
+                failures.append("decision_before_after_mismatch")
+            if decision.get("independent_review_ref") != independent_ref:
+                failures.append("decision_review_mismatch")
+            if set(decision.get("evidence_refs", [])) != set(
+                transition.get("evidence_refs", [])
+            ):
+                failures.append("decision_evidence_mismatch")
+            if expected_decision == "ROLLBACK":
+                if decision.get("rollback_revision") != candidate_revision:
+                    failures.append("rollback_revision_mismatch")
+                if decision.get("promoted_revision") != from_revision:
+                    failures.append("rollback_source_mismatch")
+                if decision.get("celes_decision") != "ROLLBACK":
+                    failures.append("rollback_celes_decision_mismatch")
+                if not any(
+                    isinstance(source, dict)
+                    and source.get("subject_id") == role_id
+                    and source.get("subject_revision") == from_revision
+                    and source.get("decision") == "PROMOTE"
+                    for source in decision_history
+                ):
+                    failures.append("rollback_source_not_promoted")
+    elif candidate_state == "HUMAN_GATE" and gate_status == "pending":
+        if celes_ref != "pending":
+            failures.append("premature_celes_gate_ref")
+    elif candidate_state in {"ACTIVE", "DEPRECATED"}:
+        failures.append("missing_unique_decision_history")
+    return sorted(set(failures))
+
+
+def historical_role_decision_records(root: Path = ROOT) -> list[dict]:
+    """Read every decision record previously committed on reachable history."""
+    path = "ai_team/governance/ai_employee_lifecycle_registry.yaml"
+    history = subprocess.run(
+        ["git", "-C", str(root), "log", "--format=%H", "--", path],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if history.returncode:
+        raise RuntimeError(history.stderr.strip() or "git log failed")
+    records: list[dict] = []
+    for revision in (line.strip() for line in history.stdout.splitlines()):
+        if not revision:
+            continue
+        content = subprocess.run(
+            ["git", "-C", str(root), "show", f"{revision}:{path}"],
+            check=False,
+            capture_output=True,
+        )
+        if content.returncode:
+            continue
+        try:
+            data = yaml.safe_load(content.stdout.decode("utf-8"))
+        except (UnicodeDecodeError, yaml.YAMLError):
+            continue
+        if not isinstance(data, dict):
+            continue
+        for record in data.get("decision_history", []):
+            if isinstance(record, dict):
+                records.append(record)
+    return records
+
+
+def role_lifecycle_entries_at_git_ref(
+    revision: str = "HEAD", root: Path = ROOT
+) -> dict[str, dict]:
+    """Load committed Role lifecycle entries; an absent first-version file is empty."""
+    path = "ai_team/governance/ai_employee_lifecycle_registry.yaml"
+    content = subprocess.run(
+        ["git", "-C", str(root), "show", f"{revision}:{path}"],
+        check=False,
+        capture_output=True,
+    )
+    if content.returncode:
+        return {}
+    try:
+        data = yaml.safe_load(content.stdout.decode("utf-8"))
+    except (UnicodeDecodeError, yaml.YAMLError):
+        return {}
+    entries = data.get("roles", []) if isinstance(data, dict) else []
+    return {
+        str(entry.get("id")): entry
+        for entry in entries
+        if isinstance(entry, dict) and entry.get("id")
+    }
+
+
+def role_lifecycle_previous_entries(root: Path = ROOT) -> dict[str, dict]:
+    """Load the path-aware Role registry state immediately before the candidate."""
+    relative = "ai_team/governance/ai_employee_lifecycle_registry.yaml"
+    target = root / relative
+    try:
+        worktree_bytes = target.read_bytes()
+    except OSError:
+        return {}
+    head = subprocess.run(
+        ["git", "-C", str(root), "show", f"HEAD:{relative}"],
+        check=False,
+        capture_output=True,
+    )
+    if head.returncode:
+        return {}
+    if worktree_bytes != head.stdout:
+        return role_lifecycle_entries_at_git_ref("HEAD", root)
+    history = subprocess.run(
+        ["git", "-C", str(root), "log", "--format=%H", "--", relative],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if history.returncode:
+        return {}
+    revisions = [
+        revision.strip()
+        for revision in history.stdout.splitlines()
+        if revision.strip()
+    ]
+    if len(revisions) < 2:
+        return {}
+    return role_lifecycle_entries_at_git_ref(revisions[1], root)
+
+
+def missing_historical_decisions(
+    current: list[dict], historical: list[dict]
+) -> list[dict]:
+    """Return committed decision records removed or mutated by the candidate."""
+    current_fingerprints = {
+        json.dumps(record, ensure_ascii=False, sort_keys=True, default=str)
+        for record in current
+        if isinstance(record, dict)
+    }
+    missing: list[dict] = []
+    for record in historical:
+        fingerprint = json.dumps(
+            record, ensure_ascii=False, sort_keys=True, default=str
+        )
+        if fingerprint not in current_fingerprints:
+            missing.append(record)
+    return missing
 
 
 def validate_git_privacy(validation: Validation, root: Path = ROOT) -> None:
@@ -750,17 +1448,16 @@ def validate_git_privacy(validation: Validation, root: Path = ROOT) -> None:
         if any(pattern.search(content) for pattern in PERSONAL_ABSOLUTE_PATH_PATTERNS):
             personal_path_hits.append(("working tree", relative_path))
 
-    if staged_mode:
-        for relative_path in tracked:
-            try:
-                raw = git_index_blob(relative_path, root)
-                if len(raw) > 1_000_000:
-                    continue
-                content = raw.decode("utf-8")
-            except (OSError, RuntimeError, UnicodeDecodeError):
+    for relative_path in tracked:
+        try:
+            raw = git_index_blob(relative_path, root)
+            if len(raw) > 1_000_000:
                 continue
-            if any(pattern.search(content) for pattern in PERSONAL_ABSOLUTE_PATH_PATTERNS):
-                personal_path_hits.append(("Git index", relative_path))
+            content = raw.decode("utf-8")
+        except (OSError, RuntimeError, UnicodeDecodeError):
+            continue
+        if any(pattern.search(content) for pattern in PERSONAL_ABSOLUTE_PATH_PATTERNS):
+            personal_path_hits.append(("Git index", relative_path))
 
     for source, path in sorted(set(secret_hits)):
         validation.fail(
@@ -774,11 +1471,37 @@ def validate_git_privacy(validation: Validation, root: Path = ROOT) -> None:
     if not personal_path_hits:
         validation.ok("No personal absolute path found in shared candidate files")
 
+    readme_sources: list[tuple[str, bytes]] = []
+    readme_path = root / "README.md"
+    if readme_path.is_file():
+        readme_sources.append(("working tree", readme_path.read_bytes()))
+    if "README.md" in tracked:
+        try:
+            readme_sources.append(("Git index", git_index_blob("README.md", root)))
+        except (OSError, RuntimeError) as exc:
+            validation.fail(f"Cannot inspect Git-index README.md: {exc}")
+    private_readme_examples = []
+    for source, raw in readme_sources:
+        try:
+            content = raw.decode("utf-8")
+        except UnicodeDecodeError:
+            validation.fail(f"Cannot decode {source} README.md")
+            continue
+        if PRIVATE_README_INPUT_EXAMPLE_PATTERN.search(content):
+            private_readme_examples.append(source)
+    for source in private_readme_examples:
+        validation.fail(
+            f"{source} README.md contains a non-anonymous input path example"
+        )
+    if not private_readme_examples:
+        validation.ok("README input path examples are anonymous")
+
     ignored_tracked = subprocess.run(
         ["git", "-C", str(root), "ls-files", "-ci", "--exclude-standard", "-z"],
         check=False,
         capture_output=True,
     )
+    paths: list[str] = []
     if ignored_tracked.returncode:
         validation.fail("Cannot verify tracked files that are now ignored")
     else:
@@ -789,8 +1512,33 @@ def validate_git_privacy(validation: Validation, root: Path = ROOT) -> None:
         ]
         for path in paths:
             validation.fail(f"Tracked file is covered by .gitignore: {path}")
-        if not paths:
-            validation.ok("No tracked file is accidentally covered by .gitignore")
+    if not paths:
+        validation.ok("No tracked file is accidentally covered by .gitignore")
+
+    if os.name == "posix":
+        permission_violations: list[str] = []
+        for base_name in ("input", "output"):
+            base = root / base_name
+            if not base.exists():
+                continue
+            for target in base.rglob("*"):
+                relative = target.relative_to(root).as_posix()
+                if relative == "input/README.md":
+                    continue
+                if target.is_symlink():
+                    permission_violations.append(f"symlink:{relative}")
+                    continue
+                try:
+                    mode = target.stat().st_mode & 0o777
+                except OSError as exc:
+                    permission_violations.append(f"unreadable:{relative}:{exc}")
+                    continue
+                if mode & 0o077:
+                    permission_violations.append(f"mode={mode:04o}:{relative}")
+        for item in permission_violations:
+            validation.fail(f"Local private state permission is too broad: {item}")
+        if not permission_violations:
+            validation.ok("Local input/output private state has owner-only permissions")
 
     input_readme = root / "input" / "README.md"
     input_sources: list[tuple[str, bytes]] = []
@@ -1327,9 +2075,19 @@ def validate_capability_foundation(validation: Validation) -> None:
         for required_private in ("output/**", "**/_internal/**", ".local/**", "second_brain/**", "evidence/**"):
             if required_private not in private_state:
                 validation.fail(f"Architecture privacy boundary missing: {required_private}")
+        local_permissions = architecture.get("privacy", {}).get(
+            "local_filesystem_permissions", {}
+        )
+        if local_permissions != {
+            "directories": "0700",
+            "files": "0600",
+            "shared_group_exception": "explicit_user_decision_only",
+        }:
+            validation.fail("Architecture local private permissions are incomplete")
         if len(validation.errors) == architecture_error_count:
             validation.ok("Architecture contract preserves runtime, identity, and authority")
 
+    capability_role_ids = set(configured_role_ids(ROOT))
     capability = validate_yaml(validation, "ai_team/capability_registry.yaml")
     if capability is not None:
         entries = capability.get("roles")
@@ -1337,14 +2095,14 @@ def validate_capability_foundation(validation: Validation) -> None:
             validation.fail("Capability registry roles must be a list")
         else:
             ids = [entry.get("id") for entry in entries if isinstance(entry, dict)]
-            expected = set(ROLES)
+            expected_minimum = set(ROLES)
+            capability_role_ids = set(ids)
             if len(ids) != len(set(ids)):
                 validation.fail("Capability registry contains duplicate role IDs")
-            if set(ids) != expected:
+            if not expected_minimum <= set(ids):
                 validation.fail(
-                    "Capability registry role set mismatch: "
-                    f"missing={sorted(expected - set(ids))}, "
-                    f"extra={sorted(set(ids) - expected)}"
+                    "Capability registry removed baseline Roles: "
+                    f"missing={sorted(expected_minimum - set(ids))}"
                 )
             required = {
                 "ownership",
@@ -1409,8 +2167,402 @@ def validate_capability_foundation(validation: Validation) -> None:
                             f"Broken capability registry reference for "
                             f"{entry.get('id')}: {reference_key}={reference}"
                         )
-            if set(ids) == expected:
-                validation.ok(f"Capability registry covers all {len(expected)} roles")
+            if expected_minimum <= set(ids):
+                validation.ok(
+                    f"Capability registry covers {len(set(ids))} Roles "
+                    "without removing the baseline set"
+                )
+
+    role_lifecycle = validate_yaml(
+        validation, "ai_team/governance/ai_employee_lifecycle_registry.yaml"
+    )
+    if role_lifecycle is not None:
+        role_entries = role_lifecycle.get("roles")
+        if not isinstance(role_entries, list):
+            validation.fail("AI Employee lifecycle roles must be a list")
+            role_entries = []
+        role_ids = [
+            entry.get("id")
+            for entry in role_entries
+            if isinstance(entry, dict)
+        ]
+        if len(role_ids) != len(set(role_ids)):
+            validation.fail("AI Employee lifecycle contains duplicate Role IDs")
+        if set(role_ids) != capability_role_ids:
+            validation.fail(
+                "AI Employee lifecycle Role set mismatch: "
+                f"missing={sorted(capability_role_ids - set(role_ids))}, "
+                f"extra={sorted(set(role_ids) - capability_role_ids)}"
+            )
+        expected_role_states = {
+            "DISCOVERED", "PROPOSED", "CANDIDATE", "EVALUATED",
+            "INDEPENDENTLY_REVIEWED", "HUMAN_GATE", "ACTIVE", "DEPRECATED",
+        }
+        expected_role_dispositions = {
+            "CREATE", "KEEP", "UPDATE", "MERGE", "SPLIT", "DEPRECATE",
+            "UNKNOWN",
+        }
+        if set(role_lifecycle.get("lifecycle_states", [])) != expected_role_states:
+            validation.fail("AI Employee lifecycle states are invalid")
+        if set(role_lifecycle.get("dispositions", [])) != expected_role_dispositions:
+            validation.fail("AI Employee lifecycle dispositions are invalid")
+        if role_lifecycle.get("revision_strategy", {}).get("algorithm") != "sha256":
+            validation.fail("AI Employee revision strategy must be content-addressed")
+        create_requirements = set(
+            role_lifecycle.get("decision_rules", {}).get("create_requires", [])
+        )
+        if create_requirements != ROLE_CREATE_REQUIREMENTS:
+            validation.fail("AI Employee CREATE decision rules are incomplete")
+        candidate_fields = set(
+            role_lifecycle.get("candidate_contract", {}).get(
+                "required_fields", []
+            )
+        )
+        if candidate_fields != {
+            "candidate_revision", "evidence_refs", "transition",
+        }:
+            validation.fail("AI Employee candidate contract is incomplete")
+        transition_fields = set(
+            role_lifecycle.get("transition_record_contract", {}).get(
+                "required_fields", []
+            )
+        )
+        if transition_fields != ROLE_TRANSITION_FIELDS:
+            validation.fail("AI Employee transition record contract is incomplete")
+        baseline_import = role_lifecycle.get("baseline_import", {})
+        baseline_head = baseline_import.get("repository_head")
+        baseline_role_revisions = baseline_import.get("role_revisions")
+        if (
+            baseline_head != ROLE_LIFECYCLE_BASELINE_HEAD
+            or baseline_import.get("immutable") is not True
+            or baseline_role_revisions != ROLE_LIFECYCLE_BASELINE_REVISIONS
+        ):
+            validation.fail("AI Employee baseline import must remain immutable")
+        for baseline_role, recorded_revision in (
+            ROLE_LIFECYCLE_BASELINE_REVISIONS.items()
+        ):
+            git_revision = role_git_revision(
+                baseline_role, ROLE_LIFECYCLE_BASELINE_HEAD, ROOT
+            )
+            if git_revision is not None and git_revision != recorded_revision:
+                validation.fail(
+                    f"AI Employee baseline Git cross-check failed: {baseline_role}"
+                )
+        decision_contract = role_lifecycle.get("decision_history_contract", {})
+        if (
+            set(decision_contract.get("decisions", []))
+            != {"PROMOTE", "REJECT", "REWORK", "ROLLBACK"}
+            or set(decision_contract.get("required_fields", []))
+            != {
+                "schema_version", "gate_id", "decision_type", "subject_id",
+                "from_revision", "subject_revision", "target_state", "disposition",
+                "decision", "decided_by",
+                "timestamp", "before_after_eval_ref", "independent_review_ref",
+                "evidence_refs",
+            }
+            or set(decision_contract.get("rollback_required_fields", []))
+            != {
+                "promoted_revision", "rollback_revision", "reason",
+                "evidence_refs", "celes_decision",
+            }
+            or decision_contract.get("persistence")
+            != "append_only_across_reachable_git_history"
+            or decision_contract.get("mutation_or_deletion") != "forbidden"
+        ):
+            validation.fail("AI Employee decision history contract is incomplete")
+        decision_history = role_lifecycle.get("decision_history")
+        if not isinstance(decision_history, list):
+            validation.fail("AI Employee decision history must be a list")
+            decision_history = []
+        required_decision_fields = {
+            "schema_version", "gate_id", "decision_type", "subject_id",
+            "from_revision", "subject_revision", "target_state", "disposition",
+            "decision", "decided_by", "timestamp",
+            "before_after_eval_ref", "independent_review_ref", "evidence_refs",
+        }
+        rollback_decision_fields = {
+            "promoted_revision", "rollback_revision", "reason",
+            "celes_decision",
+        }
+        allowed_decision_fields = (
+            required_decision_fields | rollback_decision_fields | {"notes"}
+        )
+        decision_gate_ids: list[object] = []
+        for decision in decision_history:
+            if (
+                not isinstance(decision, dict)
+                or not required_decision_fields <= set(decision)
+                or set(decision) - allowed_decision_fields
+            ):
+                validation.fail("AI Employee decision history record is incomplete")
+                continue
+            decision_gate_ids.append(decision.get("gate_id"))
+            if (
+                decision.get("schema_version") != "1.1"
+                or decision.get("decision_type") != "canonical_promotion"
+                or decision.get("decision")
+                not in {"PROMOTE", "REJECT", "REWORK", "ROLLBACK"}
+                or decision.get("decided_by") != "Celes"
+                or decision.get("subject_id") not in capability_role_ids
+                or decision.get("target_state") not in expected_role_states
+                or decision.get("disposition") not in expected_role_dispositions
+                or (
+                    decision.get("from_revision") is not None
+                    and not re.fullmatch(
+                        r"sha256:[0-9a-f]{64}",
+                        str(decision.get("from_revision", "")),
+                    )
+                )
+                or not re.fullmatch(
+                    r"sha256:[0-9a-f]{64}",
+                    str(decision.get("subject_revision", "")),
+                )
+                or not non_pending_reference(
+                    decision.get("before_after_eval_ref")
+                )
+                or not non_pending_reference(
+                    decision.get("independent_review_ref")
+                )
+                or not non_pending_reference(decision.get("gate_id"))
+                or not valid_reference_list(decision.get("evidence_refs"))
+                or not valid_decision_timestamp(decision.get("timestamp"))
+            ):
+                validation.fail("AI Employee decision history record is invalid")
+            if decision.get("decision") == "ROLLBACK":
+                if (
+                    not rollback_decision_fields <= set(decision)
+                    or not re.fullmatch(
+                        r"sha256:[0-9a-f]{64}",
+                        str(decision.get("promoted_revision", "")),
+                    )
+                    or decision.get("rollback_revision")
+                    != decision.get("subject_revision")
+                    or decision.get("promoted_revision")
+                    == decision.get("rollback_revision")
+                    or not non_pending_reference(decision.get("reason"))
+                    or decision.get("celes_decision") != "ROLLBACK"
+                ):
+                    validation.fail(
+                        "AI Employee ROLLBACK decision record is invalid"
+                    )
+            elif rollback_decision_fields & set(decision):
+                validation.fail(
+                    "Non-ROLLBACK AI Employee decision contains rollback fields"
+                )
+        if len(decision_gate_ids) != len(set(decision_gate_ids)):
+            validation.fail("AI Employee decision history contains duplicate gate IDs")
+        try:
+            historical_decisions = historical_role_decision_records(ROOT)
+        except (OSError, RuntimeError) as exc:
+            validation.fail(
+                f"Cannot verify append-only AI Employee decision history: {exc}"
+            )
+            historical_decisions = []
+        removed_decisions = missing_historical_decisions(
+            decision_history, historical_decisions
+        )
+        if removed_decisions:
+            validation.fail(
+                "AI Employee decision history removed or mutated a committed record: "
+                f"{[record.get('gate_id') for record in removed_decisions]}"
+            )
+        required_role_fields = {
+            "id", "active_revision", "state", "candidate_revision",
+            "candidate_state", "disposition", "effectiveness",
+            "decision_rationale", "overlap_review", "evidence_refs",
+        }
+        committed_role_entries = role_lifecycle_previous_entries(ROOT)
+        for entry in role_entries:
+            if not isinstance(entry, dict):
+                validation.fail("AI Employee lifecycle entry is not a mapping")
+                continue
+            role_id = str(entry.get("id", ""))
+            missing = required_role_fields - set(entry)
+            if missing:
+                validation.fail(
+                    f"AI Employee lifecycle {role_id} missing: {sorted(missing)}"
+                )
+            if entry.get("state") not in expected_role_states:
+                validation.fail(f"Invalid AI Employee lifecycle state: {role_id}")
+            if entry.get("disposition") not in expected_role_dispositions:
+                validation.fail(f"Invalid AI Employee disposition: {role_id}")
+            if entry.get("effectiveness") not in {
+                "not_evaluated", "baseline_pending", "evaluated",
+            }:
+                validation.fail(f"Invalid AI Employee effectiveness: {role_id}")
+            if "score" in entry:
+                validation.fail(
+                    f"Unevidenced AI Employee numeric score is forbidden: {role_id}"
+                )
+            active_revision = entry.get("active_revision")
+            if active_revision is not None and (
+                not isinstance(active_revision, str)
+                or not re.fullmatch(r"sha256:[0-9a-f]{64}", active_revision)
+            ):
+                validation.fail(f"Invalid AI Employee active revision: {role_id}")
+            candidate_revision = entry.get("candidate_revision")
+            candidate_state = entry.get("candidate_state")
+            transition = entry.get("transition")
+            gate_status = (
+                transition.get("human_gate_status")
+                if isinstance(transition, dict)
+                else None
+            )
+            is_final_candidate = (
+                candidate_state in {"ACTIVE", "DEPRECATED"}
+                and gate_status in {"promoted", "rolled_back"}
+            )
+            baseline_revision = ROLE_LIFECYCLE_BASELINE_REVISIONS.get(role_id)
+            head_revision = role_head_revision(role_id, ROOT)
+            current_revision = role_content_revision(role_id, ROOT)
+            previous_entry = committed_role_entries.get(role_id)
+            if previous_entry is None and baseline_revision is not None:
+                previous_entry = {
+                    "state": "ACTIVE",
+                    "disposition": "KEEP",
+                    "active_revision": baseline_revision,
+                }
+            for failure in role_registry_state_failures(entry, previous_entry):
+                validation.fail(
+                    f"AI Employee registry state {failure}: {role_id}"
+                )
+            expected_from_revision = None
+            if previous_entry is not None:
+                previous_transition = previous_entry.get("transition")
+                if (
+                    candidate_revision is not None
+                    and previous_entry.get("candidate_revision")
+                    == candidate_revision
+                    and isinstance(previous_transition, dict)
+                ):
+                    expected_from_revision = previous_transition.get(
+                        "from_revision"
+                    )
+                else:
+                    expected_from_revision = previous_entry.get(
+                        "active_revision"
+                    )
+            for failure in role_candidate_registration_failures(
+                entry, current_revision, head_revision, previous_entry
+            ):
+                validation.fail(
+                    f"AI Employee candidate registration {failure}: {role_id}"
+                )
+            if (
+                candidate_revision is not None
+                and isinstance(transition, dict)
+                and transition.get("from_revision")
+                != expected_from_revision
+            ):
+                validation.fail(
+                    f"AI Employee candidate baseline revision mismatch: {role_id}"
+                )
+            if is_final_candidate:
+                expected_active = current_revision
+            elif baseline_revision is None:
+                expected_active = (
+                    head_revision
+                    if candidate_revision is None
+                    and entry.get("state") in {"ACTIVE", "DEPRECATED"}
+                    else None
+                )
+            else:
+                expected_active = head_revision
+            if active_revision != expected_active:
+                validation.fail(
+                    f"AI Employee active revision drift: {role_id} "
+                    f"expected={expected_active} actual={active_revision}"
+                )
+            if active_revision is not None and (
+                baseline_revision is None or active_revision != baseline_revision
+            ) and not any(
+                isinstance(decision, dict)
+                and decision.get("subject_id") == role_id
+                and decision.get("subject_revision") == active_revision
+                and decision.get("decision") in {"PROMOTE", "ROLLBACK"}
+                for decision in decision_history
+            ):
+                validation.fail(
+                    f"AI Employee active revision lacks Celes decision history: {role_id}"
+                )
+            if (candidate_revision is None) != (candidate_state is None):
+                validation.fail(
+                    f"AI Employee candidate revision/state must both be null or set: {role_id}"
+                )
+            for failure in role_create_criteria_failures(entry):
+                validation.fail(
+                    f"AI Employee CREATE criteria {failure}: {role_id}"
+                )
+            if candidate_revision is not None:
+                if candidate_revision != role_content_revision(role_id, ROOT):
+                    validation.fail(f"AI Employee candidate revision drift: {role_id}")
+                disposition = entry.get("disposition")
+                allowed_dispositions = (
+                    {"CREATE", "UNKNOWN"}
+                    if baseline_revision is None
+                    else {"UPDATE", "MERGE", "SPLIT", "DEPRECATE", "UNKNOWN"}
+                )
+                if disposition not in allowed_dispositions:
+                    validation.fail(
+                        f"AI Employee candidate lacks change disposition: {role_id}"
+                    )
+                if (
+                    disposition == "UNKNOWN"
+                    and candidate_state not in {"DISCOVERED", "PROPOSED"}
+                ):
+                    validation.fail(
+                        f"AI Employee UNKNOWN candidate advanced too far: {role_id}"
+                    )
+                if (
+                    candidate_state == "DEPRECATED"
+                    and disposition != "DEPRECATE"
+                ):
+                    validation.fail(
+                        f"AI Employee deprecation disposition mismatch: {role_id}"
+                    )
+                if candidate_state == "ACTIVE" and disposition == "DEPRECATE":
+                    validation.fail(
+                        f"AI Employee active candidate uses DEPRECATE: {role_id}"
+                    )
+                for failure in ai_employee_transition_failures(
+                    entry, decision_history
+                ):
+                    validation.fail(
+                        f"AI Employee candidate transition {failure}: {role_id}"
+                    )
+            else:
+                if entry.get("state") not in {"ACTIVE", "DEPRECATED"}:
+                    validation.fail(
+                        f"AI Employee without candidate has non-final state: {role_id}"
+                    )
+                allowed_without_candidate = (
+                    {"DEPRECATE"}
+                    if entry.get("state") == "DEPRECATED"
+                    else {"KEEP", "UNKNOWN"}
+                )
+                if entry.get("disposition") not in allowed_without_candidate:
+                    validation.fail(
+                        f"AI Employee without candidate has invalid disposition: {role_id}"
+                    )
+                if transition not in (None, {}):
+                    validation.fail(
+                        f"AI Employee without candidate has a transition: {role_id}"
+                    )
+                if (
+                    baseline_revision is None
+                    and entry.get("state") not in {"ACTIVE", "DEPRECATED"}
+                ):
+                    validation.fail(
+                        f"New AI Employee lacks a governed candidate: {role_id}"
+                    )
+            if not isinstance(entry.get("decision_rationale"), str) or not entry.get("decision_rationale"):
+                validation.fail(f"AI Employee decision rationale is absent: {role_id}")
+            if not valid_reference_list(entry.get("evidence_refs")):
+                validation.fail(f"AI Employee evidence refs are absent: {role_id}")
+        if set(role_ids) == capability_role_ids:
+            validation.ok(
+                f"AI Employee lifecycle covers all {len(capability_role_ids)} Roles"
+            )
 
     index = validate_yaml(validation, "skills/index.yaml")
     index_names: set[str] = set()
@@ -1448,7 +2600,7 @@ def validate_capability_foundation(validation: Validation) -> None:
         if lifecycle.get("revision_strategy", {}).get("algorithm") != "sha256":
             validation.fail("Skill revision strategy must be content-addressed")
         expected_states = {
-            "DISCOVERED", "PROPOSED", "CANDIDATE", "EVALUATED", "REVIEWED",
+            "DISCOVERED", "PROPOSED", "CANDIDATE", "EVALUATED", "INDEPENDENTLY_REVIEWED",
             "HUMAN_GATE", "ACTIVE", "DEPRECATED",
         }
         expected_dispositions = {"KEEP", "UPDATE", "MERGE", "SPLIT", "DEPRECATE", "UNKNOWN"}
@@ -1490,6 +2642,37 @@ def validate_capability_foundation(validation: Validation) -> None:
             if not isinstance(active_revision, str) or not re.fullmatch(r"sha256:[0-9a-f]{64}", active_revision):
                 validation.fail(f"Skill active revision is invalid: {entry.get('id')}")
             transition = entry.get("transition")
+            if (
+                not isinstance(transition, dict)
+                or set(transition) != expected_transition_fields
+            ):
+                validation.fail(
+                    f"Skill transition record is incomplete: {entry.get('id')}"
+                )
+            else:
+                if transition.get("from_state") != entry.get("state"):
+                    validation.fail(
+                        f"Skill transition source mismatch: {entry.get('id')}"
+                    )
+                if transition.get("to_state") != candidate_state:
+                    validation.fail(
+                        f"Skill transition state mismatch: {entry.get('id')}"
+                    )
+                if transition.get("candidate_revision") != candidate_revision:
+                    validation.fail(
+                        f"Skill transition revision mismatch: {entry.get('id')}"
+                    )
+                if not valid_reference_list(transition.get("evidence_refs")):
+                    validation.fail(
+                        f"Skill transition evidence is incomplete: {entry.get('id')}"
+                    )
+                if (
+                    candidate_state != "ACTIVE"
+                    and transition.get("human_gate_status") != "pending"
+                ):
+                    validation.fail(
+                        f"Skill candidate bypassed pending Human Gate: {entry.get('id')}"
+                    )
             is_promoted = (
                 candidate_state == "ACTIVE"
                 and isinstance(transition, dict)
@@ -1512,19 +2695,21 @@ def validate_capability_foundation(validation: Validation) -> None:
                     f"Skill candidate revision drift: {entry.get('id')} "
                     f"expected={expected_candidate} actual={candidate_revision}"
                 )
-            if candidate_state in {"EVALUATED", "REVIEWED", "HUMAN_GATE", "ACTIVE"}:
+            if candidate_state in {"EVALUATED", "INDEPENDENTLY_REVIEWED", "HUMAN_GATE", "ACTIVE"}:
                 if not isinstance(transition, dict) or set(transition) != expected_transition_fields:
                     validation.fail(f"Skill transition record is incomplete: {entry.get('id')}")
                 elif transition.get("candidate_revision") != candidate_revision:
                     validation.fail(f"Skill transition revision mismatch: {entry.get('id')}")
                 elif transition.get("to_state") != candidate_state:
                     validation.fail(f"Skill transition state mismatch: {entry.get('id')}")
-                elif candidate_state in {"EVALUATED", "REVIEWED", "HUMAN_GATE"}:
+                elif candidate_state in {"EVALUATED", "INDEPENDENTLY_REVIEWED", "HUMAN_GATE"}:
                     if transition.get("human_gate_status") != "pending":
                         validation.fail(f"Skill candidate bypassed pending Human Gate: {entry.get('id')}")
                     elif (
-                        candidate_state in {"REVIEWED", "HUMAN_GATE"}
-                        and transition.get("independent_review_ref") == "pending"
+                        candidate_state in {"INDEPENDENTLY_REVIEWED", "HUMAN_GATE"}
+                        and not non_pending_reference(
+                            transition.get("independent_review_ref")
+                        )
                     ):
                         validation.fail(f"Skill candidate bypassed Independent Review: {entry.get('id')}")
                 elif candidate_state == "ACTIVE":
@@ -1534,28 +2719,82 @@ def validate_capability_foundation(validation: Validation) -> None:
                         validation.fail(f"Promoted Skill revision mismatch: {entry.get('id')}")
                     elif transition.get("human_gate_status") != "promoted":
                         validation.fail(f"Promoted Skill lacks Celes approval: {entry.get('id')}")
-                    elif transition.get("independent_review_ref") == "pending":
+                    elif not non_pending_reference(
+                        transition.get("independent_review_ref")
+                    ):
                         validation.fail(f"Promoted Skill lacks Independent Review: {entry.get('id')}")
                     else:
                         promoted_entries.append(entry)
         if promoted_entries:
-            decision = lifecycle.get("human_gate_decision")
+            decision = lifecycle.get("last_promotion_decision")
             required_decision = {
-                "id", "decision", "decision_type", "decided_by", "timestamp",
-                "independent_review_ref", "release_history_decision",
+                "schema_version", "gate_id", "decision", "decision_type",
+                "subject_id", "from_revision", "subject_revision", "target_state",
+                "disposition", "decided_by", "timestamp",
+                "before_after_eval_ref", "independent_review_ref", "evidence_refs",
             }
-            if not isinstance(decision, dict) or set(decision) != required_decision:
+            allowed_decision = required_decision | {"operation_plan_ref", "notes"}
+            if (
+                not isinstance(decision, dict)
+                or not required_decision <= set(decision)
+                or set(decision) - allowed_decision
+            ):
                 validation.fail("Promoted Skills lack a complete Celes Human Gate record")
             elif (
-                decision.get("decision") != "PROMOTE"
+                decision.get("schema_version") != "1.1"
+                or decision.get("decision") != "PROMOTE"
                 or decision.get("decision_type") != "canonical_promotion"
                 or decision.get("decided_by") != "Celes"
-                or decision.get("independent_review_ref") == "pending"
+                or not non_pending_reference(
+                    decision.get("independent_review_ref")
+                )
+                or not re.fullmatch(
+                    r"sha256:[0-9a-f]{64}", str(decision.get("subject_revision", ""))
+                )
+                or not non_pending_reference(
+                    decision.get("before_after_eval_ref")
+                )
+                or not non_pending_reference(decision.get("gate_id"))
+                or not valid_reference_list(decision.get("evidence_refs"))
             ):
                 validation.fail("Promoted Skills have an invalid Celes Human Gate record")
             else:
                 validation.ok(
                     f"Celes Human Gate records promotion for {len(promoted_entries)} Skills"
+                )
+            promotion_history = lifecycle.get("promotion_history")
+            if (
+                not isinstance(promotion_history, list)
+                or not promotion_history
+                or promotion_history[-1] != decision
+            ):
+                validation.fail(
+                    "Promoted Skills must retain an append-only promotion history"
+                )
+            elif len(
+                {
+                    item.get("gate_id")
+                    for item in promotion_history
+                    if isinstance(item, dict)
+                }
+            ) != len(promotion_history):
+                validation.fail("Skill promotion history contains duplicate gate IDs")
+            else:
+                validation.ok("Skill promotion history retains the latest Celes decision")
+            candidate_contract = lifecycle.get("candidate", {})
+            if (
+                candidate_contract.get("effectiveness") != "not_evaluated"
+                or candidate_contract.get("improvement_type") != "structural_contract"
+                or candidate_contract.get("effectiveness_claim")
+                != "UNKNOWN — insufficient live evidence"
+            ):
+                validation.fail(
+                    "Structural Skill promotion must not claim live effectiveness"
+                )
+        if lifecycle.get("candidate", {}).get("human_gate_status") == "pending":
+            if lifecycle.get("current_candidate_decision") is not None:
+                validation.fail(
+                    "Pending Skill candidate must not inherit a prior Human Gate decision"
                 )
         if lifecycle_ids == set(SKILLS):
             validation.ok(f"Skill lifecycle covers all {len(SKILLS)} Skills")
@@ -1626,7 +2865,7 @@ def validate_capability_foundation(validation: Validation) -> None:
         decision_types = set(properties.get("decision_type", {}).get("enum", []))
         if decision_types != {"canonical_promotion", "critical_operation"}:
             validation.fail("Human Gate decision types are incomplete")
-        if len(human_gate.get("allOf", [])) != 2:
+        if len(human_gate.get("allOf", [])) != 3:
             validation.fail("Human Gate must constrain promotion and critical operation separately")
         else:
             validation.ok("Human Gate supports auditable promotion and critical-operation decisions")
@@ -1644,14 +2883,53 @@ def validate_capability_foundation(validation: Validation) -> None:
             validation.ok("Risk-based quality gates cover Low through Critical")
 
     validate_yaml(validation, "ai_team/evals/eval_catalog.yaml")
+    documentation_policy = validate_yaml(
+        validation, "ai_team/governance/documentation_quality_policy.yaml"
+    )
+    semantic_review_schema = validate_json(
+        validation, "ai_team/evals/documentation_semantic_review.schema.json"
+    )
+    if semantic_review_schema is not None:
+        required_semantic_fields = {
+            "schema_version", "review_id", "timestamp", "reviewer",
+            "independent", "trigger", "changed_paths", "review_targets",
+            "dimensions", "findings", "verdict", "unknowns",
+        }
+        if not required_semantic_fields <= set(
+            semantic_review_schema.get("required", [])
+        ):
+            validation.fail("Documentation semantic review schema is incomplete")
+        if semantic_review_schema.get("additionalProperties") is not False:
+            validation.fail("Documentation semantic review schema is not strict")
+        if len(semantic_review_schema.get("allOf", [])) < 4:
+            validation.fail(
+                "Documentation semantic review verdict constraints are incomplete"
+            )
+        else:
+            validation.ok("Documentation semantic review record contract is strict")
+    if documentation_policy is not None:
+        semantic_policy = documentation_policy.get("level_2_semantic", {})
+        semantic_validator = semantic_policy.get("review_record_validator")
+        if (
+            not semantic_validator
+            or not (ROOT / str(semantic_validator)).is_file()
+        ):
+            validation.fail("Documentation semantic review validator is absent")
     golden = validate_yaml(validation, "ai_team/evals/golden_cases.yaml")
     if golden is not None:
         cases = golden.get("cases")
+        primary_skill_by_role: dict[object, object] = {}
+        if isinstance(capability, dict):
+            primary_skill_by_role = {
+                role.get("id"): role.get("primary_skill")
+                for role in capability.get("roles", [])
+                if isinstance(role, dict)
+            }
         required_case_fields = set(
             golden.get("case_contract", {}).get("required_fields", [])
         )
-        if not isinstance(cases, list) or len(cases) != 15:
-            validation.fail("Engineering Golden Cases must contain 15 scenarios")
+        if not isinstance(cases, list) or len(cases) < 22:
+            validation.fail("Engineering Golden Cases must contain at least 22 scenarios")
         else:
             ids = [case.get("id") for case in cases if isinstance(case, dict)]
             if len(ids) != len(set(ids)):
@@ -1665,10 +2943,20 @@ def validate_capability_foundation(validation: Validation) -> None:
                     validation.fail(
                         f"Golden Case {case.get('id')} missing: {sorted(missing)}"
                     )
-                if not set(case.get("expected_roles", [])) <= set(ROLES):
+                if not set(case.get("expected_roles", [])) <= capability_role_ids:
                     validation.fail(f"Golden Case {case.get('id')} has unknown Role")
                 if not set(case.get("expected_skills", [])) <= set(SKILLS):
                     validation.fail(f"Golden Case {case.get('id')} has unknown Skill")
+                missing_primary_skills = {
+                    primary_skill_by_role.get(role)
+                    for role in case.get("expected_roles", [])
+                } - set(case.get("expected_skills", []))
+                missing_primary_skills.discard(None)
+                if missing_primary_skills:
+                    validation.fail(
+                        f"Golden Case {case.get('id')} omits primary Role Skills: "
+                        f"{sorted(missing_primary_skills)}"
+                    )
                 risk = case.get("risk")
                 levels = gates.get("levels", {}) if isinstance(gates, dict) else {}
                 if risk not in levels:
@@ -1695,7 +2983,23 @@ def validate_capability_foundation(validation: Validation) -> None:
                         validation.fail(
                             f"Golden Case {case.get('id')} has no {list_field}"
                         )
-            validation.ok("Engineering Eval architecture has 15 representative cases")
+            covered_roles = {
+                role
+                for case in cases
+                if isinstance(case, dict)
+                for role in case.get("expected_roles", [])
+            }
+            missing_role_coverage = capability_role_ids - covered_roles
+            if missing_role_coverage:
+                validation.fail(
+                    "Engineering Golden Cases lack Role coverage: "
+                    f"{sorted(missing_role_coverage)}"
+                )
+            else:
+                validation.ok(
+                    f"Engineering Eval architecture has {len(cases)} cases "
+                    "covering every Role"
+                )
 
     fixtures = validate_yaml(validation, "ai_team/evals/case_fixtures.yaml")
     if fixtures is not None:
@@ -1707,6 +3011,134 @@ def validate_capability_foundation(validation: Validation) -> None:
             validation.fail("Representative Golden Case result fixtures are incomplete")
         else:
             validation.ok("Representative Golden Case result fixtures are executable")
+
+    agent_skill_fixtures = validate_yaml(
+        validation, "ai_team/evals/agent_skill_fixtures.yaml"
+    )
+    if agent_skill_fixtures is not None:
+        expected_agent_dimensions = {
+            "role_understanding", "scope_adherence", "capability_application",
+            "responsibility_boundary", "handoff_quality", "evidence_discipline",
+            "hallucination_resistance", "done_definition_compliance",
+            "escalation_quality", "reviewer_selection_quality",
+        }
+        expected_skill_dimensions = {
+            "correct_invocation", "task_improvement", "instruction_adherence",
+            "false_positive_avoidance", "overlap_and_conflict", "output_quality",
+            "context_efficiency",
+        }
+        agent_dimensions = set(
+            agent_skill_fixtures.get("agent_contract", {}).get(
+                "required_dimensions", []
+            )
+        )
+        skill_dimensions = set(
+            agent_skill_fixtures.get("skill_contract", {}).get(
+                "required_dimensions", []
+            )
+        )
+        if agent_dimensions != expected_agent_dimensions:
+            validation.fail("Agent Eval dimensions are incomplete")
+        if skill_dimensions != expected_skill_dimensions:
+            validation.fail("Skill Eval dimensions are incomplete")
+        agent_results = agent_skill_fixtures.get("agent_results", [])
+        skill_results = agent_skill_fixtures.get("skill_results", [])
+        if len(agent_results) < 3 or len(skill_results) < 4:
+            validation.fail("Agent / Skill deterministic result fixtures are incomplete")
+        else:
+            validation.ok("Agent / Skill deterministic result fixtures are present")
+
+    skill_bindings = validate_yaml(
+        validation, "ai_team/evals/skill_eval_bindings.yaml"
+    )
+    if skill_bindings is not None:
+        binding_entries = skill_bindings.get("bindings", [])
+        binding_ids = {
+            entry.get("skill")
+            for entry in binding_entries
+            if isinstance(entry, dict)
+        }
+        if binding_ids != set(SKILLS):
+            validation.fail(
+                "Skill Eval binding set mismatch: "
+                f"missing={sorted(set(SKILLS) - binding_ids)}, "
+                f"extra={sorted(binding_ids - set(SKILLS))}"
+            )
+        required_rubric = set(skill_bindings.get("required_rubric", []))
+        expected_binding_rubric = {
+            "correct_invocation", "task_improvement", "instruction_adherence",
+            "false_positive_avoidance", "overlap_and_conflict",
+            "output_quality", "context_efficiency",
+        }
+        if required_rubric != expected_binding_rubric:
+            validation.fail(
+                "Skill Eval binding rubric differs from the seven-dimension contract"
+            )
+        selected_by_case: dict[object, set[object]] = {}
+        if isinstance(golden, dict):
+            selected_by_case.update(
+                {
+                    case.get("id"): set(case.get("expected_skills", []))
+                    for case in golden.get("cases", [])
+                    if isinstance(case, dict)
+                }
+            )
+        if isinstance(agent_skill_fixtures, dict):
+            selected_by_case.update(
+                {
+                    result.get("fixture_id"): set(
+                        result.get("expected", {}).get(
+                            "selected_skills", []
+                        )
+                    )
+                    for result in agent_skill_fixtures.get(
+                        "skill_results", []
+                    )
+                    if isinstance(result, dict)
+                }
+            )
+        for entry in binding_entries:
+            if not isinstance(entry, dict):
+                validation.fail("Skill Eval binding is not a mapping")
+                continue
+            if not entry.get("positive_case") or not entry.get("negative_case"):
+                validation.fail(
+                    f"Skill Eval binding lacks positive/negative case: "
+                    f"{entry.get('skill')}"
+                )
+            if set(entry.get("rubric", [])) != required_rubric:
+                validation.fail(
+                    f"Skill Eval binding rubric mismatch: {entry.get('skill')}"
+                )
+            skill = entry.get("skill")
+            positive_case = entry.get("positive_case")
+            negative_case = entry.get("negative_case")
+            if positive_case not in selected_by_case:
+                validation.fail(
+                    f"Skill Eval binding has unknown positive case: {skill}"
+                )
+            elif skill not in selected_by_case[positive_case]:
+                validation.fail(
+                    f"Skill Eval positive case does not select Skill: {skill}"
+                )
+            if negative_case not in selected_by_case:
+                validation.fail(
+                    f"Skill Eval binding has unknown negative case: {skill}"
+                )
+            elif skill in selected_by_case[negative_case]:
+                validation.fail(
+                    f"Skill Eval negative case selects Skill: {skill}"
+                )
+            if positive_case == negative_case:
+                validation.fail(
+                    f"Skill Eval binding reuses one case as positive and negative: {skill}"
+                )
+            if not entry.get("conflict_group"):
+                validation.fail(
+                    f"Skill Eval binding lacks conflict group: {skill}"
+                )
+        if binding_ids == set(SKILLS):
+            validation.ok(f"Skill Eval bindings cover all {len(SKILLS)} Skills")
 
     canonical = validate_yaml(
         validation, "ai_team/governance/canonical_sources.yaml"
@@ -1720,7 +3152,8 @@ def validate_capability_foundation(validation: Validation) -> None:
             "execution_evidence_contracts", "shared_tests", "templates",
             "documentation", "runtime_adapters", "claude_adapter",
             "shared_scaffolds", "repository_validator", "capability_registry",
-            "skill_lifecycle", "second_brain_rules", "runtime_recommendation",
+            "ai_employee_lifecycle", "skill_lifecycle", "second_brain_rules",
+            "runtime_recommendation",
             "model_recommendation", "generated_files", "manual_edits",
         }
         missing_areas = required_ownership_areas - set(ownership)
@@ -1730,7 +3163,22 @@ def validate_capability_foundation(validation: Validation) -> None:
             validation.fail("Generated-file ownership must declare none_current")
         if ownership.get("manual_edits", {}).get("overwrite_by_deprecated_generator") != "forbidden":
             validation.fail("Protected manual canonical edits may be overwritten")
-        ownership_patterns: list[str] = []
+        ownership_contract = canonical.get("ownership_contract", {})
+        declared_overlays = set(
+            ownership_contract.get("non_owning_overlays", [])
+        )
+        actual_overlays = {
+            area
+            for area, contract in ownership.items()
+            if isinstance(contract, dict)
+            and contract.get("ownership_authority") is False
+        }
+        if (
+            ownership_contract.get("authoritative_match") != "exactly_one"
+            or declared_overlays != actual_overlays
+        ):
+            validation.fail("Canonical exactly-one ownership contract is invalid")
+        ownership_patterns_by_area: dict[str, list[str]] = {}
         for area, contract in ownership.items():
             if not isinstance(contract, dict):
                 validation.fail(f"Canonical ownership entry is invalid: {area}")
@@ -1738,7 +3186,8 @@ def validate_capability_foundation(validation: Validation) -> None:
             targets = contract.get("canonical", [])
             if isinstance(targets, str):
                 targets = [targets]
-            ownership_patterns.extend(targets)
+            if contract.get("ownership_authority") is not False:
+                ownership_patterns_by_area[area] = list(targets)
             if contract.get("mode") == "provider_adapter" and contract.get("identity_authority") is not False:
                 validation.fail(f"Provider adapter must not own AI identity: {area}")
             for target in targets:
@@ -1761,16 +3210,29 @@ def validate_capability_foundation(validation: Validation) -> None:
         except (OSError, RuntimeError) as exc:
             validation.fail(f"Cannot verify canonical ownership coverage: {exc}")
             shared_candidates = []
-        unowned = [
-            path
-            for path in shared_candidates
-            if private_tracked_reason(path) is None
-            and not any(canonical_pattern_matches(path, pattern) for pattern in ownership_patterns)
-        ]
-        for path in unowned:
-            validation.fail(f"Shared file has no canonical ownership entry: {path}")
-        if not unowned:
-            validation.ok("Every tracked or candidate shared file has canonical ownership")
+        ownership_mismatches: list[tuple[str, list[str]]] = []
+        for path in shared_candidates:
+            if private_tracked_reason(path) is not None:
+                continue
+            owners = [
+                area
+                for area, patterns in ownership_patterns_by_area.items()
+                if any(
+                    canonical_pattern_matches(path, pattern)
+                    for pattern in patterns
+                )
+            ]
+            if len(owners) != 1:
+                ownership_mismatches.append((path, owners))
+        for path, owners in ownership_mismatches:
+            validation.fail(
+                f"Shared file must have exactly one canonical owner: "
+                f"{path} owners={owners}"
+            )
+        if not ownership_mismatches:
+            validation.ok(
+                "Every tracked or candidate shared file has exactly one canonical owner"
+            )
 
         historical_docs = list((ROOT / "docs" / "superpowers").rglob("*.md"))
         missing_markers = [
@@ -1939,25 +3401,26 @@ def validate_documentation_quality(validation: Validation) -> None:
                 f"{target.relative_to(ROOT).as_posix()}"
             )
 
-    code_patterns = (
-        re.compile(r"^\s*(?:from|import)\s+openai\b", re.M),
-        re.compile(r"^\s*(?:from|import)\s+anthropic\b", re.M),
-        re.compile(r"https://api\.(?:openai|anthropic)\.com", re.I),
-    )
-    for target in (ROOT / "ai_team").rglob("*.py"):
-        if target.name.startswith("test_"):
-            continue
-        content = target.read_text(encoding="utf-8")
-        if any(pattern.search(content) for pattern in code_patterns):
-            validation.fail(
-                f"Cross-provider invocation code is forbidden: "
-                f"{target.relative_to(ROOT).as_posix()}"
-            )
+    validate_cross_provider_code(validation, ROOT)
 
     exact_groups: dict[str, list[str]] = {}
-    canonical_docs = list((ROOT / "ai_team").glob("*.md"))
-    canonical_docs += list((ROOT / "ai_team" / "workflows").glob("*.md"))
-    canonical_docs += list((ROOT / "ai_team" / "review").glob("*.md"))
+    try:
+        shared_paths = sorted(
+            set(git_tracked_files(ROOT)) | set(git_untracked_files(ROOT))
+        )
+    except (OSError, RuntimeError) as exc:
+        validation.fail(
+            f"Cannot enumerate canonical Markdown for duplicate scan: {exc}"
+        )
+        shared_paths = []
+    canonical_docs = [
+        ROOT / relative
+        for relative in shared_paths
+        if relative.endswith(".md")
+        and private_tracked_reason(relative) is None
+        and not relative.startswith("docs/superpowers/")
+        and (ROOT / relative).is_file()
+    ]
     for target in canonical_docs:
         normalized = "\n".join(
             line.rstrip() for line in target.read_text(encoding="utf-8").splitlines()
@@ -1969,7 +3432,7 @@ def validate_documentation_quality(validation: Validation) -> None:
     for paths in duplicates:
         validation.fail(f"Exact duplicate canonical documents: {paths}")
     if not duplicates:
-        validation.ok("No exact duplicate canonical policy/workflow/review documents")
+        validation.ok("No exact duplicate shared canonical Markdown documents")
 
     if not any(
         error.startswith("Known documentation drift")
@@ -2007,7 +3470,8 @@ def validate_repository() -> Validation:
     ]:
         validation.require_file(relative_path)
 
-    for role in ROLES:
+    repository_roles = configured_role_ids(ROOT)
+    for role in repository_roles:
         validate_headings(
             validation, f"ai_team/roles/{role}.md", ROLE_HEADINGS
         )
@@ -2105,7 +3569,7 @@ def write_report(validation: Validation) -> None:
         "",
         "## Scope",
         "- Required repository files",
-        f"- {len(ROLES)} role documents and required headings",
+        f"- {len(configured_role_ids(ROOT))} role documents and required headings",
         f"- {len(SKILLS)} Skill README / SKILL.md / skill.yaml / agents/openai.yaml",
         "- Official Codex Skill frontmatter validation",
             f"- {len(WORKFLOWS)} workflows and {len(TEMPLATES)} templates",
@@ -2128,10 +3592,16 @@ def write_report(validation: Validation) -> None:
             ),
         ]
     )
-    (ROOT / "output").mkdir(exist_ok=True)
-    (ROOT / "output" / "validation_report.md").write_text(
+    output_dir = ROOT / "output"
+    output_dir.mkdir(mode=0o700, exist_ok=True)
+    if os.name == "posix":
+        output_dir.chmod(0o700)
+    report_path = output_dir / "validation_report.md"
+    report_path.write_text(
         "\n".join(lines) + "\n", encoding="utf-8"
     )
+    if os.name == "posix":
+        report_path.chmod(0o600)
 
 
 def main() -> int:

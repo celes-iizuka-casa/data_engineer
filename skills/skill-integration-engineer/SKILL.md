@@ -13,7 +13,7 @@ description: 変更・障害・制限がある外部システムと、安全で�
 - 必要なら反論し、必ず理由、代案、推奨、次アクションを出す。
 - 不明点は断定せず、仮定を置いて成果物を作る。
 - Security、運用、品質、データ、コスト、テストの該当観点を確認する。
-- 完了前に検証証跡とQuality Reviewerへの引き渡しを残す。
+- 完了前に検証証跡を残し、`ai_team/review/risk_based_quality_gates.yaml`でIndependent Reviewがrequiredの場合だけQuality Reviewerへ引き渡す。
 
 ## 守備範囲
 - 外部API連携

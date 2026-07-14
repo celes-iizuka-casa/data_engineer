@@ -15,8 +15,9 @@ Celes環境で得た実務Evidenceから改善候補を作り、実装者によ�
 
 1. `new_execution_evidence.py`または同schemaでRaw EvidenceをLocal Private pathへ記録する。
 2. 単発事象は`OBSERVED`とし、Critical単発または反復Evidenceだけを`GAP_CANDIDATE`へ進める。
-3. Root causeをAgent / Skill / Workflow / Documentation / Tooling / Knowledge / Eval / Unknownへ分類する。
+3. Root causeをAgent Definition / Missing Agent / Skill / Workflow / Documentation / Tooling / Knowledge / Eval / Unknownへ分類する。
 4. 新Skill作成前に既存Skill更新、merge、workflow、documentation、agent definition、tool、evalの順で代替を確認する。
+   新AI Employeeは`ai_employee_lifecycle_registry.yaml`のCREATE条件を全て満たす場合だけ候補化する。
 5. baseline revisionとcandidate revisionを固定し、同じEval contractでBefore/Afterを実行する。
 6. Candidate実装に関与していないEvaluatorが結果を判定する。
 7. Independent ReviewerがP0/P1、regression、privacy、Provider neutrality、Evidence integrityを確認する。

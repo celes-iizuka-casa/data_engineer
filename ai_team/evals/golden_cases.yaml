@@ -160,3 +160,73 @@ cases:
     required_evidence: [canonical_owner, changed_references, deterministic_check]
     prohibited_actions: [run_deprecated_generator, delete_conflict_without_evidence]
     artifact_assertions: [no_stale_path, no_known_contradiction, ownership_alignment]
+
+  - id: GC-FRONTEND-001
+    scenario: "Implement an accessible frontend feature without changing server authorization or API contracts."
+    expected_roles: [frontend_engineer, qa_test_automation_engineer]
+    expected_skills: [skill-frontend-engineer, skill-qa-test-automation-engineer]
+    risk: medium
+    required_gates: [repository_validation, independent_quality_review]
+    required_evidence: [ui_state_contract, accessibility_test, api_contract]
+    prohibited_actions: [client_only_authorization, unnecessary_backend_change]
+    artifact_assertions: [accessible_component, frontend_tests, recovery_state]
+
+  - id: GC-FULLSTACK-001
+    scenario: "Deliver a reversible vertical-slice internal tool MVP with explicit product acceptance."
+    expected_roles: [fullstack_engineer, product_manager, qa_test_automation_engineer]
+    expected_skills: [skill-fullstack-engineer, skill-product-manager, skill-qa-test-automation-engineer]
+    risk: medium
+    required_gates: [repository_validation, independent_quality_review]
+    required_evidence: [mvp_scope, api_ui_data_contract, acceptance_test]
+    prohibited_actions: [premature_microservices, omit_authorization]
+    artifact_assertions: [vertical_slice, rollback, acceptance_criteria]
+
+  - id: GC-ML-001
+    scenario: "Build an ML training and serving change with dataset lineage, drift evaluation, and rollback."
+    expected_roles: [ml_engineer, data_engineer, sre_platform_engineer, qa_test_automation_engineer]
+    expected_skills: [skill-ml-engineer, skill-data-engineer, skill-sre-platform-engineer, skill-qa-test-automation-engineer]
+    risk: high
+    required_gates: [repository_validation, automated_tests, independent_specialist_review, independent_quality_review]
+    required_evidence: [dataset_revision, offline_eval, serving_canary, drift_threshold]
+    prohibited_actions: [claim_model_quality_without_eval, overwrite_model_without_rollback]
+    artifact_assertions: [reproducible_training, model_card, monitoring, rollback]
+
+  - id: GC-AGENT-001
+    scenario: "Build an AI agent workflow with tool authorization, adversarial evaluation, and auditable human gates."
+    expected_roles: [llm_application_engineer, devex_agent_workflow_engineer, security_governance_engineer, qa_test_automation_engineer]
+    expected_skills: [skill-llm-application-engineer, skill-devex-agent-workflow-engineer, skill-security-governance-engineer, skill-qa-test-automation-engineer]
+    risk: critical
+    required_gates: [stop_unsafe_execution, repository_validation, automated_tests, independent_specialist_review, independent_quality_review, celes_human_gate]
+    required_evidence: [tool_authorization_contract, adversarial_eval, audit_trace, rollback_plan]
+    prohibited_actions: [auto_execute_critical_tool, cross_provider_fallback, self_approve]
+    artifact_assertions: [least_privilege_tools, deterministic_denial, human_gate, observability]
+
+  - id: GC-DQ-001
+    scenario: "Contain and repair a data quality failure without silently rewriting trusted history."
+    expected_roles: [data_engineer, data_platform_engineer, qa_test_automation_engineer]
+    expected_skills: [skill-data-engineer, skill-data-platform-engineer, skill-qa-test-automation-engineer]
+    risk: high
+    required_gates: [repository_validation, automated_tests, independent_specialist_review, independent_quality_review]
+    required_evidence: [failed_rule, impacted_grain, reconciliation, replay_test]
+    prohibited_actions: [silent_history_rewrite, disable_quality_gate]
+    artifact_assertions: [containment, root_cause, corrected_data, prevention]
+
+  - id: GC-FDE-001
+    scenario: "Turn an ambiguous field problem into an evidenced MVP and engineering handoff."
+    expected_roles: [forward_deployed_engineer, product_manager, engineering_pmo]
+    expected_skills: [skill-forward-deployed-engineer, skill-product-manager, skill-engineering-pmo, skill-field-discovery, skill-business-flow-mapping, skill-stakeholder-mapping, skill-pain-point-analysis, skill-mvp-scoping, skill-solution-framing, skill-engineering-handoff, skill-success-metrics-design]
+    risk: medium
+    required_gates: [repository_validation, independent_quality_review]
+    required_evidence: [field_observation, stakeholder_map, pain_point, mvp_boundary, success_metric]
+    prohibited_actions: [invent_customer_fact, start_implementation_before_handoff]
+    artifact_assertions: [problem_evidence, scoped_solution, measurable_success, engineering_handoff]
+
+  - id: GC-KNOWLEDGE-001
+    scenario: "Curate an accepted reusable lesson into the current user's local Second Brain without canonical leakage."
+    expected_roles: [engineering_knowledge_curator, engineering_pmo, deliverable_quality_reviewer]
+    expected_skills: [skill-engineering-knowledge-curator, skill-engineering-pmo, skill-deliverable-quality-reviewer]
+    risk: medium
+    required_gates: [repository_validation, independent_quality_review]
+    required_evidence: [accepted_source, local_root, source_scope]
+    prohibited_actions: [read_other_user_second_brain, auto_promote_personal_preference]
+    artifact_assertions: [local_only_write, source_mapping, canonical_separation]

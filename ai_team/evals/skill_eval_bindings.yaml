@@ -1,0 +1,41 @@
+schema_version: "1.0"
+binding_kind: skill-eval-coverage
+required_rubric: &required_rubric
+  - correct_invocation
+  - task_improvement
+  - instruction_adherence
+  - false_positive_avoidance
+  - overlap_and_conflict
+  - output_quality
+  - context_efficiency
+unknown_rule: "No live usage evidence means effectiveness remains not_evaluated."
+bindings:
+  - {skill: skill-engineering-pmo, positive_case: GC-KNOWLEDGE-001, negative_case: SF-BOUNDED-SQL-001, conflict_group: orchestration, rubric: *required_rubric}
+  - {skill: skill-forward-deployed-engineer, positive_case: SF-FDE-DISCOVERY-001, negative_case: SF-BOUNDED-SQL-001, conflict_group: field_delivery, rubric: *required_rubric}
+  - {skill: skill-deliverable-quality-reviewer, positive_case: GC-DOC-001, negative_case: SF-BOUNDED-SQL-001, conflict_group: quality, rubric: *required_rubric}
+  - {skill: skill-engineering-knowledge-curator, positive_case: GC-KNOWLEDGE-001, negative_case: SF-BOUNDED-SQL-001, conflict_group: knowledge, rubric: *required_rubric}
+  - {skill: skill-tech-lead, positive_case: GC-ARCH-001, negative_case: SF-BOUNDED-SQL-001, conflict_group: architecture, rubric: *required_rubric}
+  - {skill: skill-fullstack-engineer, positive_case: GC-FULLSTACK-001, negative_case: SF-FRONTEND-BOUNDARY-001, conflict_group: application, rubric: *required_rubric}
+  - {skill: skill-frontend-engineer, positive_case: SF-FRONTEND-BOUNDARY-001, negative_case: GC-BACKEND-001, conflict_group: application, rubric: *required_rubric}
+  - {skill: skill-backend-engineer, positive_case: GC-BACKEND-001, negative_case: SF-FRONTEND-BOUNDARY-001, conflict_group: application, rubric: *required_rubric}
+  - {skill: skill-data-engineer, positive_case: GC-DATA-001, negative_case: GC-FRONTEND-001, conflict_group: data, rubric: *required_rubric}
+  - {skill: skill-data-platform-engineer, positive_case: GC-DATA-001, negative_case: SF-BOUNDED-SQL-001, conflict_group: data, rubric: *required_rubric}
+  - {skill: skill-cloud-infrastructure-engineer, positive_case: GC-INFRA-001, negative_case: SF-BOUNDED-SQL-001, conflict_group: platform, rubric: *required_rubric}
+  - {skill: skill-sre-platform-engineer, positive_case: GC-INC-001, negative_case: SF-BOUNDED-SQL-001, conflict_group: platform, rubric: *required_rubric}
+  - {skill: skill-security-governance-engineer, positive_case: GC-SEC-001, negative_case: SF-BOUNDED-SQL-001, conflict_group: quality, rubric: *required_rubric}
+  - {skill: skill-qa-test-automation-engineer, positive_case: GC-SQL-001, negative_case: GC-FDE-001, conflict_group: quality, rubric: *required_rubric}
+  - {skill: skill-llm-application-engineer, positive_case: GC-AGENT-001, negative_case: GC-ML-001, conflict_group: ai_ml, rubric: *required_rubric}
+  - {skill: skill-devex-agent-workflow-engineer, positive_case: GC-AGENT-001, negative_case: GC-SQL-001, conflict_group: orchestration, rubric: *required_rubric}
+  - {skill: skill-integration-engineer, positive_case: GC-DIST-001, negative_case: GC-FRONTEND-001, conflict_group: integration, rubric: *required_rubric}
+  - {skill: skill-product-manager, positive_case: GC-FULLSTACK-001, negative_case: SF-BOUNDED-SQL-001, conflict_group: product, rubric: *required_rubric}
+  - {skill: skill-ml-engineer, positive_case: GC-ML-001, negative_case: GC-AGENT-001, conflict_group: ai_ml, rubric: *required_rubric}
+  - {skill: skill-field-discovery, positive_case: SF-FDE-DISCOVERY-001, negative_case: SF-FDE-HANDOFF-001, conflict_group: fde_discovery, rubric: *required_rubric}
+  - {skill: skill-business-flow-mapping, positive_case: SF-FDE-DISCOVERY-001, negative_case: SF-FDE-HANDOFF-001, conflict_group: fde_discovery, rubric: *required_rubric}
+  - {skill: skill-stakeholder-mapping, positive_case: SF-FDE-DISCOVERY-001, negative_case: SF-FDE-HANDOFF-001, conflict_group: fde_discovery, rubric: *required_rubric}
+  - {skill: skill-pain-point-analysis, positive_case: SF-FDE-DISCOVERY-001, negative_case: SF-FDE-HANDOFF-001, conflict_group: fde_discovery, rubric: *required_rubric}
+  - {skill: skill-mvp-scoping, positive_case: SF-FDE-SCOPING-001, negative_case: SF-FDE-DISCOVERY-001, conflict_group: fde_scoping, rubric: *required_rubric}
+  - {skill: skill-solution-framing, positive_case: SF-FDE-SCOPING-001, negative_case: SF-FDE-DISCOVERY-001, conflict_group: fde_scoping, rubric: *required_rubric}
+  - {skill: skill-engineering-handoff, positive_case: SF-FDE-HANDOFF-001, negative_case: SF-FDE-DISCOVERY-001, conflict_group: fde_handoff, rubric: *required_rubric}
+  - {skill: skill-adoption-planning, positive_case: SF-FDE-ADOPTION-001, negative_case: SF-FDE-DISCOVERY-001, conflict_group: fde_adoption, rubric: *required_rubric}
+  - {skill: skill-success-metrics-design, positive_case: SF-FDE-SCOPING-001, negative_case: SF-FDE-DISCOVERY-001, conflict_group: fde_measurement, rubric: *required_rubric}
+  - {skill: skill-feedback-to-backlog, positive_case: SF-FDE-FEEDBACK-001, negative_case: SF-FDE-DISCOVERY-001, conflict_group: fde_feedback, rubric: *required_rubric}

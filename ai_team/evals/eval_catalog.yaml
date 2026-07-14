@@ -5,10 +5,15 @@ suites:
     dimensions:
       - role_understanding
       - scope_adherence
+      - capability_application
+      - responsibility_boundary
       - handoff_quality
       - evidence_discipline
       - hallucination_resistance
       - done_definition_compliance
+      - escalation_quality
+      - reviewer_selection_quality
+    deterministic_results: "ai_team/evals/agent_skill_fixtures.yaml"
   skill:
     dimensions:
       - correct_invocation
@@ -17,6 +22,9 @@ suites:
       - false_positive_avoidance
       - overlap_and_conflict
       - output_quality
+      - context_efficiency
+    deterministic_results: "ai_team/evals/agent_skill_fixtures.yaml"
+    coverage_bindings: "ai_team/evals/skill_eval_bindings.yaml"
   engineering:
     fixture: "ai_team/evals/golden_cases.yaml"
     representative_results: "ai_team/evals/case_fixtures.yaml"
@@ -24,9 +32,19 @@ suites:
     live_ai_task_execution: deferred
     live_ai_task_reason: "No provider/model switch or synthetic claim is allowed; collect real local execution evidence in later tasks."
   documentation:
-    dimensions: [stale_path, contradiction, duplication, canonical_source_mismatch]
+    dimensions: [accuracy, completeness, freshness, stale_path, contradiction, duplication, canonical_source_mismatch, broken_link, role_skill_mismatch, stale_model_recommendation, responsibility_clarity, fragmentation, cross_document_consistency, discoverability, ai_readability, human_readability, implementation_alignment, maintainability]
   regression:
-    rule: "Candidate must use the same cases and acceptance contract as baseline."
+    rule: "A changed acceptance-contract digest is a Foundation migration, not a same-contract capability comparison."
+    migration_comparison: "run_foundation_evals.py --baseline-root <path> --root <path>"
+    same_contract_comparison: "run_foundation_evals.py --baseline-root <path> --root <path> --contract-root <fixed-contract-path>"
+    contract_digest_surfaces: [runner, catalog, golden_cases, case_fixtures, agent_skill_fixtures, skill_bindings, documentation_schema, documentation_selector, documentation_validator, documentation_policy, risk_gates]
+    synthetic_fixture_claim: foundation_contract_only
+verdicts:
+  foundation_contract:
+    pass: "All deterministic structural contracts pass."
+  capability_effectiveness:
+    pass_requires: [live_execution_evidence, same_contract_before_after, independent_evaluator]
+    absent_live_evidence: "UNKNOWN — insufficient evidence"
 comparison_contract:
   required_fields:
     - baseline_revision

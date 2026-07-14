@@ -1,4 +1,14 @@
 schema_version: "1.0"
+ownership_contract:
+  authoritative_match: exactly_one
+  non_owning_overlays:
+    - runtime_recommendation
+    - model_recommendation
+    - ai_employee_lifecycle
+    - skill_lifecycle
+    - second_brain_rules
+    - generated_files
+    - manual_edits
 ownership:
   agent_definitions:
     canonical: "ai_team/roles/*.md"
@@ -54,7 +64,11 @@ ownership:
       - "README.md"
       - "AGENTS.md"
       - "CLAUDE.md"
-      - "ai_team/*.md"
+      - "ai_team/README.md"
+      - "ai_team/professional_standards.md"
+      - "ai_team/professional_response_templates.md"
+      - "ai_team/role_scope_matrix.md"
+      - "ai_team/team_overview.md"
       - "docs/**/*"
     mode: manual_canonical
     historical_docs_require_superseded_marker: true
@@ -62,8 +76,6 @@ ownership:
     canonical:
       - "claude_code_team_execution.md"
       - "codex_team_execution.md"
-      - "ai_team/claude_code_execution_policy.md"
-      - "ai_team/codex_execution_policy.md"
     mode: provider_adapter
     identity_authority: false
   claude_adapter:
@@ -85,20 +97,28 @@ ownership:
     mode: manual_canonical
   runtime_recommendation:
     canonical: "ai_team/runtime_selection_policy.md"
+    ownership_authority: false
     enforcement: false
   model_recommendation:
     canonical: "ai_team/model_selection_policy.md"
+    ownership_authority: false
     enforcement: false
   capability_registry:
     canonical: "ai_team/capability_registry.yaml"
+  ai_employee_lifecycle:
+    canonical: "ai_team/governance/ai_employee_lifecycle_registry.yaml"
+    ownership_authority: false
   skill_lifecycle:
     canonical: "ai_team/governance/skill_lifecycle_registry.yaml"
+    ownership_authority: false
   second_brain_rules:
     canonical:
       - "ai_team/personalization_policy.md"
       - "ai_team/obsidian_write_policy.md"
+    ownership_authority: false
   generated_files:
     canonical: []
+    ownership_authority: false
     mode: none_current
     generated_marker_required: true
   manual_edits:
@@ -115,6 +135,7 @@ ownership:
       - "skills/README.md"
       - "skills/index.yaml"
       - "templates/**/*"
+    ownership_authority: false
     mode: protected_manual_canonical
     overwrite_by_deprecated_generator: forbidden
 legacy_generators:

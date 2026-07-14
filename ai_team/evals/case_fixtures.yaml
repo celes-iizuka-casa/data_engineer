@@ -28,3 +28,66 @@ results:
     evidence: [data_classification, threat_model, secret_rotation_and_test]
     artifacts: [least_privilege, auditability, residual_risk_owner]
     actions: [redact_sensitive_evidence, require_celes_decision]
+
+  - fixture_id: FIX-FRONTEND-MEDIUM-001
+    case_id: GC-FRONTEND-001
+    selected_roles: [frontend_engineer, qa_test_automation_engineer]
+    selected_skills: [skill-frontend-engineer, skill-qa-test-automation-engineer]
+    executed_gates: [repository_validation, independent_quality_review]
+    evidence: [ui_state_contract, accessibility_test, api_contract]
+    artifacts: [accessible_component, frontend_tests, recovery_state]
+    actions: [preserve_server_authorization]
+
+  - fixture_id: FIX-FULLSTACK-MEDIUM-001
+    case_id: GC-FULLSTACK-001
+    selected_roles: [fullstack_engineer, product_manager, qa_test_automation_engineer]
+    selected_skills: [skill-fullstack-engineer, skill-product-manager, skill-qa-test-automation-engineer]
+    executed_gates: [repository_validation, independent_quality_review]
+    evidence: [mvp_scope, api_ui_data_contract, acceptance_test]
+    artifacts: [vertical_slice, rollback, acceptance_criteria]
+    actions: [deliver_reversible_mvp]
+
+  - fixture_id: FIX-ML-HIGH-001
+    case_id: GC-ML-001
+    selected_roles: [ml_engineer, data_engineer, sre_platform_engineer, qa_test_automation_engineer]
+    selected_skills: [skill-ml-engineer, skill-data-engineer, skill-sre-platform-engineer, skill-qa-test-automation-engineer]
+    executed_gates: [repository_validation, automated_tests, independent_specialist_review, independent_quality_review]
+    evidence: [dataset_revision, offline_eval, serving_canary, drift_threshold]
+    artifacts: [reproducible_training, model_card, monitoring, rollback]
+    actions: [canary_model_revision]
+
+  - fixture_id: FIX-AGENT-CRITICAL-001
+    case_id: GC-AGENT-001
+    selected_roles: [llm_application_engineer, devex_agent_workflow_engineer, security_governance_engineer, qa_test_automation_engineer]
+    selected_skills: [skill-llm-application-engineer, skill-devex-agent-workflow-engineer, skill-security-governance-engineer, skill-qa-test-automation-engineer]
+    executed_gates: [stop_unsafe_execution, repository_validation, automated_tests, independent_specialist_review, independent_quality_review, celes_human_gate]
+    evidence: [tool_authorization_contract, adversarial_eval, audit_trace, rollback_plan]
+    artifacts: [least_privilege_tools, deterministic_denial, human_gate, observability]
+    actions: [reject_unauthorized_tool_call]
+
+  - fixture_id: FIX-DQ-HIGH-001
+    case_id: GC-DQ-001
+    selected_roles: [data_engineer, data_platform_engineer, qa_test_automation_engineer]
+    selected_skills: [skill-data-engineer, skill-data-platform-engineer, skill-qa-test-automation-engineer]
+    executed_gates: [repository_validation, automated_tests, independent_specialist_review, independent_quality_review]
+    evidence: [failed_rule, impacted_grain, reconciliation, replay_test]
+    artifacts: [containment, root_cause, corrected_data, prevention]
+    actions: [quarantine_bad_partition]
+
+  - fixture_id: FIX-FDE-MEDIUM-001
+    case_id: GC-FDE-001
+    selected_roles: [forward_deployed_engineer, product_manager, engineering_pmo]
+    selected_skills: [skill-forward-deployed-engineer, skill-product-manager, skill-engineering-pmo, skill-field-discovery, skill-business-flow-mapping, skill-stakeholder-mapping, skill-pain-point-analysis, skill-mvp-scoping, skill-solution-framing, skill-engineering-handoff, skill-success-metrics-design]
+    executed_gates: [repository_validation, independent_quality_review]
+    evidence: [field_observation, stakeholder_map, pain_point, mvp_boundary, success_metric]
+    artifacts: [problem_evidence, scoped_solution, measurable_success, engineering_handoff]
+    actions: [handoff_evidenced_scope]
+
+  - fixture_id: FIX-KNOWLEDGE-MEDIUM-001
+    case_id: GC-KNOWLEDGE-001
+    selected_roles: [engineering_knowledge_curator, engineering_pmo, deliverable_quality_reviewer]
+    selected_skills: [skill-engineering-knowledge-curator, skill-engineering-pmo, skill-deliverable-quality-reviewer]
+    executed_gates: [repository_validation, independent_quality_review]
+    evidence: [accepted_source, local_root, source_scope]
+    artifacts: [local_only_write, source_mapping, canonical_separation]
+    actions: [write_current_user_second_brain]
