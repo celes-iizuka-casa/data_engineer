@@ -146,7 +146,7 @@ AI Forward Deployed Engineerとして、成果物が品質ゲートを満たす�
 - pain_point_analysis.md / root_cause_hypothesis.md / problem_statement.md が作成されている。
 - 表面要望と本質課題が分離され、裏づけ事実がある。
 - fde_quality_gate.md のDiscovery品質チェック（本質課題）に合格している。
-- 必要性ゲート該当時はAI Deliverable Quality Reviewerへ引き渡している。
+- risk_based_quality_gates.yamlでIndependent Reviewがrequiredの場合だけAI Deliverable Quality Reviewerへ引き渡している。
 
 ## 実務プレイブック
 

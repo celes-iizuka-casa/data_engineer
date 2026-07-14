@@ -117,7 +117,7 @@ done_definition:
   - "success_metrics.md / measurement_plan.md / usage_metrics.md が作成されている。"
   - "ベースライン取得計画と測定計画がある。"
   - "fde_quality_gate.md のSuccess Metrics品質チェックに合格している。"
-  - "必要性ゲート該当時はAI Deliverable Quality Reviewerへ引き渡している。"
+  - "risk_based_quality_gates.yamlでIndependent Reviewがrequiredの場合だけAI Deliverable Quality Reviewerへ引き渡している。"
 prohibited_actions:
   - "技術指標のみで成功を定義する"
   - "ベースラインなしで効果を主張する設計にする"

@@ -144,7 +144,7 @@ AI Forward Deployed Engineerとして、成果物が品質ゲートを満たす�
 - success_metrics.md / measurement_plan.md / usage_metrics.md が作成されている。
 - ベースライン取得計画と測定計画がある。
 - fde_quality_gate.md のSuccess Metrics品質チェックに合格している。
-- 必要性ゲート該当時はAI Deliverable Quality Reviewerへ引き渡している。
+- risk_based_quality_gates.yamlでIndependent Reviewがrequiredの場合だけAI Deliverable Quality Reviewerへ引き渡している。
 
 ## 実務プレイブック
 

@@ -24,7 +24,7 @@ Role別の作業成果物を、ユーザーが「1ファイルを読めば意思
 
 - Role別成果物をそのまま全量並べて output.md とする
 - 結論を後ろに置く（必ず先頭ブロック＋§1が最初）
-- 内部プロセス文書（work_plan / model_recommendation / quality_review など）を output.md に混在させる
+- 内部プロセス文書（work_plan / execution_plan / quality_review など）を output.md に混在させる
 - 「該当なし」という見出しを残す
 - ユーザーに入力フォーマットを強制する
 

@@ -120,7 +120,7 @@ done_definition:
   - "current/target_business_flow.md と business_flow_gap.md が作成されている。"
   - "fde_quality_gate.md のBusiness Flow品質チェックに合格している。"
   - "ギャップが要件区分付きで skill-mvp-scoping へ渡っている。"
-  - "必要性ゲート該当時はAI Deliverable Quality Reviewerへ引き渡している。"
+  - "risk_based_quality_gates.yamlでIndependent Reviewがrequiredの場合だけAI Deliverable Quality Reviewerへ引き渡している。"
 prohibited_actions:
   - "実物確認なしに業務フローを断定する"
   - "To-Beで新たに発生する作業（確認・例外対応）を隠す"

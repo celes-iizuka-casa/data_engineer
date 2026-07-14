@@ -245,12 +245,12 @@ AI Forward Deployed Engineerとして、検証対象、観点、手順、結果�
 6. skill-business-flow-mapping で現状/To-Be業務フローとギャップを整理する
 7. skill-mvp-scoping でMVPスコープ・非スコープ・将来拡張を定義する
 8. skill-solution-framing で解決方針候補と推奨を整理する（技術選定の確定はTech Lead）
-9. skill-engineering-handoff でRole別依頼を含むhandoffを作成し、Tech Lead / 各Engineerへ引き継ぐ（実行環境をCodexへ切替）
+9. skill-engineering-handoff でRole別依頼を含むhandoffを作成し、呼び出し元Runtime内でTech Lead / 各Engineerへ引き継ぐ。別Runtimeが必要なら自動切替せず再開条件を記録する
 10. 実装・設計・検証は各Roleが実施する（FDEはQ&A対応。往復2回超はhandoff更新）
 11. skill-adoption-planning / skill-success-metrics-design で導入・定着・効果測定を整理する
 12. skill-feedback-to-backlog で現場フィードバックを改善Backlogへ変換する
 13. 必要に応じて顧客向け説明を作成する（customer_explanation_template・Personalization適用）
-14. `ai_team/fde/fde_quality_gate.md` の成果物別チェックを通し、Completed/Accepted後にKnowledge Curatorへ渡す
+14. `ai_team/fde/fde_quality_gate.md` の成果物別チェックを通し、現在利用者の明示依頼、またはAccepted + 再利用価値 + Local root確認後だけKnowledge Curatorへ渡す
 
 ## 判断基準
 - 顧客価値が明確か
@@ -344,7 +344,7 @@ AI Forward Deployed Engineerとして、検証対象、観点、手順、結果�
 - 受入条件が明確になっている。
 - 導入・定着観点が整理されている。
 - 未決事項が output.md の要対応（必要時は `_internal/questions.md`）に整理されている。
-- quality_review_request.mdを用意し、AI Deliverable Quality Reviewerへ引き渡している。
+- risk_based_quality_gates.yamlでIndependent Reviewがrequiredの場合だけquality_review_request.mdを用意し、AI Deliverable Quality Reviewerへ引き渡している。
 - Professional Modeに応じた成果物、判断理由、リスク、未確認事項、次アクションが明記されている。
 - 非プロフェッショナルな感想、無根拠な同意、責任範囲外の断定が除去されている。
 - `ai_team/fde/fde_quality_gate.md` の該当成果物チェックに合格している。

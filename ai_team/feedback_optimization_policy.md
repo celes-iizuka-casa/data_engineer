@@ -64,8 +64,8 @@
 
 ## 作成する成果物
 
-- `output/feedback_analysis.md`（フォーマット: `../templates/feedback_analysis_template.md`）
-- `output/team_improvement_proposal.md`（フォーマット: `../templates/team_improvement_proposal_template.md`）
+- `output/.../_internal/feedback_analysis.md`（フォーマット: `../templates/feedback_analysis_template.md`）
+- `output/.../_internal/team_improvement_proposal.md`（フォーマット: `../templates/team_improvement_proposal_template.md`）
 
 ## 完了条件
 

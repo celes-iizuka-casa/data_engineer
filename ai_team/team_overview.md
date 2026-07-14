@@ -4,7 +4,7 @@
 AI社員エンジニアチームは、セレスの依頼に対して、各Roleが専門領域のプロフェッショナルとして判断し、実務で使える成果物を作るチームである。
 
 ## Role一覧
-- AI Engineering PMO: 課題分類、作業分解、成果物管理、成果物統合（Deliverable Optimizer）、実行環境/モデル/工数の自動判定
+- AI Engineering PMO: 課題分類、作業分解、成果物管理、成果物統合（Deliverable Optimizer）、実行文脈のEvidence記録と非拘束effort提案
 - AI Forward Deployed Engineer: 顧客・現場課題の整理、本質課題の抽出、MVPスコープ切り出し、Engineering Handoff、導入・定着・フィードバックBacklog化（親Skill + サブSkill 10本。運用モデル: `fde/fde_operating_model.md`）
 - AI Deliverable Quality Reviewer: 成果物横断レビュー、専門レビュー証跡確認、重大度判定
 - AI Engineering Knowledge Curator: 成果物のナレッジ化、Obsidian整理、MOC更新
@@ -39,7 +39,10 @@ AI社員エンジニアチームは、セレスの依頼に対して、各Role�
 
 - **iteration_confirmation_policy.md**: 繰り返し作業は代表例を先に確認し、全件への方針ミス波及を防ぐ
 - **retrospective_policy.md**: 作業完了後に振り返り・改善案を出し、次回精度を上げる
-- **obsidian_write_policy.md**: 第二の脳への書き込みは作業完了後のみ、未確定情報を正式ナレッジに混入させない
+- **obsidian_write_policy.md**: 現在利用者の明示依頼、またはAcceptedかつ再利用価値がある場合だけLocal Second Brainへ書き込む
 - **feedback_optimization_policy.md**: セレスのフィードバックをRole / Skill / Workflow改善に変換する
-- **model_selection_policy.md**: 工程ごとに最適なモデルを使い分け、品質とコストを最適化する
-- **runtime_selection_policy.md / model_effort_selection_policy.md**: 依頼ごとに実行環境（Claude Code / Codex）・モデル・工数を自動判定し、runtime-neutralに保つ
+- **model_selection_policy.md**: 呼び出し元の現在Modelを変えず、工程ごとに必要能力と非拘束effortを提案する
+- **runtime_selection_policy.md / model_effort_selection_policy.md**: 呼び出し元Runtimeを維持し、確認できたmodel EvidenceとRisk-based effortを非拘束で記録する
+- **capability_registry.yaml**: 19 RoleのCapability、decision rights、escalation、適否、handoffを構造化する
+- **governance/skill_lifecycle_registry.yaml**: 29 Skillのcontent-addressed revisionとLifecycleを管理する
+- **workflows/capability_growth_workflow.md**: Evidence → Before/After Eval → Independent Review → Celes Human Gateを接続する

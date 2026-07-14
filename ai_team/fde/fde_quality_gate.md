@@ -76,7 +76,7 @@ FDE成果物の品質ゲート。`../review/quality_gate.md` / `../review/profes
 
 ## Personalization反映チェック
 
-- [ ] `../../profiles/current_user_profile.yaml` を読んだ記録がある（不在時はデフォルト仮定を明記）
+- [ ] `../personalization_policy.md` のprofile解決順を確認した（Local profile不在時は匿名shared defaultを使い、個人属性を推測しない）
 - [ ] 成果物の粒度・用語が利用者タイプ（`../personalization_policy.md`）に合っている
 - [ ] 顧客向け説明がある場合、customer_explanation_template の型に沿い技術詳細が業務語に変換されている
 

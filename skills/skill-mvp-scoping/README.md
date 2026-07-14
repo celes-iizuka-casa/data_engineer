@@ -149,7 +149,7 @@ AI Forward Deployed Engineerとして、成果物が品質ゲートを満たす�
 - mvp_scope.md / non_scope.md / release_scope.md / future_extension.md が作成されている。
 - fde_quality_gate.md のMVP Scope品質チェックに合格している。
 - Tech Leadの実現性確認が依頼済みである。
-- 必要性ゲート該当時はAI Deliverable Quality Reviewerへ引き渡している。
+- risk_based_quality_gates.yamlでIndependent Reviewがrequiredの場合だけAI Deliverable Quality Reviewerへ引き渡している。
 
 ## 実務プレイブック
 

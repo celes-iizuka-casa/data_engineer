@@ -1,5 +1,7 @@
 # 提出物の出力最適化 Implementation Plan
 
+> **SUPERSEDED / HISTORICAL:** 2026-06-21時点の実装計画。現行契約は `ai_team/output_optimization_policy.md` と `templates/output_template.md` を正本とし、本書のbranch/commit手順、2ファイルA層、standalone model recommendationは実行しない。
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** AIエンジニアチームの1依頼あたりの提出物を「結論サマリー＋選ばれたRoleの本成果物」の2点を基本にし、それ以外は必要性ゲートを満たした時だけ生成するよう、ポリシー/ワークフロー/テンプレート群を書き換える。
@@ -36,7 +38,7 @@
 
 Run:
 ```bash
-cd /Users/celesiizuka/Celestian/CASA/data_engineer
+cd /path/to/data_engineer
 git checkout -b feature/deliverable-output-optimization
 ```
 Expected: `Switched to a new branch 'feature/deliverable-output-optimization'`

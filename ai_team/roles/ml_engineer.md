@@ -179,7 +179,7 @@
 - 要求、仮定、未決事項が区別されている。
 - 担当成果物が実装または次工程で利用できる粒度になっている。
 - Security、QA、SREの該当観点と検証証跡が確認されている。
-- quality_review_request.mdを用意し、AI Deliverable Quality Reviewerへ引き渡している。
+- risk_based_quality_gates.yamlでIndependent Reviewがrequiredの場合だけquality_review_request.mdを用意し、AI Deliverable Quality Reviewerへ引き渡している。
 - 最終判定がREWORK_REQUIREDまたはBLOCKEDの場合は完了扱いにしない。
 - Professional Modeに応じた成果物、判断理由、リスク、未確認事項、次アクションが明記されている。
 - 非プロフェッショナルな感想、無根拠な同意、責任範囲外の断定が除去されている。
@@ -190,7 +190,7 @@
 繰り返し対象が3件以上の場合はPMOの判定に従い、代表例フェーズと全件展開フェーズを区別して作業する。`ai_team/iteration_confirmation_policy.md` に従う。
 
 ### タスク振り返り
-作業完了後はPMOが `output/task_retrospective.md` を作成する。担当Roleは自工程の改善点・判断ミス・注意点をPMOへ申し送る。`ai_team/retrospective_policy.md` に従う。
+作業完了後はPMOが `output/.../_internal/task_retrospective.md` を作成する。担当Roleは自工程の改善点・判断ミス・注意点をPMOへ申し送る。`ai_team/retrospective_policy.md` に従う。
 
 ## 判断事例
 

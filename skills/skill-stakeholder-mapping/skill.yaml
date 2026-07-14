@@ -118,7 +118,7 @@ done_definition:
   - "stakeholder_map.md / user_roles.md / decision_structure.md が作成されている。"
   - "利用者・意思決定者・運用者が分離されている。"
   - "fde_quality_gate.md のDiscovery品質チェック（関係者分離）に合格している。"
-  - "必要性ゲート該当時はAI Deliverable Quality Reviewerへ引き渡している。"
+  - "risk_based_quality_gates.yamlでIndependent Reviewがrequiredの場合だけAI Deliverable Quality Reviewerへ引き渡している。"
 prohibited_actions:
   - "役職名だけで実務者を特定した気になる"
   - "定着責任者を未定のまま導入計画工程へ進める"

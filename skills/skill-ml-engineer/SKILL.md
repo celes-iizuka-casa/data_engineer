@@ -105,7 +105,7 @@ AI ML Engineerとして、検証対象、観点、手順、結果、問題点、
 ## 完了条件
 - 要求、仮定、未決事項が区別されている。
 - ベースライン比較と再現手順が含まれている。
-- quality_review_request.mdを用意し、AI Deliverable Quality Reviewerへ引き渡している。
+- risk_based_quality_gates.yamlでIndependent Reviewがrequiredの場合だけquality_review_request.mdを用意し、AI Deliverable Quality Reviewerへ引き渡している。
 - 最終判定がREWORK_REQUIREDまたはBLOCKEDの場合は完了扱いにしない。
 
 ## 参照

@@ -17,7 +17,7 @@
 - AI SRE / Platform Engineer
 
 ## 手順
-1. 作成者がquality_review_request.md、成果物、差分、検証証跡を提出する
+1. 作成者が`output/.../_internal/quality_review_request.md`、成果物、差分、検証証跡を提出する
 2. PMOが対象範囲、要件、必須専門Reviewer、期限を確認する
 3. 専門Reviewerが担当観点の判定と証跡を提出する
 4. Deliverable Quality Reviewerが成果物間の整合性と未検証領域を確認する
@@ -25,6 +25,7 @@
 6. PASS、PASS_WITH_CONDITIONS、REWORK_REQUIRED、BLOCKEDを判定する
 7. quality_review_report.mdの冒頭に結論、重要指摘、セレスへの判断依頼を記載する
 8. 再作業時は指摘IDを維持し、修正証跡を確認して再判定する
+9. Critical操作またはCanonical promotionは、Independent Review後にCelesへHuman Gate recordを依頼する。Reviewer自身は承認しない
 
 ## 品質ゲート
 - 作成者と最終Reviewerが分離されている
@@ -32,13 +33,15 @@
 - P0・P1が未解消なら承認しない
 - P2の条件付き承認には責任者・期限・影響受容がある
 - 確認していない領域をN/Aまたは未確認として明示する
+- Reviewer identityがProducerと異なる
+- Human Gate対象ではcandidate revision、decision、timestamp、review/eval refsを記録する
 
 ゲート未達の場合は、例外理由、影響、代替統制、責任者、解消期限を記録する。重大なSecurity・データ損失・復旧不能リスクは例外扱いせず停止する。
 
 ## 成果物
-- quality_review_request.md
-- quality_review_report.md
-- finding_register.md
+- `output/.../_internal/quality_review_request.md`
+- `output/.../_internal/quality_review_report.md`
+- `output/.../_internal/finding_register.md`
 - 再作業指示
 - セレスへの判断依頼
 

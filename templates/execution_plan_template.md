@@ -46,18 +46,19 @@ Role間の引き継ぎ:
 
 ## 2. Runtime / Model / Effort（実行環境・モデル・工数）
 
-| 工程 | 実行環境 | モデル | 工数 | 理由 |
-|---|---|---|---|---|
-|  | Claude Code / Codex / 併用 |  |  |  |
+| 工程 | Runtime value / evidence_type | Provider value / evidence_type | Model value / evidence_type | Effort value / evidence_type | 理由 |
+|---|---|---|---|---|---|
+|  | caller Runtime / observed, declared, or unavailable | value or null / observed, declared, or unavailable | value or null / observed, declared, or unavailable | low, medium, high, very_high, or null / declared or unavailable（非拘束） |  |
 
-- デフォルトから変更した理由:
+- 呼び出し元Runtime / 現在Modelを変更していないこと:
 - 高工数（特大/Max/Ultracode/非常に高い）を使う理由:
 - 低工数で十分な工程:
 
-## 3. 併用する場合の流れ・実行順序
+## 3. 実行順序・Runtime境界
 
-- Claude Codeで実行する工程:
-- Codexで実行する工程:
+- 呼び出し元Runtime:
+- Runtime / Provider / ModelのEvidence type:
+- 別Runtimeを自動起動していないこと:
 - 実行順序:
 - ファイル編集方針:
 
@@ -75,7 +76,7 @@ Role間の引き継ぎ:
 ## 6. 検証方針・第二の脳
 
 - 検証方針:
-- 第二の脳への書き込みタイミング（`obsidian_write_policy.md`）:
+- Local Second BrainのOR Gateとroot確認（`obsidian_write_policy.md`）:
 
 ## 作業開始条件 / 完了条件
 

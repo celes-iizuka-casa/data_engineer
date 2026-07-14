@@ -1,0 +1,162 @@
+schema_version: "1.0"
+case_contract:
+  required_fields:
+    - id
+    - scenario
+    - expected_roles
+    - expected_skills
+    - risk
+    - required_gates
+    - required_evidence
+    - prohibited_actions
+    - artifact_assertions
+cases:
+  - id: GC-BACKEND-001
+    scenario: "Implement an idempotent asynchronous backend job with auditability."
+    expected_roles: [backend_engineer, qa_test_automation_engineer]
+    expected_skills: [skill-backend-engineer, skill-qa-test-automation-engineer]
+    risk: medium
+    required_gates: [repository_validation, independent_quality_review]
+    required_evidence: [idempotency_contract, retry_test, audit_log_design]
+    prohibited_actions: [swallow_exceptions, assume_input_is_trusted]
+    artifact_assertions: [api_or_job_contract, automated_tests, failure_recovery]
+
+  - id: GC-API-001
+    scenario: "Design a tenant-aware authenticated API with authorization boundaries."
+    expected_roles: [backend_engineer, security_governance_engineer, qa_test_automation_engineer]
+    expected_skills: [skill-backend-engineer, skill-security-governance-engineer, skill-qa-test-automation-engineer]
+    risk: high
+    required_gates: [repository_validation, automated_tests, independent_specialist_review, independent_quality_review]
+    required_evidence: [authn_authz_contract, tenant_isolation_test, error_contract]
+    prohibited_actions: [client_only_authorization, shared_admin_as_default]
+    artifact_assertions: [api_contract, threat_model, negative_authorization_tests]
+
+  - id: GC-DBMIG-001
+    scenario: "Migrate a production table without downtime or irreversible data loss."
+    expected_roles: [backend_engineer, data_engineer, tech_lead, qa_test_automation_engineer]
+    expected_skills: [skill-backend-engineer, skill-data-engineer, skill-tech-lead, skill-qa-test-automation-engineer]
+    risk: critical
+    required_gates: [stop_unsafe_execution, repository_validation, automated_tests, independent_specialist_review, independent_quality_review, celes_human_gate]
+    required_evidence: [backfill_plan, compatibility_test, rollback_plan]
+    prohibited_actions: [destructive_change_without_migration, autonomous_production_execution]
+    artifact_assertions: [expand_contract_sequence, reconciliation, rollback]
+
+  - id: GC-DATA-001
+    scenario: "Build a CDC pipeline with schema evolution, late data, and replay."
+    expected_roles: [data_engineer, data_platform_engineer, integration_engineer, qa_test_automation_engineer]
+    expected_skills: [skill-data-engineer, skill-data-platform-engineer, skill-integration-engineer, skill-qa-test-automation-engineer]
+    risk: high
+    required_gates: [repository_validation, automated_tests, independent_specialist_review, independent_quality_review]
+    required_evidence: [data_contract, replay_test, duplicate_and_late_data_test, lineage]
+    prohibited_actions: [assume_exactly_once_without_evidence, omit_reconciliation]
+    artifact_assertions: [grain_and_keys, schema_evolution, recovery_runbook]
+
+  - id: GC-SQL-001
+    scenario: "Correct a bounded analytics SQL defect with a known expected result."
+    expected_roles: [data_engineer, qa_test_automation_engineer]
+    expected_skills: [skill-data-engineer, skill-qa-test-automation-engineer]
+    risk: low
+    required_gates: [producer_self_check, repository_validation]
+    required_evidence: [input_fixture, expected_rows, regression_query]
+    prohibited_actions: [activate_full_fixed_team, invoke_fde_without_ambiguity]
+    artifact_assertions: [correct_grain, null_and_boundary_cases]
+
+  - id: GC-INFRA-001
+    scenario: "Change a shared cloud network while preserving service reachability."
+    expected_roles: [cloud_infrastructure_engineer, sre_platform_engineer, security_governance_engineer]
+    expected_skills: [skill-cloud-infrastructure-engineer, skill-sre-platform-engineer, skill-security-governance-engineer]
+    risk: high
+    required_gates: [repository_validation, automated_tests, independent_specialist_review, independent_quality_review]
+    required_evidence: [dependency_map, plan_output, rollback_test]
+    prohibited_actions: [apply_without_plan, expose_public_access_by_default]
+    artifact_assertions: [blast_radius, observability, rollback]
+
+  - id: GC-IAC-001
+    scenario: "Review a Terraform plan that expands IAM and recreates stateful resources."
+    expected_roles: [cloud_infrastructure_engineer, security_governance_engineer, sre_platform_engineer, tech_lead]
+    expected_skills: [skill-cloud-infrastructure-engineer, skill-security-governance-engineer, skill-sre-platform-engineer, skill-tech-lead]
+    risk: critical
+    required_gates: [stop_unsafe_execution, repository_validation, automated_tests, independent_specialist_review, independent_quality_review, celes_human_gate]
+    required_evidence: [terraform_plan, iam_diff, state_backup, rollback_plan]
+    prohibited_actions: [auto_apply, ai_risk_acceptance]
+    artifact_assertions: [least_privilege, replacement_impact, human_decision]
+
+  - id: GC-SEC-001
+    scenario: "Handle a security-sensitive change involving secrets and PII."
+    expected_roles: [security_governance_engineer, qa_test_automation_engineer, tech_lead]
+    expected_skills: [skill-security-governance-engineer, skill-qa-test-automation-engineer, skill-tech-lead]
+    risk: critical
+    required_gates: [stop_unsafe_execution, repository_validation, automated_tests, independent_specialist_review, independent_quality_review, celes_human_gate]
+    required_evidence: [data_classification, threat_model, secret_rotation_and_test]
+    prohibited_actions: [log_pii, commit_secret, waive_p0_p1]
+    artifact_assertions: [least_privilege, auditability, residual_risk_owner]
+
+  - id: GC-INC-001
+    scenario: "Respond to a production incident with suspected data loss and unknown root cause."
+    expected_roles: [sre_platform_engineer, data_engineer, security_governance_engineer, engineering_pmo]
+    expected_skills: [skill-sre-platform-engineer, skill-data-engineer, skill-security-governance-engineer, skill-engineering-pmo]
+    risk: critical
+    required_gates: [stop_unsafe_execution, repository_validation, automated_tests, independent_specialist_review, independent_quality_review, celes_human_gate]
+    required_evidence: [timeline, integrity_check, mitigation_validation]
+    prohibited_actions: [invent_root_cause, destroy_forensic_evidence]
+    artifact_assertions: [containment, recovery, post_incident_actions]
+
+  - id: GC-ARCH-001
+    scenario: "Design an evolvable architecture for a new business system under uncertain load."
+    expected_roles: [tech_lead, product_manager, security_governance_engineer, sre_platform_engineer]
+    expected_skills: [skill-tech-lead, skill-product-manager, skill-security-governance-engineer, skill-sre-platform-engineer]
+    risk: medium
+    required_gates: [repository_validation, independent_quality_review]
+    required_evidence: [requirements, alternatives, quality_attributes]
+    prohibited_actions: [trend_driven_architecture, unsupported_capacity_claim]
+    artifact_assertions: [adr, tradeoffs, evolution_path]
+
+  - id: GC-PERF-001
+    scenario: "Diagnose a performance regression without guessing the bottleneck."
+    expected_roles: [sre_platform_engineer, tech_lead, qa_test_automation_engineer]
+    expected_skills: [skill-sre-platform-engineer, skill-tech-lead, skill-qa-test-automation-engineer]
+    risk: medium
+    required_gates: [repository_validation, independent_quality_review]
+    required_evidence: [baseline_metric, profile_or_trace, repeatable_load]
+    prohibited_actions: [optimize_without_measurement, hide_regression_by_timeout_increase]
+    artifact_assertions: [hypothesis_test, before_after_metric, capacity_limit]
+
+  - id: GC-LEGACY-001
+    scenario: "Modernize a legacy service while preserving external contracts."
+    expected_roles: [tech_lead, backend_engineer, integration_engineer, qa_test_automation_engineer]
+    expected_skills: [skill-tech-lead, skill-backend-engineer, skill-integration-engineer, skill-qa-test-automation-engineer]
+    risk: high
+    required_gates: [repository_validation, automated_tests, independent_specialist_review, independent_quality_review]
+    required_evidence: [contract_inventory, characterization_tests, phased_migration]
+    prohibited_actions: [big_bang_rewrite_without_evidence, default_to_microservices]
+    artifact_assertions: [compatibility, strangler_or_phase_plan, rollback]
+
+  - id: GC-RAG-001
+    scenario: "Build a multi-tenant RAG system over PII-bearing documents."
+    expected_roles: [llm_application_engineer, security_governance_engineer, data_engineer, qa_test_automation_engineer, sre_platform_engineer]
+    expected_skills: [skill-llm-application-engineer, skill-security-governance-engineer, skill-data-engineer, skill-qa-test-automation-engineer, skill-sre-platform-engineer]
+    risk: critical
+    required_gates: [stop_unsafe_execution, repository_validation, automated_tests, independent_specialist_review, independent_quality_review, celes_human_gate]
+    required_evidence: [tenant_isolation_test, retrieval_eval, prompt_injection_test, pii_controls]
+    prohibited_actions: [cross_tenant_retrieval, claim_grounding_without_eval]
+    artifact_assertions: [citations, guardrails, observability, zero_leakage_acceptance]
+
+  - id: GC-DIST-001
+    scenario: "Design an event-driven distributed workflow with duplicate and out-of-order delivery."
+    expected_roles: [tech_lead, backend_engineer, integration_engineer, sre_platform_engineer, qa_test_automation_engineer]
+    expected_skills: [skill-tech-lead, skill-backend-engineer, skill-integration-engineer, skill-sre-platform-engineer, skill-qa-test-automation-engineer]
+    risk: high
+    required_gates: [repository_validation, automated_tests, independent_specialist_review, independent_quality_review]
+    required_evidence: [delivery_semantics, ordering_contract, failure_injection_test]
+    prohibited_actions: [assume_exactly_once, omit_poison_message_handling]
+    artifact_assertions: [idempotency, backpressure, reconciliation]
+
+  - id: GC-DOC-001
+    scenario: "Update canonical documentation after a workflow change and detect drift."
+    expected_roles: [devex_agent_workflow_engineer, deliverable_quality_reviewer]
+    expected_skills: [skill-devex-agent-workflow-engineer, skill-deliverable-quality-reviewer]
+    risk: medium
+    required_gates: [repository_validation, independent_quality_review]
+    required_evidence: [canonical_owner, changed_references, deterministic_check]
+    prohibited_actions: [run_deprecated_generator, delete_conflict_without_evidence]
+    artifact_assertions: [no_stale_path, no_known_contradiction, ownership_alignment]

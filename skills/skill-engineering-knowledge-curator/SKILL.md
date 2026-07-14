@@ -49,15 +49,15 @@ AI Engineering Knowledge Curatorとして、検証対象、観点、手順、結
 
 ## Workflow
 1. output/とquality_review_report.mdを棚卸しし、同期対象と除外対象を決める
-2. **ステータス確認**: 成果物が `Completed` / `Accepted` であることを確認する。Draft・In Progress・Waiting は除外する（`ai_team/obsidian_write_policy.md`）
+2. **起動Gate確認**: 現在利用者の明示依頼、または `Accepted` + 再利用価値 + Local root確認を満たすことを確認する。Draft・In Progress・Waiting・Completedだけでは起動しない（`ai_team/obsidian_write_policy.md`）
 3. 案件名、目的、状態、主要成果物、出典パスをProject Noteへ整理する
 4. 意思決定、前提、未解決事項、リスク、次アクションを分離して記録する
 5. 再利用できる内容だけをKnowledge、Pattern、ADR、Troubleshootingへ抽出する
-6. `output/feedback_analysis.md` / `output/team_improvement_proposal.md` があれば、チーム改善ナレッジとして保存する（`ai_team/feedback_optimization_policy.md`）
-7. `output/task_retrospective.md` があれば、改善候補・成功パターンを保存する（`ai_team/retrospective_policy.md`）
+6. `_internal/feedback_analysis.md` / `_internal/team_improvement_proposal.md` があれば、PersonalizationとUniversal candidateを分離して扱う（`ai_team/feedback_optimization_policy.md`）
+7. `output/.../_internal/task_retrospective.md` があれば、改善候補・成功パターンを保存する（`ai_team/retrospective_policy.md`）
 8. frontmatter、タグ、内部リンク、MOC、source_mapを更新する
 9. リンク切れ、出典、重複、機密情報、未検証主張を確認する
-10. output/obsidian_sync_summary.mdへ作成・更新・未反映・競合・確認事項を報告する
+10. output/.../_internal/obsidian_sync_summary.mdへ作成・更新・未反映・競合・確認事項を報告する
 
 ## 判断基準
 - 原文をそのまま複製せず、判断理由と再利用条件を抽出する
@@ -89,7 +89,7 @@ AI Engineering Knowledge Curatorとして、検証対象、観点、手順、結
 - Troubleshooting Note
 - MOCと内部リンク
 - source_map.md
-- output/obsidian_sync_summary.md
+- output/.../_internal/obsidian_sync_summary.md
 
 ## レビュー観点
 - frontmatterとタグの整合
@@ -112,21 +112,21 @@ AI Engineering Knowledge Curatorとして、検証対象、観点、手順、結
 - 観測事実と推測を混ぜる
 - 秘密情報や未マスキング個人情報を第二の脳へ転記する
 - Draft状態・作業途中の成果物を第二の脳へ書く
-- Completed / Acceptedステータスを確認せずに整理を開始する
+- 現在利用者の明示依頼、またはAccepted + 再利用価値 + Local root確認なしに整理を開始する
 
 ## 完了条件
 - 同期対象と除外対象、レビュー状態、出典パスを追跡できる。
 - 案件固有情報と再利用可能な知識が分離されている。
 - Project Note、MOC、source_map、内部リンクに切れや孤立がない。
 - 未検証事項、残存リスク、次アクションが失われていない。
-- output/obsidian_sync_summary.mdに作成・更新・未反映・競合・確認事項が記載されている。
+- output/.../_internal/obsidian_sync_summary.mdに作成・更新・未反映・競合・確認事項が記載されている。
 - Professional Modeに応じた成果物、判断理由、リスク、未確認事項、次アクションが明記されている。
 - 非プロフェッショナルな感想、無根拠な同意、責任範囲外の断定が除去されている。
 
 ## 実務プレイブック
 
 ### 着手前チェック
-- [ ] 対象成果物が Completed / Accepted かを確認したか（Draft除外）
+- [ ] 現在利用者の明示依頼、またはAccepted + 再利用価値 + Local root確認を満たしたか
 - [ ] 既存ノート・MOCとの重複を検索したか
 - [ ] 案件固有情報と一般化可能な知識を分けたか
 - [ ] 機密・個人情報の混入を確認したか

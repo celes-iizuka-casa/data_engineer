@@ -82,7 +82,7 @@
 2. `fde_feedback_loop.md` に従い分類・優先順位付け・Backlog化（FDE）
 3. 対応方針の技術判断（Tech Lead・各Engineer）と実装
 4. 次回リリースと効果再測定
-5. 学びを Knowledge Curator 経由で第二の脳へ（Completed/Accepted後）
+5. 学びを Knowledge Curator 経由でLocal Second Brainへ（現在利用者の明示依頼、またはAccepted + 再利用価値 + Local root確認後）
 
 ## 作って終わりを防ぐチェックリスト
 

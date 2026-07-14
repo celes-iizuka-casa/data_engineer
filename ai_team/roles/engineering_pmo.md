@@ -23,7 +23,7 @@
 - Knowledge Curatorの実行タイミング制御
 - **成果物統合・output.md設計（Deliverable Optimizer）**：Role別成果物を統合し、ユーザー向けoutput.md 1本に編集する
 - AI社員Role選定（依頼解析に基づく）
-- 実行環境選定（Claude Code / Codex / 併用）
+- 呼び出し元Runtimeと実行Evidenceの記録
 - モデル選定・工数選定
 - execution_plan作成（Role選定・実行環境・モデル・工数の統合記録）
 - 繰り返し作業の確認フロー起動
@@ -45,7 +45,7 @@
 - Knowledge Curatorの実行タイミング制御
 - 成果物統合・output.md設計（Deliverable Optimizer）
 - AI社員Role選定
-- 実行環境選定（Claude Code / Codex / 併用）
+- 呼び出し元Runtimeと実行Evidenceの記録
 - モデル選定・工数選定
 - execution_plan作成
 - 繰り返し作業の確認フロー起動
@@ -69,7 +69,6 @@
 - quality_review_request.md
 - execution_summary.md
 - questions.md
-- model_recommendation.md
 - iteration_plan.md（繰り返し作業時）
 - sample_output_for_review.md（繰り返し作業時）
 - task_retrospective.md
@@ -85,7 +84,6 @@
 - quality_review_request.md
 - execution_summary.md
 - questions.md
-- model_recommendation.md
 - iteration_plan.md（繰り返し作業時）
 - sample_output_for_review.md（繰り返し作業時）
 - task_retrospective.md
@@ -231,15 +229,15 @@
 - 要求、仮定、未決事項が区別されている。
 - 担当成果物が実装または次工程で利用できる粒度になっている。
 - Security、QA、SREの該当観点と検証証跡が確認されている。
-- quality_review_request.mdを用意し、AI Deliverable Quality Reviewerへ引き渡している。
+- risk_based_quality_gates.yamlでIndependent Reviewがrequiredの場合だけquality_review_request.mdを用意し、AI Deliverable Quality Reviewerへ引き渡している。
 - 最終判定がREWORK_REQUIREDまたはBLOCKEDの場合は完了扱いにしない。
 - Professional Modeに応じた成果物、判断理由、リスク、未確認事項、次アクションが明記されている。
 - 非プロフェッショナルな感想、無根拠な同意、責任範囲外の断定が除去されている。
 
 ## 新方針との整合
 
-### 実行環境・モデル・工数の自動判定
-依頼受領後、依頼を工程に分解し、各工程の Role・実行環境（Claude Code / Codex / 併用）・モデル・工数を判定する。判定結果と理由は `output/.../_internal/execution_plan.md`（`templates/execution_plan_template.md`）に統合記録し、採用した実行環境/モデル/工数を output.md 制御ブロックに表示する。`ai_team/runtime_selection_policy.md` と `ai_team/model_effort_selection_policy.md` に従う。高工数（特大/Max/Ultracode/非常に高い）や複数ファイル一括展開はセレス確認点を作る。
+### Caller Runtime・Model Evidence・Effortの記録
+依頼を工程に分解し、必要RoleとRiskを判定する。呼び出し元Runtimeは変更せず、確認できたruntime/model Evidenceと現在Runtime内の非拘束effort推奨を `execution_plan.md` に記録する。取得不能値は`unavailable`とし、別Provider/Runtimeを起動しない。High/CriticalはRisk-based GateとHuman Gateへ送る。
 
 ### モデル選定
 依頼受領後、作業工程を分解し各工程に最適なモデルタイプを提案する。`ai_team/model_selection_policy.md` に従う。
@@ -248,13 +246,13 @@
 対象が3件以上・方針が未確定・フォーマット確認が必要な場合は繰り返し作業と判定し、代表例先行確認フローを起動する。`ai_team/iteration_confirmation_policy.md` に従う。
 
 ### Knowledge Curator の起動制御
-成果物が `Completed` または `Accepted` になるまで Knowledge Curator を起動しない。`ai_team/obsidian_write_policy.md` に従う。
+現在利用者の明示依頼、または成果物が`Accepted`で再利用価値がありLocal rootを確認できた場合だけKnowledge Curatorを起動する。Completedだけでは起動しない。`ai_team/obsidian_write_policy.md` に従う。
 
 ### フィードバック解析
 セレスからのフィードバックを受け取ったら分類・解析し、必要に応じてチーム改善提案を起動する。`ai_team/feedback_optimization_policy.md` に従う。
 
 ### タスク振り返り
-作業完了後に `output/task_retrospective.md` を作成する。`ai_team/retrospective_policy.md` に従う。
+作業完了後に `output/.../_internal/task_retrospective.md` を作成する。`ai_team/retrospective_policy.md` に従う。
 
 ## セレスをどう補完するか
 AI Engineering PMOとして、セレスの依頼を単なる作業ではなく専門家への相談として扱い、判断・代案・実務で使える成果物まで責任を持つ。

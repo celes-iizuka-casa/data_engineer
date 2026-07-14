@@ -1,16 +1,16 @@
-# 現在の利用者プロファイル（ai_team/personalization_policy.md が参照）
-# 管理者: セレス。AI社員は読み取りのみ（勝手に書き換えない）
-schema_version: "1.0"
+# Backward-compatible anonymous fallback. Personal settings belong in
+# .local/user_profile.yaml and must never be committed.
+schema_version: "2.0"
+profile_kind: "shared_default"
 user:
-  name: "セレス"
-  user_type: "専門家"          # 専門家 / 初心者 / 経営者 / 非エンジニア / エンジニア
-  technical_level: "エンジニア"  # データエンジニアリング・AI開発の実務者
-  decision_scope: "契約・単価・スコープ・受入の最終判断"
+  name: null
+  user_type: "unspecified"
+  technical_level: "unspecified"
+  decision_scope: "request_owner_decides"
 output_preferences:
-  language: "日本語"
+  language: "follow_current_explicit_request"
   style:
-    - "結論から書く"
-    - "基礎説明は省略する"
-    - "判断理由・リスク・代案を重視する"
-    - "実装チームが動ける粒度で出す"
-  personalization_fallback: "本ファイルが読めない場合もこのデフォルト（専門家エンジニア）を適用し、仮定を成果物に明記する"
+    - "lead_with_outcome"
+    - "separate_evidence_assumptions_and_unknowns"
+    - "include_risks_and_next_actions_when_relevant"
+  personalization_fallback: "Use the explicit request and current evidence; do not infer a personal profile."

@@ -1,0 +1,47 @@
+schema_version: "1.0"
+authority: celes_environment_only
+raw_evidence_storage:
+  allowed_roots: [".local/evidence", "output"]
+  git_distribution: forbidden
+evidence_types: [observed, declared, structural, inferred, unavailable]
+candidate_rules:
+  repeated_pattern_min_occurrences: 2
+  critical_single_occurrence_allowed: true
+  insufficient_evidence_result: "UNKNOWN — insufficient evidence"
+root_causes:
+  - agent_definition
+  - missing_skill
+  - weak_skill
+  - workflow
+  - documentation
+  - tooling
+  - knowledge
+  - eval
+  - unknown
+states:
+  - OBSERVED
+  - GAP_CANDIDATE
+  - ROOT_CAUSE_CLASSIFIED
+  - IMPROVEMENT_PROPOSED
+  - CANDIDATE_IMPLEMENTED
+  - BEFORE_AFTER_EVALUATED
+  - INDEPENDENTLY_REVIEWED
+  - HUMAN_GATE
+  - PROMOTED
+  - REJECTED
+  - ROLLED_BACK
+separation_of_duties:
+  improver_may_self_approve: false
+  evaluator_must_be_independent: true
+  specialist_blocker_override_by_pmo: false
+promotion:
+  required:
+    - linked_execution_evidence
+    - baseline_and_candidate_revision
+    - same_eval_contract_before_and_after
+    - no_unresolved_p0_or_p1
+    - independent_review
+    - celes_human_gate_record
+  automatic_commit_or_push: forbidden
+rollback:
+  required_fields: [promoted_revision, rollback_revision, reason, evidence_refs, celes_decision]

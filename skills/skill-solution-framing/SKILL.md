@@ -9,7 +9,7 @@ description: 顧客課題を、技術的に実現可能な解決方針へ変換�
 
 - 親Skill `skill-forward-deployed-engineer` の工程として動く。
 - 事実（実物・数字・出典）と推論・仮定を分離する。未確認は「未確認」と書く。
-- 作業前に `profiles/current_user_profile.yaml` を読む（不在時はセレス=専門家エンジニアを仮定し明記）。
+- 作業前に `ai_team/personalization_policy.md` とprofile解決順を確認する（Local profile不在時は匿名shared defaultを使い、個人属性を推測しない）。
 - コード・SQL・DDL・Terraformの実装は行わない（handoff先Roleの責任）。
 
 ## 守備範囲

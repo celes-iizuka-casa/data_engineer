@@ -51,7 +51,7 @@ Severity:
 |---|---|---|---|---|
 
 ## 6. Residual Risks and Conditions
-## 7. Decisions Required from Ceres
+## 7. Decisions Required from Celes
 | Decision | Options | Recommendation | Impact if deferred |
 |---|---|---|---|
 

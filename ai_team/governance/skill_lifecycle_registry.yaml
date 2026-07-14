@@ -1,0 +1,600 @@
+schema_version: "1.0"
+registry_kind: "skill-lifecycle"
+revision_strategy:
+  algorithm: sha256
+  canonical_inputs: [skill.yaml, SKILL.md, agents/openai.yaml]
+  value_format: "sha256:<hex>"
+  capture: "Each Skill entry stores baseline active_revision and current candidate_revision."
+lifecycle_states: [DISCOVERED, PROPOSED, CANDIDATE, EVALUATED, REVIEWED, HUMAN_GATE, ACTIVE, DEPRECATED]
+dispositions: [KEEP, UPDATE, MERGE, SPLIT, DEPRECATE, UNKNOWN]
+transition_record_contract:
+  required_fields: [from_state, to_state, candidate_revision, evidence_refs, independent_review_ref, human_gate_status]
+  human_gate_status: [not_required, pending, promoted, rejected, rework, rolled_back]
+  rule: "ACTIVE promotion requires independent review and Celes Human Gate; baseline imports retain their active_revision."
+decision_rules:
+  no_usage_is_not_deprecation_evidence: true
+  new_skill_requires:
+    - evidenced_capability_gap
+    - existing_skill_cannot_resolve
+    - not_agent_workflow_documentation_or_tooling_root_cause
+    - reusable
+    - evaluable
+baseline:
+  repository_head: "5817a81b4e2e048b8ed16c8c98355e67a7f46e57"
+  observed_on: "2026-07-14"
+  usage_evidence: unavailable
+candidate:
+  source: "Celes-approved canonical promotion candidate"
+  purpose: "Runtime, privacy, evidence, risk-gate, and documentation contract alignment"
+  human_gate_status: promoted
+  effectiveness: not_evaluated
+human_gate_decision:
+  id: "Celes-HG-20260714-AI-ORG-PROMOTE"
+  decision: PROMOTE
+  decision_type: canonical_promotion
+  decided_by: Celes
+  timestamp: "2026-07-14T09:00:00+09:00"
+  independent_review_ref: "local-review:architecture-security-capability-20260714-v1"
+  release_history_decision: "publish_as_is_authorized_by_celes"
+skills:
+  - id: skill-engineering-pmo
+    active_revision: "sha256:2185c5658396be7a289ee1e13c4981948470a2bdaa1b343b644ceb5d6a040d4a"
+    candidate_revision: "sha256:2185c5658396be7a289ee1e13c4981948470a2bdaa1b343b644ceb5d6a040d4a"
+    state: ACTIVE
+    candidate_state: ACTIVE
+    disposition: UPDATE
+    transition:
+      from_state: ACTIVE
+      to_state: ACTIVE
+      candidate_revision: "sha256:2185c5658396be7a289ee1e13c4981948470a2bdaa1b343b644ceb5d6a040d4a"
+      evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
+      independent_review_ref: "local-review:architecture-security-capability-20260714-v1"
+      human_gate_status: promoted
+    disposition_confidence: structural_only
+    effectiveness: not_evaluated
+    usage_evidence: unavailable
+    evidence:
+      - type: structural
+        value: "listed in skills/index.yaml and passed baseline repository validation"
+  - id: skill-forward-deployed-engineer
+    active_revision: "sha256:9309c3d5404d0ebefac77fe8844a1ed5930f71805bbb8c44c828cb6dd83f3d0d"
+    candidate_revision: "sha256:9309c3d5404d0ebefac77fe8844a1ed5930f71805bbb8c44c828cb6dd83f3d0d"
+    state: ACTIVE
+    candidate_state: ACTIVE
+    disposition: UPDATE
+    transition:
+      from_state: ACTIVE
+      to_state: ACTIVE
+      candidate_revision: "sha256:9309c3d5404d0ebefac77fe8844a1ed5930f71805bbb8c44c828cb6dd83f3d0d"
+      evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
+      independent_review_ref: "local-review:architecture-security-capability-20260714-v1"
+      human_gate_status: promoted
+    disposition_confidence: structural_only
+    effectiveness: not_evaluated
+    usage_evidence: unavailable
+    evidence:
+      - type: structural
+        value: "listed in skills/index.yaml and passed baseline repository validation"
+  - id: skill-deliverable-quality-reviewer
+    active_revision: "sha256:d3c00a597438053834be5061047beada17715b7ef12f51be12025e071d29f525"
+    candidate_revision: "sha256:d3c00a597438053834be5061047beada17715b7ef12f51be12025e071d29f525"
+    state: ACTIVE
+    candidate_state: ACTIVE
+    disposition: UPDATE
+    transition:
+      from_state: ACTIVE
+      to_state: ACTIVE
+      candidate_revision: "sha256:d3c00a597438053834be5061047beada17715b7ef12f51be12025e071d29f525"
+      evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
+      independent_review_ref: "local-review:architecture-security-capability-20260714-v1"
+      human_gate_status: promoted
+    disposition_confidence: structural_only
+    effectiveness: not_evaluated
+    usage_evidence: unavailable
+    evidence:
+      - type: structural
+        value: "listed in skills/index.yaml and passed baseline repository validation"
+  - id: skill-engineering-knowledge-curator
+    active_revision: "sha256:f5d0e35a90f1b8cbee36405b7ad7597942e83384288f5aa95a8b8eec2a6349fe"
+    candidate_revision: "sha256:f5d0e35a90f1b8cbee36405b7ad7597942e83384288f5aa95a8b8eec2a6349fe"
+    state: ACTIVE
+    candidate_state: ACTIVE
+    disposition: UPDATE
+    transition:
+      from_state: ACTIVE
+      to_state: ACTIVE
+      candidate_revision: "sha256:f5d0e35a90f1b8cbee36405b7ad7597942e83384288f5aa95a8b8eec2a6349fe"
+      evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
+      independent_review_ref: "local-review:architecture-security-capability-20260714-v1"
+      human_gate_status: promoted
+    disposition_confidence: structural_only
+    effectiveness: not_evaluated
+    usage_evidence: unavailable
+    evidence:
+      - type: structural
+        value: "listed in skills/index.yaml and passed baseline repository validation"
+  - id: skill-tech-lead
+    active_revision: "sha256:caefb28969c3bc35bf67a0ec1dd7fe6db9e957343067451a4f0ba3d2cfee2da4"
+    candidate_revision: "sha256:caefb28969c3bc35bf67a0ec1dd7fe6db9e957343067451a4f0ba3d2cfee2da4"
+    state: ACTIVE
+    candidate_state: ACTIVE
+    disposition: UPDATE
+    transition:
+      from_state: ACTIVE
+      to_state: ACTIVE
+      candidate_revision: "sha256:caefb28969c3bc35bf67a0ec1dd7fe6db9e957343067451a4f0ba3d2cfee2da4"
+      evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
+      independent_review_ref: "local-review:architecture-security-capability-20260714-v1"
+      human_gate_status: promoted
+    disposition_confidence: structural_only
+    effectiveness: not_evaluated
+    usage_evidence: unavailable
+    evidence:
+      - type: structural
+        value: "listed in skills/index.yaml and passed baseline repository validation"
+  - id: skill-fullstack-engineer
+    active_revision: "sha256:7786253bb438edf7a487d7608c0103fff6d9a3f2d4e49b5532007b571e4066ed"
+    candidate_revision: "sha256:7786253bb438edf7a487d7608c0103fff6d9a3f2d4e49b5532007b571e4066ed"
+    state: ACTIVE
+    candidate_state: ACTIVE
+    disposition: UPDATE
+    transition:
+      from_state: ACTIVE
+      to_state: ACTIVE
+      candidate_revision: "sha256:7786253bb438edf7a487d7608c0103fff6d9a3f2d4e49b5532007b571e4066ed"
+      evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
+      independent_review_ref: "local-review:architecture-security-capability-20260714-v1"
+      human_gate_status: promoted
+    disposition_confidence: structural_only
+    effectiveness: not_evaluated
+    usage_evidence: unavailable
+    evidence:
+      - type: structural
+        value: "listed in skills/index.yaml and passed baseline repository validation"
+  - id: skill-frontend-engineer
+    active_revision: "sha256:dea0f8b993e1d1672c9631a85e31cb757e536b16f93847009c079f0f02ba77a1"
+    candidate_revision: "sha256:dea0f8b993e1d1672c9631a85e31cb757e536b16f93847009c079f0f02ba77a1"
+    state: ACTIVE
+    candidate_state: ACTIVE
+    disposition: UPDATE
+    transition:
+      from_state: ACTIVE
+      to_state: ACTIVE
+      candidate_revision: "sha256:dea0f8b993e1d1672c9631a85e31cb757e536b16f93847009c079f0f02ba77a1"
+      evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
+      independent_review_ref: "local-review:architecture-security-capability-20260714-v1"
+      human_gate_status: promoted
+    disposition_confidence: structural_only
+    effectiveness: not_evaluated
+    usage_evidence: unavailable
+    evidence:
+      - type: structural
+        value: "listed in skills/index.yaml and passed baseline repository validation"
+  - id: skill-backend-engineer
+    active_revision: "sha256:f4ee4cd0e346ecb619a09efefb146ae341d3e82e586275067ad154cee2d02022"
+    candidate_revision: "sha256:f4ee4cd0e346ecb619a09efefb146ae341d3e82e586275067ad154cee2d02022"
+    state: ACTIVE
+    candidate_state: ACTIVE
+    disposition: UPDATE
+    transition:
+      from_state: ACTIVE
+      to_state: ACTIVE
+      candidate_revision: "sha256:f4ee4cd0e346ecb619a09efefb146ae341d3e82e586275067ad154cee2d02022"
+      evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
+      independent_review_ref: "local-review:architecture-security-capability-20260714-v1"
+      human_gate_status: promoted
+    disposition_confidence: structural_only
+    effectiveness: not_evaluated
+    usage_evidence: unavailable
+    evidence:
+      - type: structural
+        value: "listed in skills/index.yaml and passed baseline repository validation"
+  - id: skill-data-engineer
+    active_revision: "sha256:f5d64778b4866b28fee5be66909d6b8c692950af455204e82a0549c4b1a63676"
+    candidate_revision: "sha256:f5d64778b4866b28fee5be66909d6b8c692950af455204e82a0549c4b1a63676"
+    state: ACTIVE
+    candidate_state: ACTIVE
+    disposition: UPDATE
+    transition:
+      from_state: ACTIVE
+      to_state: ACTIVE
+      candidate_revision: "sha256:f5d64778b4866b28fee5be66909d6b8c692950af455204e82a0549c4b1a63676"
+      evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
+      independent_review_ref: "local-review:architecture-security-capability-20260714-v1"
+      human_gate_status: promoted
+    disposition_confidence: structural_only
+    effectiveness: not_evaluated
+    usage_evidence: unavailable
+    evidence:
+      - type: structural
+        value: "listed in skills/index.yaml and passed baseline repository validation"
+  - id: skill-data-platform-engineer
+    active_revision: "sha256:aad6b88121c38b53f35750d76cb211cf76306ea5a2708a8d3e1ca193c256d403"
+    candidate_revision: "sha256:aad6b88121c38b53f35750d76cb211cf76306ea5a2708a8d3e1ca193c256d403"
+    state: ACTIVE
+    candidate_state: ACTIVE
+    disposition: UPDATE
+    transition:
+      from_state: ACTIVE
+      to_state: ACTIVE
+      candidate_revision: "sha256:aad6b88121c38b53f35750d76cb211cf76306ea5a2708a8d3e1ca193c256d403"
+      evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
+      independent_review_ref: "local-review:architecture-security-capability-20260714-v1"
+      human_gate_status: promoted
+    disposition_confidence: structural_only
+    effectiveness: not_evaluated
+    usage_evidence: unavailable
+    evidence:
+      - type: structural
+        value: "listed in skills/index.yaml and passed baseline repository validation"
+  - id: skill-cloud-infrastructure-engineer
+    active_revision: "sha256:94263388665a21ae9d1ce947e43b80bc96ea078fdc3c524cf0e1ae1c1607f162"
+    candidate_revision: "sha256:94263388665a21ae9d1ce947e43b80bc96ea078fdc3c524cf0e1ae1c1607f162"
+    state: ACTIVE
+    candidate_state: ACTIVE
+    disposition: UPDATE
+    transition:
+      from_state: ACTIVE
+      to_state: ACTIVE
+      candidate_revision: "sha256:94263388665a21ae9d1ce947e43b80bc96ea078fdc3c524cf0e1ae1c1607f162"
+      evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
+      independent_review_ref: "local-review:architecture-security-capability-20260714-v1"
+      human_gate_status: promoted
+    disposition_confidence: structural_only
+    effectiveness: not_evaluated
+    usage_evidence: unavailable
+    evidence:
+      - type: structural
+        value: "listed in skills/index.yaml and passed baseline repository validation"
+  - id: skill-sre-platform-engineer
+    active_revision: "sha256:1b6020a667174e9c2cc01ef1620f44672d5f87f459adf1df2424d655dfba263d"
+    candidate_revision: "sha256:1b6020a667174e9c2cc01ef1620f44672d5f87f459adf1df2424d655dfba263d"
+    state: ACTIVE
+    candidate_state: ACTIVE
+    disposition: UPDATE
+    transition:
+      from_state: ACTIVE
+      to_state: ACTIVE
+      candidate_revision: "sha256:1b6020a667174e9c2cc01ef1620f44672d5f87f459adf1df2424d655dfba263d"
+      evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
+      independent_review_ref: "local-review:architecture-security-capability-20260714-v1"
+      human_gate_status: promoted
+    disposition_confidence: structural_only
+    effectiveness: not_evaluated
+    usage_evidence: unavailable
+    evidence:
+      - type: structural
+        value: "listed in skills/index.yaml and passed baseline repository validation"
+  - id: skill-security-governance-engineer
+    active_revision: "sha256:9baf09e643e5fd642f90b7750f224154f55de4d1f4a09b0299fd4e23d8252a49"
+    candidate_revision: "sha256:9baf09e643e5fd642f90b7750f224154f55de4d1f4a09b0299fd4e23d8252a49"
+    state: ACTIVE
+    candidate_state: ACTIVE
+    disposition: UPDATE
+    transition:
+      from_state: ACTIVE
+      to_state: ACTIVE
+      candidate_revision: "sha256:9baf09e643e5fd642f90b7750f224154f55de4d1f4a09b0299fd4e23d8252a49"
+      evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
+      independent_review_ref: "local-review:architecture-security-capability-20260714-v1"
+      human_gate_status: promoted
+    disposition_confidence: structural_only
+    effectiveness: not_evaluated
+    usage_evidence: unavailable
+    evidence:
+      - type: structural
+        value: "listed in skills/index.yaml and passed baseline repository validation"
+  - id: skill-qa-test-automation-engineer
+    active_revision: "sha256:6e6d2d63c6b6dd918997bb8e5c0331b4ada1f2464a89e5e6550b76f1b97c3323"
+    candidate_revision: "sha256:6e6d2d63c6b6dd918997bb8e5c0331b4ada1f2464a89e5e6550b76f1b97c3323"
+    state: ACTIVE
+    candidate_state: ACTIVE
+    disposition: UPDATE
+    transition:
+      from_state: ACTIVE
+      to_state: ACTIVE
+      candidate_revision: "sha256:6e6d2d63c6b6dd918997bb8e5c0331b4ada1f2464a89e5e6550b76f1b97c3323"
+      evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
+      independent_review_ref: "local-review:architecture-security-capability-20260714-v1"
+      human_gate_status: promoted
+    disposition_confidence: structural_only
+    effectiveness: not_evaluated
+    usage_evidence: unavailable
+    evidence:
+      - type: structural
+        value: "listed in skills/index.yaml and passed baseline repository validation"
+  - id: skill-llm-application-engineer
+    active_revision: "sha256:995143f103ef9dc14e6cd610a4fc5abd6ac0874371cf05e5794475cf22515ff8"
+    candidate_revision: "sha256:995143f103ef9dc14e6cd610a4fc5abd6ac0874371cf05e5794475cf22515ff8"
+    state: ACTIVE
+    candidate_state: ACTIVE
+    disposition: UPDATE
+    transition:
+      from_state: ACTIVE
+      to_state: ACTIVE
+      candidate_revision: "sha256:995143f103ef9dc14e6cd610a4fc5abd6ac0874371cf05e5794475cf22515ff8"
+      evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
+      independent_review_ref: "local-review:architecture-security-capability-20260714-v1"
+      human_gate_status: promoted
+    disposition_confidence: structural_only
+    effectiveness: not_evaluated
+    usage_evidence: unavailable
+    evidence:
+      - type: structural
+        value: "listed in skills/index.yaml and passed baseline repository validation"
+  - id: skill-devex-agent-workflow-engineer
+    active_revision: "sha256:15c2e46bc8628807d95f0df07e9089cc7763f324c10bd189242c11e1e4017a71"
+    candidate_revision: "sha256:15c2e46bc8628807d95f0df07e9089cc7763f324c10bd189242c11e1e4017a71"
+    state: ACTIVE
+    candidate_state: ACTIVE
+    disposition: UPDATE
+    transition:
+      from_state: ACTIVE
+      to_state: ACTIVE
+      candidate_revision: "sha256:15c2e46bc8628807d95f0df07e9089cc7763f324c10bd189242c11e1e4017a71"
+      evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
+      independent_review_ref: "local-review:architecture-security-capability-20260714-v1"
+      human_gate_status: promoted
+    disposition_confidence: structural_only
+    effectiveness: not_evaluated
+    usage_evidence: unavailable
+    evidence:
+      - type: structural
+        value: "listed in skills/index.yaml and passed baseline repository validation"
+  - id: skill-integration-engineer
+    active_revision: "sha256:8ecd5bcaffe643c51eff85c82446b704f976f2b797315ef66fa69c6e3a073e1e"
+    candidate_revision: "sha256:8ecd5bcaffe643c51eff85c82446b704f976f2b797315ef66fa69c6e3a073e1e"
+    state: ACTIVE
+    candidate_state: ACTIVE
+    disposition: UPDATE
+    transition:
+      from_state: ACTIVE
+      to_state: ACTIVE
+      candidate_revision: "sha256:8ecd5bcaffe643c51eff85c82446b704f976f2b797315ef66fa69c6e3a073e1e"
+      evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
+      independent_review_ref: "local-review:architecture-security-capability-20260714-v1"
+      human_gate_status: promoted
+    disposition_confidence: structural_only
+    effectiveness: not_evaluated
+    usage_evidence: unavailable
+    evidence:
+      - type: structural
+        value: "listed in skills/index.yaml and passed baseline repository validation"
+  - id: skill-product-manager
+    active_revision: "sha256:f16e3a776fafbe252600c9dcb45ca639270273932990b5374b5e7f6eac424811"
+    candidate_revision: "sha256:f16e3a776fafbe252600c9dcb45ca639270273932990b5374b5e7f6eac424811"
+    state: ACTIVE
+    candidate_state: ACTIVE
+    disposition: UPDATE
+    transition:
+      from_state: ACTIVE
+      to_state: ACTIVE
+      candidate_revision: "sha256:f16e3a776fafbe252600c9dcb45ca639270273932990b5374b5e7f6eac424811"
+      evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
+      independent_review_ref: "local-review:architecture-security-capability-20260714-v1"
+      human_gate_status: promoted
+    disposition_confidence: structural_only
+    effectiveness: not_evaluated
+    usage_evidence: unavailable
+    evidence:
+      - type: structural
+        value: "listed in skills/index.yaml and passed baseline repository validation"
+  - id: skill-ml-engineer
+    active_revision: "sha256:0092e425280106169ae51554b7e487fa83b85845c3122dbd8485e91db3813870"
+    candidate_revision: "sha256:0092e425280106169ae51554b7e487fa83b85845c3122dbd8485e91db3813870"
+    state: ACTIVE
+    candidate_state: ACTIVE
+    disposition: UPDATE
+    transition:
+      from_state: ACTIVE
+      to_state: ACTIVE
+      candidate_revision: "sha256:0092e425280106169ae51554b7e487fa83b85845c3122dbd8485e91db3813870"
+      evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
+      independent_review_ref: "local-review:architecture-security-capability-20260714-v1"
+      human_gate_status: promoted
+    disposition_confidence: structural_only
+    effectiveness: not_evaluated
+    usage_evidence: unavailable
+    evidence:
+      - type: structural
+        value: "listed in skills/index.yaml and passed baseline repository validation"
+  - id: skill-field-discovery
+    active_revision: "sha256:26ac1818971c925ce335ffd1ca901e06a89560e7f5dbcfd55803b4f92ad266b9"
+    candidate_revision: "sha256:26ac1818971c925ce335ffd1ca901e06a89560e7f5dbcfd55803b4f92ad266b9"
+    state: ACTIVE
+    candidate_state: ACTIVE
+    disposition: UPDATE
+    transition:
+      from_state: ACTIVE
+      to_state: ACTIVE
+      candidate_revision: "sha256:26ac1818971c925ce335ffd1ca901e06a89560e7f5dbcfd55803b4f92ad266b9"
+      evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
+      independent_review_ref: "local-review:architecture-security-capability-20260714-v1"
+      human_gate_status: promoted
+    disposition_confidence: structural_only
+    effectiveness: not_evaluated
+    usage_evidence: unavailable
+    evidence:
+      - type: structural
+        value: "listed in skills/index.yaml and passed baseline repository validation"
+    parent_skill: skill-forward-deployed-engineer
+  - id: skill-business-flow-mapping
+    active_revision: "sha256:fef8024a8c622210bec377ede23fb7c1a6b723d2ee263dcb1ff08127bee37d47"
+    candidate_revision: "sha256:fef8024a8c622210bec377ede23fb7c1a6b723d2ee263dcb1ff08127bee37d47"
+    state: ACTIVE
+    candidate_state: ACTIVE
+    disposition: UPDATE
+    transition:
+      from_state: ACTIVE
+      to_state: ACTIVE
+      candidate_revision: "sha256:fef8024a8c622210bec377ede23fb7c1a6b723d2ee263dcb1ff08127bee37d47"
+      evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
+      independent_review_ref: "local-review:architecture-security-capability-20260714-v1"
+      human_gate_status: promoted
+    disposition_confidence: structural_only
+    effectiveness: not_evaluated
+    usage_evidence: unavailable
+    evidence:
+      - type: structural
+        value: "listed in skills/index.yaml and passed baseline repository validation"
+    parent_skill: skill-forward-deployed-engineer
+  - id: skill-stakeholder-mapping
+    active_revision: "sha256:324f65f99a4dec3b9ba27f3fe4cc69df02729207f0061b4da16e78614d5fb844"
+    candidate_revision: "sha256:324f65f99a4dec3b9ba27f3fe4cc69df02729207f0061b4da16e78614d5fb844"
+    state: ACTIVE
+    candidate_state: ACTIVE
+    disposition: UPDATE
+    transition:
+      from_state: ACTIVE
+      to_state: ACTIVE
+      candidate_revision: "sha256:324f65f99a4dec3b9ba27f3fe4cc69df02729207f0061b4da16e78614d5fb844"
+      evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
+      independent_review_ref: "local-review:architecture-security-capability-20260714-v1"
+      human_gate_status: promoted
+    disposition_confidence: structural_only
+    effectiveness: not_evaluated
+    usage_evidence: unavailable
+    evidence:
+      - type: structural
+        value: "listed in skills/index.yaml and passed baseline repository validation"
+    parent_skill: skill-forward-deployed-engineer
+  - id: skill-pain-point-analysis
+    active_revision: "sha256:06859c77f5e677687eda3e8b54bd90a7abe6f014c021e42c5bfe71fc0c69bdc9"
+    candidate_revision: "sha256:06859c77f5e677687eda3e8b54bd90a7abe6f014c021e42c5bfe71fc0c69bdc9"
+    state: ACTIVE
+    candidate_state: ACTIVE
+    disposition: UPDATE
+    transition:
+      from_state: ACTIVE
+      to_state: ACTIVE
+      candidate_revision: "sha256:06859c77f5e677687eda3e8b54bd90a7abe6f014c021e42c5bfe71fc0c69bdc9"
+      evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
+      independent_review_ref: "local-review:architecture-security-capability-20260714-v1"
+      human_gate_status: promoted
+    disposition_confidence: structural_only
+    effectiveness: not_evaluated
+    usage_evidence: unavailable
+    evidence:
+      - type: structural
+        value: "listed in skills/index.yaml and passed baseline repository validation"
+    parent_skill: skill-forward-deployed-engineer
+  - id: skill-mvp-scoping
+    active_revision: "sha256:0790bdc37196088464de1cc2c37db1b446df572b05d8122b85ae7bf0028b953b"
+    candidate_revision: "sha256:0790bdc37196088464de1cc2c37db1b446df572b05d8122b85ae7bf0028b953b"
+    state: ACTIVE
+    candidate_state: ACTIVE
+    disposition: UPDATE
+    transition:
+      from_state: ACTIVE
+      to_state: ACTIVE
+      candidate_revision: "sha256:0790bdc37196088464de1cc2c37db1b446df572b05d8122b85ae7bf0028b953b"
+      evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
+      independent_review_ref: "local-review:architecture-security-capability-20260714-v1"
+      human_gate_status: promoted
+    disposition_confidence: structural_only
+    effectiveness: not_evaluated
+    usage_evidence: unavailable
+    evidence:
+      - type: structural
+        value: "listed in skills/index.yaml and passed baseline repository validation"
+    parent_skill: skill-forward-deployed-engineer
+  - id: skill-solution-framing
+    active_revision: "sha256:8685cd0c8303751ade8120181372424dff4ea1bfa165b586b746d1a140c7488d"
+    candidate_revision: "sha256:8685cd0c8303751ade8120181372424dff4ea1bfa165b586b746d1a140c7488d"
+    state: ACTIVE
+    candidate_state: ACTIVE
+    disposition: UPDATE
+    transition:
+      from_state: ACTIVE
+      to_state: ACTIVE
+      candidate_revision: "sha256:8685cd0c8303751ade8120181372424dff4ea1bfa165b586b746d1a140c7488d"
+      evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
+      independent_review_ref: "local-review:architecture-security-capability-20260714-v1"
+      human_gate_status: promoted
+    disposition_confidence: structural_only
+    effectiveness: not_evaluated
+    usage_evidence: unavailable
+    evidence:
+      - type: structural
+        value: "listed in skills/index.yaml and passed baseline repository validation"
+    parent_skill: skill-forward-deployed-engineer
+  - id: skill-engineering-handoff
+    active_revision: "sha256:16e223f7e0fc6a1bb312e43fecc86748a21ecafc51c09f32061b90a5b1010f80"
+    candidate_revision: "sha256:16e223f7e0fc6a1bb312e43fecc86748a21ecafc51c09f32061b90a5b1010f80"
+    state: ACTIVE
+    candidate_state: ACTIVE
+    disposition: UPDATE
+    transition:
+      from_state: ACTIVE
+      to_state: ACTIVE
+      candidate_revision: "sha256:16e223f7e0fc6a1bb312e43fecc86748a21ecafc51c09f32061b90a5b1010f80"
+      evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
+      independent_review_ref: "local-review:architecture-security-capability-20260714-v1"
+      human_gate_status: promoted
+    disposition_confidence: structural_only
+    effectiveness: not_evaluated
+    usage_evidence: unavailable
+    evidence:
+      - type: structural
+        value: "listed in skills/index.yaml and passed baseline repository validation"
+    parent_skill: skill-forward-deployed-engineer
+  - id: skill-adoption-planning
+    active_revision: "sha256:4c579f9a75e0202413ed81f0b964154378a5a9a4a5204796ff4ff5b91682992b"
+    candidate_revision: "sha256:4c579f9a75e0202413ed81f0b964154378a5a9a4a5204796ff4ff5b91682992b"
+    state: ACTIVE
+    candidate_state: ACTIVE
+    disposition: UPDATE
+    transition:
+      from_state: ACTIVE
+      to_state: ACTIVE
+      candidate_revision: "sha256:4c579f9a75e0202413ed81f0b964154378a5a9a4a5204796ff4ff5b91682992b"
+      evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
+      independent_review_ref: "local-review:architecture-security-capability-20260714-v1"
+      human_gate_status: promoted
+    disposition_confidence: structural_only
+    effectiveness: not_evaluated
+    usage_evidence: unavailable
+    evidence:
+      - type: structural
+        value: "listed in skills/index.yaml and passed baseline repository validation"
+    parent_skill: skill-forward-deployed-engineer
+  - id: skill-success-metrics-design
+    active_revision: "sha256:e0fb8172e1ede57d80d31d844251d7e503080a783c751433930e16214aa42161"
+    candidate_revision: "sha256:e0fb8172e1ede57d80d31d844251d7e503080a783c751433930e16214aa42161"
+    state: ACTIVE
+    candidate_state: ACTIVE
+    disposition: UPDATE
+    transition:
+      from_state: ACTIVE
+      to_state: ACTIVE
+      candidate_revision: "sha256:e0fb8172e1ede57d80d31d844251d7e503080a783c751433930e16214aa42161"
+      evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
+      independent_review_ref: "local-review:architecture-security-capability-20260714-v1"
+      human_gate_status: promoted
+    disposition_confidence: structural_only
+    effectiveness: not_evaluated
+    usage_evidence: unavailable
+    evidence:
+      - type: structural
+        value: "listed in skills/index.yaml and passed baseline repository validation"
+    parent_skill: skill-forward-deployed-engineer
+  - id: skill-feedback-to-backlog
+    active_revision: "sha256:3536958f29b42e6beb725b74b3f70b84533215c58d3a23aac755540185399a79"
+    candidate_revision: "sha256:3536958f29b42e6beb725b74b3f70b84533215c58d3a23aac755540185399a79"
+    state: ACTIVE
+    candidate_state: ACTIVE
+    disposition: UPDATE
+    transition:
+      from_state: ACTIVE
+      to_state: ACTIVE
+      candidate_revision: "sha256:3536958f29b42e6beb725b74b3f70b84533215c58d3a23aac755540185399a79"
+      evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
+      independent_review_ref: "local-review:architecture-security-capability-20260714-v1"
+      human_gate_status: promoted
+    disposition_confidence: structural_only
+    effectiveness: not_evaluated
+    usage_evidence: unavailable
+    evidence:
+      - type: structural
+        value: "listed in skills/index.yaml and passed baseline repository validation"
+    parent_skill: skill-forward-deployed-engineer

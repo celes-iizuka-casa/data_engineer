@@ -7,7 +7,7 @@
 1. `input/` と既存 `output/` を確認する。
 2. 明示成果物、課題分類、MVP、制約、リスク、`@role`/`@mode`/`@light`/`@full` タグを整理する。
 3. `output_optimization_policy.md` の軽量依頼判定を行う。軽量でなく3工程以上なら `_internal/work_plan.md` を作る（軽量なら作らない）。
-4. `runtime_selection_policy.md` と `model_effort_selection_policy.md` で実行環境（Claude Code / Codex / 併用）・モデル・工数を判定する。2工程以上で変わる / 高リスク / 大規模なら `_internal/execution_plan.md` を作る。採用結果は output.md 制御ブロックに記す。
+4. `runtime_selection_policy.md` と `model_effort_selection_policy.md` に従い、呼び出し元Runtimeを変更せず、確認できたruntime/model Evidenceと推奨effortを記録する。高リスク / 大規模なら `_internal/execution_plan.md` を作る。取得不能なmodel/token/costは推測せず`unavailable`とする。
 5. 必要な `skills/` を選び、作業を進める。
 
 ## Required Finish

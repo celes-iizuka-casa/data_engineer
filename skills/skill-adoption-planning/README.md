@@ -149,7 +149,7 @@ AI Forward Deployed Engineerとして、成果物が品質ゲートを満たす�
 - adoption_plan.md / rollout_plan.md / training_notes.md / operation_notes.md が作成されている。
 - 定着責任者と旧手順廃止条件が合意されている。
 - fde_quality_gate.md のAdoption Plan品質チェックに合格している。
-- 必要性ゲート該当時はAI Deliverable Quality Reviewerへ引き渡している。
+- risk_based_quality_gates.yamlでIndependent Reviewがrequiredの場合だけAI Deliverable Quality Reviewerへ引き渡している。
 
 ## 実務プレイブック
 

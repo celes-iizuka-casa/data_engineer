@@ -29,4 +29,12 @@
 - `model_effort_selection_policy.md`
 - `runtime_selection_policy.md`
 - `runtime_neutral_design_policy.md`
+- `governance/architecture_contract.yaml`
+- `governance/canonical_sources.yaml`
+- `capability_registry.yaml`
+- `governance/skill_lifecycle_registry.yaml`
+- `governance/capability_growth_policy.yaml`
+- `evidence/execution_evidence.schema.json`
+- `evals/eval_catalog.yaml`
+- `review/risk_based_quality_gates.yaml`
 - `output_optimization_policy.md`

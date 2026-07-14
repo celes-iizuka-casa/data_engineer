@@ -109,7 +109,7 @@ AI Integration Engineerとして、検証対象、観点、手順、結果、問
 - 要求、仮定、未決事項が区別されている。
 - 担当成果物が実装または次工程で利用できる粒度になっている。
 - Security、QA、SREの該当観点と検証証跡が確認されている。
-- quality_review_request.mdを用意し、AI Deliverable Quality Reviewerへ引き渡している。
+- risk_based_quality_gates.yamlでIndependent Reviewがrequiredの場合だけquality_review_request.mdを用意し、AI Deliverable Quality Reviewerへ引き渡している。
 - 最終判定がREWORK_REQUIREDまたはBLOCKEDの場合は完了扱いにしない。
 - Professional Modeに応じた成果物、判断理由、リスク、未確認事項、次アクションが明記されている。
 - 非プロフェッショナルな感想、無根拠な同意、責任範囲外の断定が除去されている。

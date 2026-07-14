@@ -5,7 +5,7 @@
 - 依頼の理解: 日次CTASで作り直している売上集計テーブル群をApache Icebergへ移行すべきか、Data Engineerとしての意見が欲しい（実装はまだしない）
 - 担当Role / モード: AI Data Engineer / Opinion
 - 出力モード: standard
-- 実行環境 / モデル / 工数: Claude Code / Sonnet4.6 / 中
+- 実行Context: runtime=caller runtime (declared) / provider=null (unavailable) / model=null (unavailable) / effort=medium (declared, 非拘束)
 - ステータス: Completed
 - 品質判定: PASS
 - 品質スコア: 平均 3.4 / 4.0（採点10次元、N/A除外。最低: Cost 3）

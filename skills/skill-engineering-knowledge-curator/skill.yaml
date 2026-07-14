@@ -42,7 +42,7 @@ outputs:
   - "Troubleshooting Note"
   - "MOCと内部リンク"
   - "source_map.md"
-  - "output/obsidian_sync_summary.md"
+  - "output/.../_internal/obsidian_sync_summary.md"
 modes:
   professional_opinion:
     description: "AI Engineering Knowledge Curatorとして、妥当性、懸念、代案、推奨、採用条件を判断する。"
@@ -90,7 +90,7 @@ modes:
       - "Troubleshooting Note"
       - "MOCと内部リンク"
       - "source_map.md"
-      - "output/obsidian_sync_summary.md"
+      - "output/.../_internal/obsidian_sync_summary.md"
     review_points:
       - "MVPと商用化のバランスがあるか"
       - "運用・監視・セキュリティ・テストを後回しにしていないか"
@@ -117,7 +117,7 @@ modes:
       - "Troubleshooting Note"
       - "MOCと内部リンク"
       - "source_map.md"
-      - "output/obsidian_sync_summary.md"
+      - "output/.../_internal/obsidian_sync_summary.md"
     review_points:
       - "動くだけでなく保守・再実行・エラー処理まで見ているか"
       - "既存構成を壊していないか"
@@ -152,15 +152,15 @@ modes:
       - "機密情報・個人情報・秘密情報の混入"
 steps:
   - "output/とquality_review_report.mdを棚卸しし、同期対象と除外対象を決める"
-  - "成果物がCompleted/Acceptedであることを確認する。Draft・In Progress・Waitingは除外する（obsidian_write_policy.md参照）"
+  - "現在利用者の明示依頼、またはAccepted + 再利用価値 + Local root確認を満たすことを確認する。Draft・In Progress・Waiting・Completedだけでは起動しない（obsidian_write_policy.md参照）"
   - "案件名、目的、状態、主要成果物、出典パスをProject Noteへ整理する"
   - "意思決定、前提、未解決事項、リスク、次アクションを分離して記録する"
   - "再利用できる内容だけをKnowledge、Pattern、ADR、Troubleshootingへ抽出する"
-  - "output/feedback_analysis.mdとoutput/team_improvement_proposal.mdがあればチーム改善ナレッジとして保存する（feedback_optimization_policy.md参照）"
-  - "output/task_retrospective.mdがあれば改善候補・成功パターンを保存する（retrospective_policy.md参照）"
+  - "_internal/feedback_analysis.mdと_internal/team_improvement_proposal.mdがあればPersonalizationとUniversal candidateを分離して扱う（feedback_optimization_policy.md参照）"
+  - "output/.../_internal/task_retrospective.mdがあれば改善候補・成功パターンを保存する（retrospective_policy.md参照）"
   - "frontmatter、タグ、内部リンク、MOC、source_mapを更新する"
   - "リンク切れ、出典、重複、機密情報、未検証主張を確認する"
-  - "output/obsidian_sync_summary.mdへ作成・更新・未反映・競合・確認事項を報告する"
+  - "output/.../_internal/obsidian_sync_summary.mdへ作成・更新・未反映・競合・確認事項を報告する"
 decision_criteria:
   - "原文をそのまま複製せず、判断理由と再利用条件を抽出する"
   - "案件固有の事実と一般化した知識を別ノートにする"
@@ -197,7 +197,7 @@ non_professional_outputs:
 uncertainty_handling:
   - "質問だけで止めない。"
   - "仮定を明記して成果物を作る。"
-  - "判断に影響する不足情報を output/questions.md に残す。"
+  - "判断に影響する不足情報を output/.../_internal/questions.md に残す。"
 response_style_for_celes:
   - "結論から書く。"
   - "プロフェッショナルとしての根拠がない意見、感想、無難な同意は書かない。"
@@ -216,7 +216,7 @@ done_definition:
   - "案件固有情報と再利用可能な知識が分離されている。"
   - "Project Note、MOC、source_map、内部リンクに切れや孤立がない。"
   - "未検証事項、残存リスク、次アクションが失われていない。"
-  - "output/obsidian_sync_summary.mdに作成・更新・未反映・競合・確認事項が記載されている。"
+  - "output/.../_internal/obsidian_sync_summary.mdに作成・更新・未反映・競合・確認事項が記載されている。"
   - "Professional Modeに応じた成果物、判断理由、リスク、未確認事項、次アクションが明記されている。"
   - "非プロフェッショナルな感想、無根拠な同意、責任範囲外の断定が除去されている。"
 prohibited_actions:
@@ -227,4 +227,4 @@ prohibited_actions:
   - "観測事実と推測を混ぜる"
   - "秘密情報や未マスキング個人情報を第二の脳へ転記する"
   - "Draft状態・作業途中の成果物を第二の脳へ書く"
-  - "Completed / Acceptedステータスを確認せずに整理を開始する"
+  - "現在利用者の明示依頼、またはAccepted + 再利用価値 + Local root確認なしに整理を開始する"

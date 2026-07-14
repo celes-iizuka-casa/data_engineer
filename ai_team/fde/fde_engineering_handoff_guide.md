@@ -82,10 +82,10 @@ Handoffは議事録の要約ではなく「実装チームの作業指示の材�
 - `fde_quality_gate.md` のEngineering Handoff品質チェックに合格している
 - 受け手Role（またはPMO）が「追加説明なしで着手可能」と確認している
 - 未決事項がブロック対象・判断者・期限付きで整理されている
-- handoff後の実行環境切替（Claude Code→Codex）が `../model_effort_selection_policy.md` のFDE工程別表に従って記録されている
+- caller Runtimeを維持し、別Runtimeが必要な場合も自動切替せず制約・必要能力・再開条件が記録されている
 
 ## 参照
 
 - `../../templates/engineering_handoff_template.md` / `../handoff_policy.md`
-- `output/fde_sample_output_for_review.md`（記入例）
+- 記入例は顧客情報を含まない共有fixtureを使用し、Local `output/` を正本にしない
 - `fde_quality_gate.md`（Handoff品質チェック）

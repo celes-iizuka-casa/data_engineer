@@ -11,6 +11,7 @@
 
 ## 例
 
-- `input/Lograph/Looker_BigQuery_運用キャッチアップ依頼.md`
-- `input/トヨテック/ClouderaのDataVizに関する初学者への共有.md`
+- `input/example-client/data-platform-catchup-request.md`
+- `input/example-project/system-design-review.md`
 
+このREADMEだけが共有用scaffoldであり、`input/` 配下の実案件名・顧客名・資料はGit管理しない。

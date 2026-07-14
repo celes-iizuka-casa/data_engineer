@@ -145,7 +145,7 @@ AI Forward Deployed Engineerとして、成果物が品質ゲートを満たす�
 - feedback_log.md / feedback_analysis.md / improvement_backlog.md が作成されている。
 - 全件が出典付き・7分類済み・優先順位初版付きである。
 - fde_quality_gate.md のFeedback Loop品質チェックに合格している。
-- 必要性ゲート該当時はAI Deliverable Quality Reviewerへ引き渡している。
+- risk_based_quality_gates.yamlでIndependent Reviewがrequiredの場合だけAI Deliverable Quality Reviewerへ引き渡している。
 
 ## 実務プレイブック
 

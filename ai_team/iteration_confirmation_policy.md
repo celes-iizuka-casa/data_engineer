@@ -34,7 +34,7 @@
 4. 適用方針を作成する
 5. 代表例を1件選定する
 6. 代表例の完成形を作成する
-7. `output/sample_output_for_review.md` にまとめる
+7. `output/.../_internal/sample_output_for_review.md` にまとめる
 8. セレス確認待ち（ステータス: `Waiting for Celes Review`）にする
 9. フィードバックを受け取る
 10. 方針を修正する
@@ -63,8 +63,8 @@
 ## 作成する成果物
 
 代表例確認時:
-- `output/iteration_plan.md`（対象一覧・方針）
-- `output/sample_output_for_review.md`（代表例の完成形）
+- `output/.../_internal/iteration_plan.md`（対象一覧・方針）
+- `output/.../_internal/sample_output_for_review.md`（代表例の完成形）
 
 フォーマットはそれぞれ下記テンプレートを使う:
 - `../templates/iteration_plan_template.md`

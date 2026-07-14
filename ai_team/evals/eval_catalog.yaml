@@ -1,0 +1,52 @@
+schema_version: "1.0"
+purpose: "Measure candidate improvement without changing the caller runtime or inventing telemetry."
+suites:
+  agent:
+    dimensions:
+      - role_understanding
+      - scope_adherence
+      - handoff_quality
+      - evidence_discipline
+      - hallucination_resistance
+      - done_definition_compliance
+  skill:
+    dimensions:
+      - correct_invocation
+      - task_improvement
+      - instruction_adherence
+      - false_positive_avoidance
+      - overlap_and_conflict
+      - output_quality
+  engineering:
+    fixture: "ai_team/evals/golden_cases.yaml"
+    representative_results: "ai_team/evals/case_fixtures.yaml"
+    representative_contract_execution: deterministic
+    live_ai_task_execution: deferred
+    live_ai_task_reason: "No provider/model switch or synthetic claim is allowed; collect real local execution evidence in later tasks."
+  documentation:
+    dimensions: [stale_path, contradiction, duplication, canonical_source_mismatch]
+  regression:
+    rule: "Candidate must use the same cases and acceptance contract as baseline."
+comparison_contract:
+  required_fields:
+    - baseline_revision
+    - candidate_revision
+    - runtime_evidence
+    - case_results
+    - independent_evaluator
+  metrics:
+    - task_success
+    - p0_p1_findings
+    - human_corrections
+    - needs_fix
+    - reviewer_findings
+    - reproducibility
+    - context_efficiency
+  unavailable_measurement:
+    value: null
+    evidence_type: unavailable
+  inferred_token_or_cost: forbidden
+promotion_gate:
+  require_no_regression_on_critical_cases: true
+  require_independent_review: true
+  require_celes_human_gate: true

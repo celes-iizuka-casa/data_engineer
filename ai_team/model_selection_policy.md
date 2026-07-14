@@ -1,17 +1,19 @@
-# Model Selection Policy
+# Model Capability Recommendation Policy
 
 ## 目的
 
-AIエンジニアチームが、作業工程ごとに最適なモデルを選定・提案するための基準を定義する。
+AIエンジニアチームが、呼び出し元Runtimeと現在選択済みModelを変更せず、作業工程ごとに必要な能力を提案する基準を定義する。
 
 ## 基本方針
 
 - 依頼内容を工程に分解する
 - 工程ごとに必要な能力を整理する
-- 必要な能力に応じてモデル種別を提案する
-- モデル選定理由を明記する
-- 高コストモデルを常に使うのではなく、難易度・重要度・リスクに応じて使い分ける
+- 現在Runtime内で必要能力とeffortを非拘束で提案する
+- 推奨理由を明記する
+- 現在Modelを変更せず、難易度・重要度・リスクに応じて必要能力とeffortを調整する
 - セキュリティ、正確性、実装品質、速度、コストのバランスを取る
+- Recommendation ≠ Enforcement。AI社員はProvider、Runtime、Modelを切り替えない
+- 具体Model名、token、costを確認できない場合は`unavailable`とし、推測しない
 
 ## モデル選定観点
 
@@ -110,15 +112,16 @@ AIエンジニアチームが、作業工程ごとに最適なモデルを選定
 
 ## 出力形式
 
-`output_optimization_policy.md` の必要性ゲートに従う。2工程以上で必要能力が変わる、または高リスク/セキュリティ工程を含む場合のみ `output/.../_internal/model_recommendation.md` を作る（`../templates/model_selection_template.md`）。単一工程の軽量依頼では作らない。
+`output_optimization_policy.md` の必要性ゲートに従う。高リスクまたは複数工程の場合は、必要能力と非拘束effortを `output/.../_internal/execution_plan.md` に統合する。独立したmodel recommendationファイルは作らない。
 
 ## 注意点
 
 - モデル選定は提案であり、実際に利用可能なモデルに合わせて調整する
 - モデル名が不明な場合は、モデル名ではなく必要能力で提案する
+- 実際のModel設定は呼び出し元Runtimeと利用者が管理し、AI社員側から上書きしない
 - 高性能モデルを使うべき工程と、軽量モデルで十分な工程を分ける
 - セキュリティや重要判断が絡む工程では、より慎重なモデルを推奨する
-- すべての工程に同じモデルを雑に推奨しない
+- すべての工程へ同じ能力要件を雑に当てはめない。Recommendationは現在Modelの変更命令にしない
 
 ## 参照
 

@@ -271,7 +271,7 @@
 - 受入条件が明確になっている。
 - 導入・定着観点が整理されている。
 - 未決事項が output.md の要対応（必要時は `_internal/questions.md`）に整理されている。
-- quality_review_request.mdを用意し、AI Deliverable Quality Reviewerへ引き渡している。
+- risk_based_quality_gates.yamlでIndependent Reviewがrequiredの場合だけquality_review_request.mdを用意し、AI Deliverable Quality Reviewerへ引き渡している。
 - Professional Modeに応じた成果物、判断理由、リスク、未確認事項、次アクションが明記されている。
 - 非プロフェッショナルな感想、無根拠な同意、責任範囲外の断定が除去されている。
 - `ai_team/fde/fde_quality_gate.md` の該当成果物チェックに合格している。
@@ -283,19 +283,19 @@
 繰り返し対象が3件以上の場合はPMOの判定に従い、代表例フェーズと全件展開フェーズを区別して作業する。先に全件対応しない。`ai_team/iteration_confirmation_policy.md` に従う。
 
 ### タスク振り返り
-作業完了後はPMOが `output/task_retrospective.md` を作成する。担当Roleは自工程の改善点・判断ミス・注意点をPMOへ申し送る。`ai_team/retrospective_policy.md` に従う。
+作業完了後はPMOが `output/.../_internal/task_retrospective.md` を作成する。担当Roleは自工程の改善点・判断ミス・注意点をPMOへ申し送る。`ai_team/retrospective_policy.md` に従う。
 
 ### Personalization連携
-作業前に `profiles/current_user_profile.yaml` と `ai_team/personalization_policy.md` を読み、利用者タイプに応じて成果物の粒度・用語・観点を変える。プロファイル不在時はセレス=専門家エンジニアをデフォルトとし仮定を明記する。
+作業前に `ai_team/personalization_policy.md` を読み、現在利用者がLocalに設定したprofile/Second Brainだけを任意参照する。不在時は匿名shared defaultを使い、個人属性を推測しない。
 
-### 実行環境・モデル・工数
-FDE工程（discovery〜handoff）はClaude Code / Opus4.8 / 高、handoff後の実装はCodex / GPT-5.5 / 高、検証は併用。`ai_team/model_effort_selection_policy.md` のFDE工程別表に従い、engineering_handoff完了時点をruntime切替点とする。
+### Runtime・Model・Effort
+FDEから実装へのhandoff後も呼び出し元Runtimeを変更しない。別Runtimeが必要な場合は制約、必要能力、再開条件をhandoff候補へ残すだけとし、自動切替しない。Model IDを確認できない場合は`unavailable`とする。
 
 ### FDE品質ゲート
 成果物別の合否・差し戻し条件は `ai_team/fde/fde_quality_gate.md` に従う。handoff後のQ&A往復が2回を超えたらhandoff不備として差し戻される。
 
 ### Knowledge Curator連携
-Completed / Accepted後、課題整理パターン・Handoffの型・定着観点などを材料としてAI Engineering Knowledge Curatorへ渡す（保存先マッピングは `ai_team/obsidian_write_policy.md`）。
+現在利用者の明示依頼、またはAccepted + 再利用価値 + Local root確認後だけ、課題整理パターン・Handoffの型・定着観点をAI Engineering Knowledge Curatorへ渡す（`ai_team/obsidian_write_policy.md`）。
 
 ## 参照
 

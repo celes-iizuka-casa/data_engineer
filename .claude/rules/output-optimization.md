@@ -1,5 +1,5 @@
 ---
-description: 成果物出力の最適化ルール。A層2ファイル常時、B/C層は必要性ゲート後のみ _internal/ に出力する。
+description: 成果物出力の最適化ルール。A層はoutput.md 1ファイル、B/C層は必要性ゲート後のみ _internal/ に出力する。
 paths:
   - output/**
 ---
@@ -11,7 +11,7 @@ paths:
 | 階層 | 内容 | 生成条件 |
 |---|---|---|
 | **A層（常時）** | `output.md`（本成果物・制御ブロックを内包した統合1ファイル） | 毎回、タスクフォルダ直下 |
-| **B層（条件付き）** | model_recommendation / iteration_plan＋sample / quality_review_report / task_retrospective / obsidian_sync_summary | 下記ゲートを満たした時だけ `_internal/` に作成 |
+| **B層（条件付き）** | execution_plan / iteration_plan＋sample / quality_review_report / task_retrospective / obsidian_sync_summary | 下記ゲートを満たした時だけ `_internal/` に作成 |
 | **C層（要求時）** | work_plan / quality_review_request / execution_summary / questions | セレスが明示要求した時のみ |
 
 ## 軽量依頼（A層 output.md 1ファイルのみ、B/C層全スキップ）
@@ -26,11 +26,11 @@ paths:
 
 | 成果物 | 作成条件 |
 |---|---|
-| quality_review_report | 顧客提出物 or 再利用物 or 本番/破壊的 or セキュリティ影響 |
+| quality_review_report | risk_based_quality_gatesでMedium以上、または顧客提出物/再利用物として追加レビューが必要 |
 | task_retrospective | Completed/Accepted かつ 軽量依頼でない |
-| model_recommendation | 2工程以上で必要能力が変わる or 高リスク/セキュリティ工程 |
+| execution_plan | 2工程以上で必要能力が変わる or 高リスク/セキュリティ工程。Runtime/Modelは切り替えずEvidenceと非拘束effortを記録 |
 | iteration_plan + sample | iteration_confirmation_policy の繰り返し判定に該当 |
-| obsidian_sync_summary | obsidian_write_policy のトリガー かつ 顧客/再利用価値あり |
+| obsidian_sync_summary | obsidian_write_policy のORトリガーを満たし、実際にLocal Second Brainへ書き込んだ |
 
 ## フォルダ構造
 

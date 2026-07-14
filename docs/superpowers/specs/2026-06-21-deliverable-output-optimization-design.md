@@ -1,5 +1,7 @@
 # 提出物の出力最適化 設計書
 
+> **SUPERSEDED / HISTORICAL:** 2026-06-21時点の設計記録。現行契約は `ai_team/output_optimization_policy.md` と `templates/output_template.md` を正本とし、本書の2ファイルA層・standalone model recommendation・旧同期条件は実行指示に使わない。
+
 - 日付: 2026-06-21
 - 対象: AIエンジニアチーム（`ai_team/`）の成果物出力
 - 方式: A案（階層出力＋必要性ゲート / 入力テンプレなし）

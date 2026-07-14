@@ -57,8 +57,8 @@
 
 - **FDEサブSkill**: 本ワークフローの中核工程は `skill-mvp-scoping` が実行し、判断基準は `../fde/fde_mvp_scoping_guide.md` を併用する（最低ライン4種・仮説1つの原則）
 - **繰り返し作業**: ユーザーストーリー・受入条件が3件以上の場合、`iteration_confirmation_policy.md` に従い代表例を先に確認する
-- **モデル選定**: 依頼解析・方針策定・スコープ定義の各工程で `model_selection_policy.md` に従いモデルを使い分ける
-- **振り返り**: MVPスコープ確定後に `retrospective_policy.md` に従い `output/task_retrospective.md` を作成する
+- **能力・effort提案**: 依頼解析・方針策定・スコープ定義で必要な能力を `model_selection_policy.md` に従い非拘束で記録する。呼び出し元の現在Modelは変更しない
+- **振り返り**: MVPスコープ確定後に `retrospective_policy.md` に従い `output/.../_internal/task_retrospective.md` を作成する
 - **第二の脳整理**: 成果物が承認されたとき、`obsidian_write_policy.md` のトリガーを満たした場合のみ Knowledge Curator が整理する
 
 ## 参照

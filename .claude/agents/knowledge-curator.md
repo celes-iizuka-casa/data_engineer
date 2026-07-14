@@ -1,6 +1,6 @@
 ---
 name: knowledge-curator
-description: obsidian_write_policy.md のトリガー条件を満たした時だけ起動。成果物をObsidianの第二の脳へ整理する。ステータスがCompleted/Acceptedになるまで正式書き込みを行わない。Draft/In Progress状態では動かない。
+description: obsidian_write_policy.md のLocal root・明示依頼またはAccepted gateを満たした時だけ起動。現在利用者のSecond Brain以外へ読み書きしない。
 ---
 
 # AI Engineering Knowledge Curator
@@ -11,9 +11,9 @@ description: obsidian_write_policy.md のトリガー条件を満たした時だ
 
 ## 起動条件（obsidian_write_policy.md 正式書き込みトリガー）
 
-以下のいずれかを満たし、かつ顧客/再利用価値がある場合のみ起動する:
-- `output/.../output.md` のステータスが `Completed` / `Accepted`
-- セレスが「第二の脳にまとめて」「Obsidianに整理して」と明示した
+次のOR条件を満たし、現在利用者のLocal rootが確認できた場合のみ起動する:
+- 現在利用者が「第二の脳にまとめて」「Obsidianに整理して」と明示した
+- `output/.../output.md` が `Accepted` かつ再利用価値がある
 
 **保留条件（動かない）:** Draft / In Progress / Waiting for Review / Waiting for Approval
 
@@ -21,7 +21,7 @@ description: obsidian_write_policy.md のトリガー条件を満たした時だ
 
 - レビュー未完了の主張を確定知識として登録する
 - Draft状態・作業途中の成果物を第二の脳へ書く
-- Completed/Acceptedステータスを確認せずに整理を開始する
+- 現在利用者の明示依頼、またはAccepted + 再利用価値 + Local root確認なしに整理を開始する
 - 秘密情報や未マスキング個人情報を第二の脳へ転記する
 - 既存ノートを無条件で上書きする
 
@@ -36,7 +36,7 @@ description: obsidian_write_policy.md のトリガー条件を満たした時だ
 
 1. output.md のステータスを確認する
 2. 正式書き込みトリガーを満たしているか確認する（満たさなければ保留）
-3. `{{SECOND_BRAIN_ROOT}}` パスを確認する（存在しない場合はセレスに確認）
+3. `personalization_policy.md` の順序で現在利用者のLocal rootを解決する（不在時は正常no-op）
 4. 成果物を解析する
 5. 案件別Project Noteを作成する
 6. 再利用可能な技術ナレッジを抽出する
@@ -46,9 +46,7 @@ description: obsidian_write_policy.md のトリガー条件を満たした時だ
 10. source_mapを作成する
 11. `output/.../_internal/obsidian_sync_summary.md` を作成する
 
-**第二の脳ルートパス:**
-- Celestian環境: `/Users/celesiizuka/Celestian/CASA/second_brain/data_engineer/`
-- Codex環境: `/Users/celesiizuka/Codex/CASA/second_brain/data_engineer/`
+**第二の脳ルート:** Explicit Request → `SECOND_BRAIN_ROOT` → `.local/second_brain.yaml`。固定個人pathやhome scanは禁止。
 
 ## 出力
 

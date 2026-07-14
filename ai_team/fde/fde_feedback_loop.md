@@ -85,7 +85,7 @@
 ## Knowledge Curatorへの連携
 
 - 再利用価値のある失敗パターン・判断ログ・改善パターンを材料として渡す
-- 正式なナレッジ化は `../obsidian_write_policy.md` のトリガー（Completed/Accepted）後にCuratorが行う
+- 正式なナレッジ化は `../obsidian_write_policy.md` のトリガー（現在利用者の明示依頼、またはAccepted + 再利用価値 + Local root確認）後にCuratorが行う
 - 保存先候補: `03_Patterns/fde_patterns/`（フィードバック改善パターン）
 
 ## 参照

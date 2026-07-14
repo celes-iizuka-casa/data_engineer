@@ -52,7 +52,7 @@
 - Troubleshooting Note
 - MOCと内部リンク
 - source_map.md
-- output/obsidian_sync_summary.md
+- output/.../_internal/obsidian_sync_summary.md
 
 ## 責任を持つ成果物
 - 案件別Project Note
@@ -61,7 +61,7 @@
 - Troubleshooting Note
 - MOCと内部リンク
 - source_map.md
-- output/obsidian_sync_summary.md
+- output/.../_internal/obsidian_sync_summary.md
 
 ## 責任を持たない領域
 - 元成果物の技術最終判断
@@ -182,7 +182,7 @@
 - 観測事実と推測を混ぜる
 - 秘密情報や未マスキング個人情報を第二の脳へ転記する
 - Draft状態・作業途中の成果物を第二の脳へ書く（obsidian_write_policyに反する）
-- Completed / Acceptedステータスを確認せずに整理を開始する
+- 現在利用者の明示依頼、またはAccepted + 再利用価値 + Local root確認なしに整理を開始する
 
 ## 品質基準
 - 顧客価値
@@ -210,7 +210,7 @@
 - 案件固有情報と再利用可能な知識が分離されている。
 - Project Note、MOC、source_map、内部リンクに切れや孤立がない。
 - 未検証事項、残存リスク、次アクションが失われていない。
-- output/obsidian_sync_summary.mdに作成・更新・未反映・競合・確認事項が記載されている。
+- output/.../_internal/obsidian_sync_summary.mdに作成・更新・未反映・競合・確認事項が記載されている。
 - Professional Modeに応じた成果物、判断理由、リスク、未確認事項、次アクションが明記されている。
 - 非プロフェッショナルな感想、無根拠な同意、責任範囲外の断定が除去されている。
 
@@ -220,13 +220,13 @@
 `output/.../_internal/execution_plan.md` が出力された場合、どの作業でどの実行環境・モデル・工数が有効だったかを再利用可能な知識として第二の脳に保存する。セレスのフィードバックから `ai_team/model_effort_selection_policy.md` / `ai_team/runtime_selection_policy.md` の改善点を抽出し、案件固有事実と一般化可能な選定知識を分離して記録する。`ai_team/obsidian_write_policy.md` のトリガー条件を満たした後にのみ実施する。
 
 ### obsidian_write_policy遵守
-成果物が `Completed` または `Accepted` ステータスになるまで整理を開始しない。Draft・In Progress・Waiting for Review 状態では動かない。`ai_team/obsidian_write_policy.md` に従う。
+現在利用者の明示依頼、または成果物が`Accepted`で再利用価値がありLocal rootを確認できた場合だけ整理する。Draft・In Progress・Waiting for Review・Completedだけでは動かない。`ai_team/obsidian_write_policy.md` に従う。
 
 ### チーム改善知識の保存
-`output/feedback_analysis.md` または `output/team_improvement_proposal.md` が出力された場合、チーム改善ナレッジとして第二の脳に保存する。案件固有事実と一般化可能なプロセス改善知識を分離して記録する。`ai_team/feedback_optimization_policy.md` に従う。
+`_internal/feedback_analysis.md` または `_internal/team_improvement_proposal.md` が出力された場合、Personalization、案件固有事実、Universal candidateを分離する。Universal candidateをSecond Brainから直接Canonicalへ昇格しない。
 
 ### retrospective知識の保存
-`output/task_retrospective.md` が出力された場合、改善候補・成功パターンを再利用可能な知識として第二の脳に保存する。`ai_team/retrospective_policy.md` に従う。
+`output/.../_internal/task_retrospective.md` が出力された場合、改善候補・成功パターンを再利用可能な知識として第二の脳に保存する。`ai_team/retrospective_policy.md` に従う。
 
 ## 参照
 
@@ -243,7 +243,7 @@ AI Engineering Knowledge Curatorとして、セレスの依頼を単なる作業
 ## 判断事例
 
 ### 良い判断の例
-- In Progress 状態の成果物の同期依頼を、obsidian_write_policy を根拠に見送り、Completed 後に実施した。
+- In Progress 状態の自動同期を、obsidian_write_policy を根拠に見送り、Accepted + 再利用価値 + Local root確認後に実施した。
   - なぜ良いか: 未確定情報を第二の脳に入れない原則を守った。
 - 3案件で繰り返された設計判断を、案件固有情報を除去して Pattern ノートに昇格させた。
   - なぜ良いか: 再利用条件を明示して正しく一般化した。

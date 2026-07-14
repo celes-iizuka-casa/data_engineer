@@ -16,24 +16,24 @@
 - AI Security / Governance Engineer
 - AI QA / Test Automation Engineer
 - AI Deliverable Quality Reviewer
-- AI Engineering Knowledge Curator（Completed/Accepted後）
+- AI Engineering Knowledge Curator（現在利用者の明示依頼、またはAccepted + 再利用価値 + Local root確認後）
 
 ## 手順
 1. PMOが入力、明示要求、既存output、制約を棚卸しする
-2. `profiles/current_user_profile.yaml` を読み、Personalization Planを立てる（`../personalization_policy.md`）
+2. `../personalization_policy.md` に従い、利用可能な現在利用者のLocal profile / Second Brainだけを任意参照する
 3. 依頼内容を解析し、FDE起動条件（`../fde/fde_operating_model.md`）で要否を判定する
 4. AI FDEが skill-field-discovery / skill-stakeholder-mapping で顧客・現場背景、関係者、利用シーンを整理する
 5. skill-pain-point-analysis で表面的な要望、本質課題、現場制約、未決事項を分ける
 6. skill-business-flow-mapping で現状業務フローとあるべき業務フロー・ギャップを整理する
 7. skill-mvp-scoping でMVPスコープ、対象外、成功条件、受入条件を定義する
 8. skill-solution-framing で解決方針候補を整理し、Tech Leadが技術的な実現可能性、代替案、主要リスクを確認する
-9. skill-engineering-handoff でRole別依頼を含む engineering_handoff.md を作成し、専門エンジニアへ渡す（実行環境をCodexへ切替: `../model_effort_selection_policy.md` FDE工程別表）
+9. skill-engineering-handoff でRole別依頼を含む engineering_handoff.md を作成し、同じ呼び出し元Runtime内の専門Roleへ渡す。別Runtimeが必要な場合は自動切替せずhandoff候補として記録する
 10. QA、Security、SREの該当観点を早期に確認する
 11. 実装・設計・検証へ進む（`requirements_to_design_workflow.md` / `design_to_implementation_workflow.md`）
 12. skill-adoption-planning / skill-success-metrics-design で導入・定着・効果測定を整理する
 13. skill-feedback-to-backlog で現場フィードバックの回収とBacklog化の仕組みを作る（`../fde/fde_feedback_loop.md`）
 14. Quality Reviewerへレビュー依頼と証跡を提出する（`../fde/fde_quality_gate.md` を併用）
-15. Completed / Accepted後、Knowledge Curatorが第二の脳へ整理する（`../obsidian_write_policy.md`）
+15. 現在利用者の明示依頼、またはAccepted + 再利用価値 + Local root確認後だけ、Knowledge CuratorがLocal Second Brainへ整理する（`../obsidian_write_policy.md`）
 
 ## 品質ゲート
 - 顧客課題と解決策が対応している
@@ -71,4 +71,5 @@
 - `../fde/fde_operating_model.md`（起動条件・基本フロー）
 - `../fde/fde_quality_gate.md`
 - `../personalization_policy.md`
-- `../model_effort_selection_policy.md`（FDE工程別の実行環境・モデル・工数）
+- `../runtime_selection_policy.md`（呼び出し元Runtime従属）
+- `../model_effort_selection_policy.md`（現在Runtime内の非拘束effort推奨）

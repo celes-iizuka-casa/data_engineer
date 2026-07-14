@@ -94,7 +94,7 @@ AI Forward Deployed Engineerとして、成果物が品質ゲートを満たす�
 5. 受入条件に検証方法と判定Roleを付ける
 6. 未決事項にブロック対象・判断者・期限を付ける
 7. fde_quality_gate.md のHandoff品質チェックで自己検証する
-8. 受け手Role（またはPMO）の着手可否確認を取り、実行環境切替（Claude Code→Codex）を記録する
+8. 受け手Role（またはPMO）の着手可否確認を取り、caller Runtimeを維持する。別Runtimeが必要なら制約と再開条件だけを記録する
 
 ## 判断基準
 - 受け手が追加説明なしで着手できるか
@@ -160,7 +160,7 @@ AI Forward Deployed Engineerとして、成果物が品質ゲートを満たす�
 - 「詳細は口頭で」前提の薄いRole別依頼
 
 ### 良い成果物の型
-- output/fde_sample_output_for_review.md サンプル2（架空製造業A社）の粒度
+- 顧客情報を含まない共有fixtureの粒度（Local `output/` を正本にしない）
 
 ## 参照
 - `ai_team/fde/fde_engineering_handoff_guide.md`

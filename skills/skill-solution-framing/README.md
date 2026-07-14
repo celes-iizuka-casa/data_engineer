@@ -145,7 +145,7 @@ AI Forward Deployed Engineerとして、成果物が品質ゲートを満たす�
 - solution_framing.md / solution_options.md / recommended_approach.md が作成されている。
 - 候補が2案以上比較され、推奨に採用条件が付いている。
 - Tech Leadへの確認依頼が作成されている。
-- 必要性ゲート該当時はAI Deliverable Quality Reviewerへ引き渡している。
+- risk_based_quality_gates.yamlでIndependent Reviewがrequiredの場合だけAI Deliverable Quality Reviewerへ引き渡している。
 
 ## 実務プレイブック
 

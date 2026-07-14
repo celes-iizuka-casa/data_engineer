@@ -151,7 +151,7 @@ AI Forward Deployed Engineerとして、Discovery成果物が品質ゲートを�
 - field_discovery.md / customer_context.md がテンプレに沿って作成されている。
 - 未確認事項が discovery_questions.md に確認方法付きで整理されている。
 - `ai_team/fde/fde_quality_gate.md` のDiscovery品質チェックに合格している。
-- 必要性ゲート該当時はAI Deliverable Quality Reviewerへ引き渡している。
+- risk_based_quality_gates.yamlでIndependent Reviewがrequiredの場合だけAI Deliverable Quality Reviewerへ引き渡している。
 
 ## 実務プレイブック
 

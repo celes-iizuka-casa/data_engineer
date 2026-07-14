@@ -27,8 +27,8 @@ Each mode has specific required sections (see `professional_response_templates.m
 4. **Decide scope**: Use `ai_team/output_optimization_policy.md` to determine if this is a "lightweight request" (skip work plan) or needs detailed planning
 5. **Execute**: Use the relevant `skills/skill-<role-name>/` to guide your work
 6. **Output**: Save to `output/<client>/<YYYYMMDD>/<task-name>/` with a single `output.md` (control block + deliverable integrated). Multiple roles → Deliverable Optimizer (PMO) merges into one file
-7. **Review**: If the request meets quality review gates (customer deliverable, production, breaking change, security), invoke the quality-reviewer agent for independent review
-8. **Sync**: If deliverable status is Completed/Accepted and has customer/reuse value, knowledge-curator syncs it to Obsidian second brain
+7. **Review**: Use `ai_team/review/risk_based_quality_gates.yaml` as the source of truth. Medium+ requires independent quality review; High/Critical adds specialist gates. Customer/reusable deliverables may add review even at Low risk
+8. **Sync**: Knowledge Curator writes only on the current user's explicit request, or when the deliverable is Accepted, reusable, and the current user's Local Second Brain root is confirmed
 
 ## Key Commands
 
@@ -36,14 +36,9 @@ Each mode has specific required sections (see `professional_response_templates.m
 # Validate repo structure, policies, and skill contracts
 python3 tools/validate_repository.py
 
-# Run tests (unit + integration)
-python3 -m pytest tests/ -v
-
-# Run a single test file
-python3 -m pytest tests/test_convert_ctas_ddl_to_iceberg.py -v
-
-# Run a specific test function
-python3 -m pytest tests/test_generate_spark_view_artifacts.py::test_view_rewrite -v
+# Run shared Foundation tests and evals
+python3 -m unittest discover -s ai_team/tests -p 'test_*.py' -v
+python3 ai_team/evals/run_foundation_evals.py
 ```
 
 ## Architecture & Key Directories
@@ -65,7 +60,7 @@ python3 -m pytest tests/test_generate_spark_view_artifacts.py::test_view_rewrite
 │   ├── professional_response_templates.md  # Required sections per mode
 │   └── obsidian_write_policy.md   # When to sync deliverables to second brain
 │
-├── skills/                        # 19 specialized skill definitions
+├── skills/                        # 29 Skill definitions (19 Role Skills + 10 FDE sub-Skills)
 │   ├── skill-<role-name>/         # Each skill guides how that role operates
 │   └── README.md                  # Skill index & activation rules
 │
@@ -82,10 +77,6 @@ python3 -m pytest tests/test_generate_spark_view_artifacts.py::test_view_rewrite
 │   ├── output.md                  # Integrated file (control block + deliverable, always created)
 │   └── _internal/                 # Optional: reviews, plans, retrospectives
 │
-├── tests/                         # Unit & integration tests (pytest)
-│   ├── test_convert_ctas_ddl_to_iceberg.py
-│   └── test_generate_spark_view_artifacts.py
-│
 └── tools/
     └── validate_repository.py     # Validates skills, roles, workflows, templates
 ```
@@ -98,7 +89,7 @@ Before starting any work, familiarize yourself with:
 - **role_scope_matrix.md** — which roles handle what (data engineer, platform engineer, sre, etc.)
 - **request_mode_policy.md** — how to classify requests into Opinion/Design/Implementation/Verification
 - **output_optimization_policy.md** — 3-tier output (A=always create, B=conditional on gates, C=request-only), lightweight request definition
-- **runtime_selection_policy.md / model_effort_selection_policy.md** — auto-select runtime (Claude Code/Codex), model, and effort per request; record in `_internal/execution_plan.md` (runtime-neutral via `runtime_neutral_design_policy.md`)
+- **runtime_selection_policy.md / model_effort_selection_policy.md** — keep the caller runtime, record only observed/declared model evidence, and recommend non-binding effort; never switch providers automatically
 - **professional_response_templates.md** — required sections per mode, section-trimming rules
 - **professional_standards.md** — what counts as professional output, prohibited outputs (baseless opinions, unverified specs, unsupported claims)
 - **role_scope_matrix.md** + role `.md` files — detailed scope, responsibilities, judgment criteria for each role
@@ -131,18 +122,15 @@ Before starting any work, familiarize yourself with:
    - Use `professional_response_templates.md` for mode-specific required sections
    - See `deliverable_optimization_policy.md` for output modes, multi-role consolidation, and long-form rules
 
-6. **Evaluate quality review trigger**
-   - Use `output_optimization_policy.md` table: does this deliverable meet any quality review gate?
-     - Customer deliverable?
-     - Reusable across projects?
-     - Production / breaking change?
-     - Security impact?
-   - If YES: invoke the **quality-reviewer** agent (independent, not self-review)
-   - If NO: set `output.md` quality verdict field to "レビュー対象外" and continue
+6. **Evaluate risk-based quality gates**
+   - Classify Low / Medium / High / Critical with `ai_team/review/risk_based_quality_gates.yaml`.
+   - Medium+: invoke the independent **quality-reviewer**. High/Critical: also invoke required Security/Data/Architecture specialists.
+   - Customer or reusable deliverables may add review even at Low risk.
+   - Use "レビュー対象外" only when no central or additional gate requires independent review.
 
 7. **Publish & sync**
-   - If status is Completed/Accepted + has customer/reuse value: **knowledge-curator** will sync to Obsidian second brain
-   - If status is Draft/In Progress/Waiting: knowledge-curator will NOT activate (safety guard)
+   - Current-user explicit request, or `Accepted` + reusable value + confirmed Local root: **knowledge-curator** may sync to that user's Local Second Brain
+   - `Draft` / `In Progress` / `Waiting` / `Completed` alone does not authorize a sync
 
 ## Quality Review & Professional Standards
 
@@ -167,7 +155,7 @@ Before starting any work, familiarize yourself with:
 
 Recent work (June 2026) added Claude's 7-method framework:
 
-- **Hooks** (`settings.json`): Stop hook reminds about output.md + Obsidian sync trigger
+- **Hooks** (`settings.json`): Stop hook reminds about output.md + Local Second Brain sync gate
 - **Subagents** (`.claude/agents/`): quality-reviewer, knowledge-curator, deliverable-optimizer run independently
 - **Rules** (`.claude/rules/`): 
   - `engineering-guardrails.md` — always injected (7 rules + professional standards)
@@ -178,17 +166,14 @@ These are auto-discovered by Claude Code; no explicit invocation needed.
 ## Testing
 
 ```bash
-# Full test suite
-python3 -m pytest tests/ -v
+# Shared Foundation tests
+python3 -m unittest discover -s ai_team/tests -p 'test_*.py' -v
 
-# With coverage
-python3 -m pytest tests/ --cov=.
-
-# Specific test
-python3 -m pytest tests/test_split_table_statements.py::test_empty_string -v
+# Shared deterministic Foundation eval
+python3 ai_team/evals/run_foundation_evals.py
 ```
 
-Tests are split between unit (`test_*.py`) and integration (`*_integration.py`). Both run with pytest.
+Root `tests/` contains local-only historical utilities and is not part of the shared canonical test surface.
 
 ## Troubleshooting
 

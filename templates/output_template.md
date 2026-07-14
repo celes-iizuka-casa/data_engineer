@@ -3,8 +3,8 @@
 - 依頼の理解: <1〜2行。チームが何を頼まれたと解釈したか。読み違い検知用>
 - 担当Role / モード: <選ばれたRole> / <Opinion|Design|Implementation|Verification>
 - 出力モード: <quick|standard|detailed|implementation|review|handoff|obsidian>
-- 実行環境 / モデル / 工数: <Claude Code|Codex|併用> / <Opus4.8|Sonnet4.6|Haiku4.5|GPT-5.5> / <低|中|高|特大|Max|Ultracode|非常に高い|—>
-- ステータス: <Draft|In Progress|Waiting for Celes Review|Completed|Accepted|Obsidian Synced>
+- 実行Context: runtime=<value|null> (<observed|declared|unavailable>) / provider=<value|null> (<observed|declared|unavailable>) / model=<value|null> (<observed|declared|unavailable>) / effort=<low|medium|high|very_high|null> (<declared|unavailable>, 非拘束)
+- ステータス: <Draft|In Progress|Waiting for Celes Review|Rework Required|Blocked|Completed|Accepted|Obsidian Synced>
 - 品質判定: <PASS | PASS_WITH_CONDITIONS | REWORK_REQUIRED | BLOCKED | レビュー対象外>
 - 品質スコア: <平均 X.X / 4.0（最低: <次元> n） | 未採点 | レビュー対象外>
 - 要対応（セレスへ）: <ブロッキング質問・承認待ち・判断が要る点。無ければ「なし」>

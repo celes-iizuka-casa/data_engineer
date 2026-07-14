@@ -34,4 +34,4 @@
 ## 参照
 
 - `ai_team/iteration_confirmation_policy.md`
-- `output/iteration_plan.md`
+- `output/.../_internal/iteration_plan.md`

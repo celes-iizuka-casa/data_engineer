@@ -13,6 +13,14 @@
 - REWORK_REQUIRED
 - BLOCKED
 
+## Risk-based applicability
+
+レビュー深度は `risk_based_quality_gates.yaml` を正とする。Low Riskでは独立レビューを強制しない。Medium以上、再利用Foundation、Canonical Growth candidateは規定のIndependent Reviewを行う。
+
+## Human Gate
+
+Critical操作とCanonical promotionは `ai_team/governance/human_gate.schema.json` のdecision recordを要求する。AIはCelesの決定を代行せず、P0/P1を受容しない。
+
 ## 重大度
 - P0: 即時停止。
 - P1: 提出・実装・リリース前の必須修正。

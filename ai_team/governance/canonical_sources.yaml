@@ -1,0 +1,132 @@
+schema_version: "1.0"
+ownership:
+  agent_definitions:
+    canonical: "ai_team/roles/*.md"
+    mode: manual_canonical
+  skill_metadata:
+    canonical: "skills/*/skill.yaml"
+    mode: manual_canonical
+  skill_instructions:
+    canonical: "skills/*/SKILL.md"
+    mode: manual_canonical
+  skill_documentation:
+    canonical:
+      - "skills/README.md"
+      - "skills/*/README.md"
+      - "skills/index.yaml"
+    mode: manual_canonical
+  skill_ui_adapters:
+    canonical: "skills/*/agents/openai.yaml"
+    mode: provider_adapter
+    identity_authority: false
+  workflows:
+    canonical: "ai_team/workflows/*.md"
+    mode: manual_canonical
+  policies:
+    canonical: "ai_team/*policy.md"
+    mode: manual_canonical
+  governance:
+    canonical: "ai_team/governance/*"
+    mode: manual_canonical
+  review_contracts:
+    canonical: "ai_team/review/*"
+    mode: manual_canonical
+  fde_contracts:
+    canonical: "ai_team/fde/*"
+    mode: manual_canonical
+  evals:
+    canonical: "ai_team/evals/*"
+    mode: manual_canonical
+  execution_evidence_contracts:
+    canonical:
+      - "ai_team/evidence/execution_evidence.schema.json"
+      - "ai_team/evidence/new_execution_evidence.py"
+    mode: manual_canonical
+    raw_evidence_allowed: false
+  shared_tests:
+    canonical: "ai_team/tests/*.py"
+    mode: manual_canonical
+  templates:
+    canonical: "templates/**/*"
+    mode: manual_canonical
+  documentation:
+    canonical:
+      - "README.md"
+      - "AGENTS.md"
+      - "CLAUDE.md"
+      - "ai_team/*.md"
+      - "docs/**/*"
+    mode: manual_canonical
+    historical_docs_require_superseded_marker: true
+  runtime_adapters:
+    canonical:
+      - "claude_code_team_execution.md"
+      - "codex_team_execution.md"
+      - "ai_team/claude_code_execution_policy.md"
+      - "ai_team/codex_execution_policy.md"
+    mode: provider_adapter
+    identity_authority: false
+  claude_adapter:
+    canonical:
+      - ".claude/settings.json"
+      - ".claude/agents/*.md"
+      - ".claude/rules/*.md"
+    mode: provider_adapter
+    identity_authority: false
+  shared_scaffolds:
+    canonical:
+      - ".gitignore"
+      - "requirements-dev.txt"
+      - "input/README.md"
+      - "profiles/current_user_profile.yaml"
+    mode: manual_canonical
+  repository_validator:
+    canonical: "tools/validate_repository.py"
+    mode: manual_canonical
+  runtime_recommendation:
+    canonical: "ai_team/runtime_selection_policy.md"
+    enforcement: false
+  model_recommendation:
+    canonical: "ai_team/model_selection_policy.md"
+    enforcement: false
+  capability_registry:
+    canonical: "ai_team/capability_registry.yaml"
+  skill_lifecycle:
+    canonical: "ai_team/governance/skill_lifecycle_registry.yaml"
+  second_brain_rules:
+    canonical:
+      - "ai_team/personalization_policy.md"
+      - "ai_team/obsidian_write_policy.md"
+  generated_files:
+    canonical: []
+    mode: none_current
+    generated_marker_required: true
+  manual_edits:
+    canonical:
+      - "README.md"
+      - "input/README.md"
+      - "ai_team/*.md"
+      - "ai_team/roles/*.md"
+      - "ai_team/workflows/*.md"
+      - "ai_team/review/*"
+      - "skills/*/skill.yaml"
+      - "skills/*/SKILL.md"
+      - "skills/*/README.md"
+      - "skills/README.md"
+      - "skills/index.yaml"
+      - "templates/**/*"
+    mode: protected_manual_canonical
+    overwrite_by_deprecated_generator: forbidden
+legacy_generators:
+  - path: "tools/generate_ai_team.mjs"
+    status: deprecated_local_only
+    tracked: forbidden
+    reason: "17-role snapshot would overwrite the current 19-role/29-skill manual canonical state"
+  - path: "tools/professionalize_ai_team.mjs"
+    status: deprecated_local_only
+    tracked: forbidden
+    reason: "reads and rewrites the same Skill surfaces and omits current roles/sub-skills"
+change_rules:
+  generated_marker_required_for_future_generated_files: true
+  manual_edit_loss: forbidden
+  canonical_change_requires: [validation, independent_review, human_gate]

@@ -10,7 +10,7 @@ description: 顧客・現場の相談内容から、背景、要望、本質課�
 - 親Skill `skill-forward-deployed-engineer` の工程2として動く。
 - 事実（実物・数字・出典）と推論・仮定を分離する。
 - 現場で確認できることを想像で埋めない。未確認は「未確認」と書く。
-- 作業前に `profiles/current_user_profile.yaml` を読む（不在時はセレス=専門家エンジニアを仮定し明記）。
+- 作業前に `ai_team/personalization_policy.md` とprofile解決順を確認する（Local profile不在時は匿名shared defaultを使い、個人属性を推測しない）。
 
 ## 守備範囲
 - 顧客背景・業務背景の整理 / 要望の原文記録 / 制約・データ発生源の事実整理 / 成功条件・受入条件候補 / 未確認事項の管理

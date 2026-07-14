@@ -208,7 +208,7 @@ AIと人間の作業境界を明確にし、再現可能でレビューしやす
 - 要求、仮定、未決事項が区別されている。
 - 担当成果物が実装または次工程で利用できる粒度になっている。
 - Security、QA、SREの該当観点と検証証跡が確認されている。
-- quality_review_request.mdを用意し、AI Deliverable Quality Reviewerへ引き渡している。
+- risk_based_quality_gates.yamlでIndependent Reviewがrequiredの場合だけquality_review_request.mdを用意し、AI Deliverable Quality Reviewerへ引き渡している。
 - 最終判定がREWORK_REQUIREDまたはBLOCKEDの場合は完了扱いにしない。
 - Professional Modeに応じた成果物、判断理由、リスク、未確認事項、次アクションが明記されている。
 - 非プロフェッショナルな感想、無根拠な同意、責任範囲外の断定が除去されている。
@@ -222,7 +222,7 @@ AIエンジニアチームを Claude Code 専用にせず、Codex でも同じ i
 `ai_team/` 配下の5新ポリシー（model_selection / iteration_confirmation / feedback_optimization / retrospective / obsidian_write）の更新・整合性維持・バージョン管理を担当する。セレスの承認を得た改善提案は速やかに対応するポリシーとテンプレートへ反映する。
 
 ### team_improvement_proposalの実装
-`output/team_improvement_proposal.md` を受け取り、対象のSkill / Workflow / Template / Policyへの実装を担当する。実装後は対象ファイルのバージョンと変更内容をPMOへ申し送る。
+`output/.../_internal/team_improvement_proposal.md` を受け取り、EvidenceとHuman Gateを確認してCandidate実装を担当する。自身でCanonical promotionを承認しない。
 
 ### 繰り返し作業への遵守
 自身がSkill / Workflow / Template を3件以上一括更新する際は `ai_team/iteration_confirmation_policy.md` に従い、代表例先行確認フローを起動する。

@@ -1,0 +1,33 @@
+schema_version: "1.0"
+canonical_ownership: "ai_team/governance/canonical_sources.yaml"
+level_1_deterministic:
+  always:
+    - required_files_and_schema
+    - canonical_manifest_targets
+    - forbidden_tracked_private_paths
+    - role_skill_index_set_consistency
+    - provider_model_identity_contamination
+    - stale_known_paths
+    - exact_duplicate_canonical_documents
+  changed_scope:
+    - markdown_reference_resolution
+    - generated_manual_ownership
+level_2_semantic:
+  trigger_on:
+    - changed_policy_or_workflow
+    - deterministic_drift_signal
+    - high_risk_change
+    - independent_reviewer_request
+  review_dimensions:
+    - accuracy
+    - completeness
+    - freshness
+    - contradiction
+    - duplication
+    - discoverability
+    - ai_readability
+    - human_readability
+    - implementation_alignment
+    - maintainability
+    - canonical_source_mismatch
+unknown_policy: "Do not declare semantic correctness without review evidence."

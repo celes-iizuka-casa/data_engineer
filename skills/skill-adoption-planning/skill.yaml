@@ -122,7 +122,7 @@ done_definition:
   - "adoption_plan.md / rollout_plan.md / training_notes.md / operation_notes.md が作成されている。"
   - "定着責任者と旧手順廃止条件が合意されている。"
   - "fde_quality_gate.md のAdoption Plan品質チェックに合格している。"
-  - "必要性ゲート該当時はAI Deliverable Quality Reviewerへ引き渡している。"
+  - "risk_based_quality_gates.yamlでIndependent Reviewがrequiredの場合だけAI Deliverable Quality Reviewerへ引き渡している。"
 prohibited_actions:
   - "定着責任者未定のまま計画を完了扱いにする"
   - "旧手順の廃止日を決めずに導入する"

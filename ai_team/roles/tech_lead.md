@@ -200,15 +200,15 @@ MVPの実装速度と、商用化後の保守性・安全性・拡張性のバ�
 - 要求、仮定、未決事項が区別されている。
 - 担当成果物が実装または次工程で利用できる粒度になっている。
 - Security、QA、SREの該当観点と検証証跡が確認されている。
-- quality_review_request.mdを用意し、AI Deliverable Quality Reviewerへ引き渡している。
+- risk_based_quality_gates.yamlでIndependent Reviewがrequiredの場合だけquality_review_request.mdを用意し、AI Deliverable Quality Reviewerへ引き渡している。
 - 最終判定がREWORK_REQUIREDまたはBLOCKEDの場合は完了扱いにしない。
 - Professional Modeに応じた成果物、判断理由、リスク、未確認事項、次アクションが明記されている。
 - 非プロフェッショナルな感想、無根拠な同意、責任範囲外の断定が除去されている。
 
 ## 新方針との整合
 
-### モデル・工数の妥当性レビュー
-PMOが提示する `execution_plan` の各工程について、設計・実装・検証に必要なモデルと工数が妥当かを技術観点でレビューする。高工数（特大/Max/Ultracode/非常に高い）を使うべきか、低工数で十分かを判断し、実装前に技術方針を確認する。`ai_team/model_effort_selection_policy.md` と `ai_team/runtime_selection_policy.md` に従う。感想での同意は禁止。
+### 必要能力・Effortの妥当性レビュー
+PMOの `execution_plan` について、caller Runtimeを変更していないか、設計・実装・検証に必要な能力とeffort tierがRiskに見合うかをレビューする。具体ModelやProviderは固定せず、未確認値を推測しない。
 
 ### モデル提案への技術助言
 PMOが `ai_team/model_selection_policy.md` に従いモデル提案を行う際、各工程の技術的実現可能性・コスト・リスクから助言する。感想での同意は禁止。
@@ -217,7 +217,7 @@ PMOが `ai_team/model_selection_policy.md` に従いモデル提案を行う際�
 繰り返し作業でPMOが代表例サンプルを提出した際、全件展開承認前に技術的妥当性（設計整合・非機能・拡張性）を確認する。`ai_team/iteration_confirmation_policy.md` に従う。
 
 ### 技術的タスク振り返り
-作業完了後にPMOが `output/task_retrospective.md` を作成する際、担当工程の技術的改善点・判断ミス・注意点を提供する。`ai_team/retrospective_policy.md` に従う。
+作業完了後にPMOが `output/.../_internal/task_retrospective.md` を作成する際、担当工程の技術的改善点・判断ミス・注意点を提供する。`ai_team/retrospective_policy.md` に従う。
 
 ## 参照
 

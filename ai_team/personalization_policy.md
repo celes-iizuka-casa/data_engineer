@@ -1,66 +1,52 @@
-# Personalization Policy
-
-利用者プロファイルに応じて成果物の粒度・用語・観点を出し分けるポリシー。顧客・現場に近いRole（特にFDE）は必ず本ポリシーと連携する。
+# Local Context and Personalization Policy
 
 ## 目的
 
-- 同じ成果物でも、読む相手（専門家/初心者/経営者/非エンジニア/エンジニア）によって必要な情報と粒度が異なる
-- 出し分けを場当たりにせず、プロファイルに基づいて再現可能にする
+各利用者のLocal Private Stateを他利用者や共有リポジトリへ混入させず、利用可能な場合だけUser-local Second Brainと個人設定を利用する。
 
-## プロファイルの読み込み
+## コンテキスト優先順位
 
-1. 作業前に `profiles/current_user_profile.yaml` を読む
-2. 存在しない・読めない場合は**デフォルト（セレス = 専門家エンジニア）**を適用し、その仮定を成果物（output.md制御ブロックまたは冒頭）に明記する
-3. 顧客向け成果物では、成果物の読み手（顧客側の利用者タイプ）を別途判定する（プロファイルは依頼者、読み手は顧客という二重構造に注意）
+判断時は次の順序を守る。
 
-## 利用者タイプと出し分け規則
+1. Current Explicit Request
+2. Current Evidence（actual repository / code / data / configuration / runtime state / input）
+3. User-local Second Brain
+4. Shared AI Employee Core（Role / Skill / Workflow / Policy / canonical documentation）
+5. General Model Knowledge
 
-### 専門家向け
+Second BrainとCurrent Evidenceが矛盾する場合はCurrent Evidenceを採用し、矛盾を未確認事項として残す。Current Explicit Requestに反する個人設定は適用しない。
 
-- 基礎説明は省略する
-- 判断理由、リスク、代案を重視する
-- 実装チームが動ける粒度で出す
+## Local profileの解決
 
-### 初心者向け
+1. 明示的に渡された現在利用者のprofileを使う。
+2. リポジトリ内の `.local/user_profile.yaml` が存在する場合だけ使う。
+3. どちらもない場合は `profiles/current_user_profile.yaml` の匿名shared defaultを使い、個人属性を推測しない。
 
-- 業務フローやMVPの意味を補足する
-- 具体例を追加する
-- 専門用語を噛み砕く（初出時に1行説明）
+`.local/user_profile.yaml` はGit管理禁止である。他利用者のprofileを探索・参照・同期しない。
 
-### 経営者向け
+## User-local Second Brainの解決
 
-- 費用対効果 / 優先順位 / リスク / 投資判断 / 撤退条件 / 導入効果を中心にする
-- 技術詳細は付録に回す
-- 判断してほしいことを冒頭に明示する
+1. Current Explicit Requestで指定されたrootを使う。
+2. 現在のprocessで明示された `SECOND_BRAIN_ROOT` を使う。
+3. `.local/second_brain.yaml` に現在利用者が設定したrootを使う。
+4. いずれもない場合は利用しない。
 
-### 非エンジニア向け
+Home directoryを無差別scanしない。rootの利用者所有が確認できない場合は参照しない。Second Brainが存在しない場合もAI社員チームはエラーにせずShared Coreへfallbackして動作する。
 
-- 技術詳細を減らす
-- 業務上の意味を中心にする
-- 何を判断すべきかを明確にする
+## PersonalizationとCapability Growthの分離
 
-### エンジニア向け
+- 文体、詳しさ、利用者の好みはPersonalizationとしてのみ扱う。
+- 個人の技術嗜好をUniversal SkillやCanonical Policyへ自動昇格しない。
+- Second Brainの内容はRaw Evidenceとして共有・送信・commitしない。
+- Canonical Growthへ使う場合は、個人情報を除いた独立Evidence、Before/After Eval、Independent Review、Celes Human Gateを別途要求する。
 
-- 要件、制約、API、DB、データ、運用、テストに寄せる
-- Engineering Handoffを厚くする
+## 顧客向け成果物
 
-## FDEとの連携
-
-- FDE成果物のうち顧客向け（customer_explanation / adoption_plan / success_metrics）は読み手タイプの出し分けを必須とする
-- `ai_team/fde/fde_quality_gate.md` の「Personalization反映チェック」で確認する
-
-## 他Roleとの連携
-
-- 全Roleの `セレスへの返答スタイル` は本ポリシーのデフォルト（専門家）と整合する
-- 顧客提出物を作るRoleは、読み手タイプをoutput.md制御ブロックに記録する
-
-## プロファイルの更新ルール
-
-- プロファイルはセレスが管理する。AI社員が勝手に書き換えない
-- 出し分けがズレていたというフィードバックは `feedback_optimization_policy.md` の対象として扱う
+依頼者profileと成果物の読み手を分ける。顧客の属性・案件情報をshared defaultへ書き戻さない。
 
 ## 参照
 
 - `profiles/current_user_profile.yaml`
-- `ai_team/fde/fde_operating_model.md`（他利用者向け運用上の注意）
-- `templates/fde/customer_explanation_template.md`
+- `ai_team/obsidian_write_policy.md`
+- `ai_team/governance/architecture_contract.yaml`
+- `ai_team/governance/capability_growth_policy.yaml`

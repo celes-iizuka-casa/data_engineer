@@ -5,20 +5,20 @@
 
 ## 手順
 
-1. **input確認**: 入力ファイル、既存output、制約を確認する。あわせて `profiles/current_user_profile.yaml` を読む（`personalization_policy.md`。不在時はセレス=専門家エンジニアを仮定し成果物に明記）。
+1. **input / context確認**: 入力ファイル、既存output、制約を確認する。`personalization_policy.md` に従い Current Explicit Request > Current Evidence > User-local Second Brain > Shared Core の順で読み、`.local/user_profile.yaml` がなければ匿名shared defaultを使う。個人属性は推測しない。
 2. **依頼内容解析**: `request_mode_policy.md` に従い Opinion / Design / Implementation / Verification を判定する。背景・意図・制約、`@role`/`@mode`/`@light`/`@full` タグ（`output_optimization_policy.md`）を解析する。
-3. **軽量依頼か判定**: `output_optimization_policy.md` の軽量依頼定義に照らす。軽量なら A層の2ファイルのみを目標にし、B/C層は原則スキップする。
-4. **Role選定・実行環境/モデル/工数判定**: `role_scope_matrix.md` に従い担当Roleと連携Roleを選ぶ。続けて各工程の実行環境（Claude Code / Codex / 併用）・モデル・工数を `runtime_selection_policy.md` と `model_effort_selection_policy.md` で判定する。採用結果は output.md 制御ブロックに表示する。
+3. **軽量依頼か判定**: `output_optimization_policy.md` の軽量依頼定義に照らす。軽量なら A層の`output.md` 1ファイルのみを目標にし、B/C層は原則スキップする。
+4. **Role選定・実行context記録**: Task / Risk / Capabilityから必要最小限のRoleとSkillを選ぶ。呼び出し元Runtimeを変更せず、確認できたruntime/model Evidenceと推奨effortを `runtime_selection_policy.md` と `model_effort_selection_policy.md` に従って記録する。別Provider/Runtimeを自動起動しない。
 5. **FDE要否判定**: 顧客相談・現場ヒアリングメモがある、業務課題が曖昧、MVPスコープ切り出しや業務フロー整理・導入定着観点が必要、RAG/AI Agent/データ基盤/業務アプリの現場適用——のいずれかに該当する場合は `ai_team/fde/fde_operating_model.md` の起動条件でAI FDEを起動し、`field_discovery_to_solution_workflow.md` に接続する。単純なSQL修正・明確なバグ修正・typo等では必須にしない。
 6. **（条件付き）work_plan**: 3工程以上 or 明示的除外スコープが要る場合のみ `output/.../_internal/work_plan.md` を作る。
-7. **（条件付き）execution_plan**: 2工程以上で実行環境/モデル/工数が変わる、または高リスク・セキュリティ・大規模改修・複数ファイル一括展開の場合のみ `output/.../_internal/execution_plan.md`（`templates/execution_plan_template.md`）に Role選定・実行環境・モデル・工数・理由を統合記録する。軽量依頼では作らず output.md 制御ブロックの記載で足りる（旧 `model_recommendation` はこれに統合）。
+7. **（条件付き）execution_plan**: 高リスク・セキュリティ・大規模改修・複数工程/複数ファイルの場合のみ `output/.../_internal/execution_plan.md` にRole、caller runtime、Evidence type、推奨effort、理由を記録する。取得不能値は`unavailable`とする。軽量依頼ではoutput.md制御ブロックで足りる。
 8. **（条件付き）繰り返し作業**: `iteration_confirmation_policy.md` に該当する場合のみ代表例を先に作り、`_internal/iteration_plan.md` と `_internal/sample_output_for_review.md` を作る。ステータス `Waiting for Celes Review`。承認後 `Expanding` で全件展開。
 9. **実装・設計・検証**: 担当RoleがProfessional Modeに応じた本成果物を作る。`professional_only_policy.md` と `output_optimization_policy.md` のセクション間引き（関連セクションのみ＋必須核＋条件付き必須）に従う。責任外は `handoff_policy.md` で渡す。
-10. **（条件付き）品質レビュー**: 必要性ゲートを満たす場合（顧客提出物・再利用物・本番/破壊的/セキュリティ影響）のみ、Quality Reviewerが `_internal/quality_review_report.md` を作る。満たさない場合はサマリーの品質判定を「レビュー対象外」にする。自己レビューを独立レビュー扱いにしない。
-11. **output.md作成（常時）**: `templates/output_template.md` で `output/.../output.md` を作る。複数Roleが関与した場合はDeliverable Optimizer（PMO）が各Role成果物を統合・編集する。制御ブロック（依頼の理解・担当Role/モード・出力モード・ステータス・品質判定・要対応）を先頭に置き、§1〜§5の構成で仕上げる。ステータスを `Completed` にする（`deliverable_optimization_policy.md` 参照）。
+10. **（Risk-based）品質レビュー**: `review/risk_based_quality_gates.yaml` を正本とし、Medium以上はIndependent Quality Review、High/Criticalは必要なSpecialist Reviewを実施する。顧客提出物・再利用物はRiskがLowでも追加レビュー対象にできる。必須Gateがない場合だけ「レビュー対象外」とし、自己レビューを独立レビュー扱いにしない。
+11. **output.md作成（常時）**: `templates/output_template.md` で `output/.../output.md` を作る。複数Roleが関与した場合はDeliverable Optimizer（PMO）が各Role成果物を統合・編集する。制御ブロック（依頼の理解・担当Role/モード・出力モード・ステータス・品質判定・要対応）を先頭に置き、§1〜§5の構成で仕上げる。必須GateがPASSし作業が完了した時だけ`Completed`、レビュー待ちは`Waiting for Celes Review`、`REWORK_REQUIRED`は`Rework Required`、`BLOCKED`は`Blocked`とする。`Accepted`はCelesだけが決める。
 12. **（条件付き）task_retrospective**: `Completed/Accepted` かつ軽量依頼でない場合のみ `_internal/task_retrospective.md` を作る（`retrospective_policy.md`）。
 13. **（条件付き）feedback_analysis**: セレスのフィードバックがある場合のみ `_internal/feedback_analysis.md` を作る（`feedback_optimization_policy.md`）。
-14. **（条件付き）Obsidian整理**: `obsidian_write_policy.md` のトリガーを満たした場合のみ Knowledge Curator が整理し、`_internal/obsidian_sync_summary.md` を作る。ステータス `Obsidian Synced`。
+14. **（条件付き）Local Second Brain整理**: `obsidian_write_policy.md` の明示依頼またはAccepted gateを満たし、現在利用者のrootが確認できた場合だけKnowledge Curatorが整理する。Universal/Canonical Growthへ自動昇格しない。
 15. **（要求時のみ）execution_summary**: セレスが明示要求 or 大型案件の場合のみ `_internal/execution_summary.md`（10項目）を作る。
 
 ## ステータス管理
@@ -32,6 +32,8 @@
 | `Approved` | セレス確認済み |
 | `Expanding` | 全件展開中 |
 | `Verification Pending` | 検証待ち |
+| `Rework Required` | P0/P1または必須修正が残り再作業中 |
+| `Blocked` | 必須Evidence・権限・外部状態がなく停止 |
 | `Completed` | 作業完了 |
 | `Accepted` | セレス承認済み |
 | `Obsidian Synced` | 第二の脳への整理完了 |
@@ -39,7 +41,7 @@
 ## 品質ゲート
 - 依頼タイプに合う成果物がある。
 - Roleの守備範囲と責任外が明確。
-- 工程ごとのモデル提案がある。
+- 呼び出し元Runtimeを変更せず、確認可能な実行contextとEvidence typeが記録されている。
 - 繰り返し作業の場合、代表例確認ゲートを通過している。
 - 仮定、未確認事項、リスク、代案、次アクションがある。
 - 非プロフェッショナルな感想、一般論、無根拠な同意が残っていない。
@@ -58,7 +60,7 @@
 
 条件付き / 要求時（`output/.../_internal/` 配下）:
 - `execution_plan.md`（実行環境・モデル・工数・Role選定の統合記録）
-- `work_plan.md` / `model_recommendation.md` / `iteration_plan.md` ＋ `sample_output_for_review.md`
+- `work_plan.md` / `iteration_plan.md` ＋ `sample_output_for_review.md`
 - `quality_review_request.md` / `quality_review_report.md`
 - `task_retrospective.md` / `feedback_analysis.md` / `team_improvement_proposal.md`
 - `obsidian_sync_summary.md` / `execution_summary.md` / `questions.md`
@@ -79,4 +81,5 @@
 - `ai_team/request_mode_policy.md`
 - `ai_team/role_scope_matrix.md`
 - `ai_team/personalization_policy.md`
+- `ai_team/review/risk_based_quality_gates.yaml`
 - `ai_team/fde/fde_operating_model.md`

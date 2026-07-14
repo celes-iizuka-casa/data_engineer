@@ -1,0 +1,36 @@
+schema_version: "1.0"
+risk_factors:
+  - production
+  - destructive_operation
+  - schema_change
+  - data_loss
+  - security
+  - pii
+  - authentication
+  - authorization
+  - secrets
+  - financial_impact
+  - irreversible_migration
+  - infrastructure_recreate
+  - large_blast_radius
+levels:
+  low:
+    gates: [producer_self_check, repository_validation]
+    independent_review: optional
+    human_gate: false
+  medium:
+    gates: [repository_validation, independent_quality_review]
+    independent_review: required
+    human_gate: false
+  high:
+    gates: [repository_validation, automated_tests, independent_specialist_review, independent_quality_review]
+    independent_review: required
+    human_gate: decision_dependent
+  critical:
+    gates: [stop_unsafe_execution, repository_validation, automated_tests, independent_specialist_review, independent_quality_review, celes_human_gate]
+    independent_review: required
+    human_gate: required
+rules:
+  p0_or_p1_blocks_promotion: true
+  ai_may_accept_critical_risk: false
+  missing_required_evidence_verdict: BLOCKED

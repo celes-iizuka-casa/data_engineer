@@ -1,0 +1,30 @@
+schema_version: "1.0"
+fixture_kind: synthetic_contract_result
+purpose: "Exercise the Golden Case evaluator contract; these fixtures are not evidence of live AI task performance."
+results:
+  - fixture_id: FIX-SQL-LOW-001
+    case_id: GC-SQL-001
+    selected_roles: [data_engineer, qa_test_automation_engineer]
+    selected_skills: [skill-data-engineer, skill-qa-test-automation-engineer]
+    executed_gates: [producer_self_check, repository_validation]
+    evidence: [input_fixture, expected_rows, regression_query]
+    artifacts: [correct_grain, null_and_boundary_cases]
+    actions: [execute_bounded_regression_query]
+
+  - fixture_id: FIX-DATA-HIGH-001
+    case_id: GC-DATA-001
+    selected_roles: [data_engineer, data_platform_engineer, integration_engineer, qa_test_automation_engineer]
+    selected_skills: [skill-data-engineer, skill-data-platform-engineer, skill-integration-engineer, skill-qa-test-automation-engineer]
+    executed_gates: [repository_validation, automated_tests, independent_specialist_review, independent_quality_review]
+    evidence: [data_contract, replay_test, duplicate_and_late_data_test, lineage]
+    artifacts: [grain_and_keys, schema_evolution, recovery_runbook]
+    actions: [reconcile_replayed_records]
+
+  - fixture_id: FIX-SEC-CRITICAL-001
+    case_id: GC-SEC-001
+    selected_roles: [security_governance_engineer, qa_test_automation_engineer, tech_lead]
+    selected_skills: [skill-security-governance-engineer, skill-qa-test-automation-engineer, skill-tech-lead]
+    executed_gates: [stop_unsafe_execution, repository_validation, automated_tests, independent_specialist_review, independent_quality_review, celes_human_gate]
+    evidence: [data_classification, threat_model, secret_rotation_and_test]
+    artifacts: [least_privilege, auditability, residual_risk_owner]
+    actions: [redact_sensitive_evidence, require_celes_decision]

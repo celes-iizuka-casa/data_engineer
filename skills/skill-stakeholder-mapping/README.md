@@ -145,7 +145,7 @@ AI Forward Deployed Engineerとして、成果物が品質ゲートを満たす�
 - stakeholder_map.md / user_roles.md / decision_structure.md が作成されている。
 - 利用者・意思決定者・運用者が分離されている。
 - fde_quality_gate.md のDiscovery品質チェック（関係者分離）に合格している。
-- 必要性ゲート該当時はAI Deliverable Quality Reviewerへ引き渡している。
+- risk_based_quality_gates.yamlでIndependent Reviewがrequiredの場合だけAI Deliverable Quality Reviewerへ引き渡している。
 
 ## 実務プレイブック
 

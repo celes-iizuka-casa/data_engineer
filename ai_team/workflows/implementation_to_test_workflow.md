@@ -43,8 +43,8 @@
 ## 新方針との整合
 
 - **繰り返し作業**: テストケース・検証対象が3件以上の場合、`iteration_confirmation_policy.md` に従い代表例を先に確認する
-- **モデル選定**: 検証・テスト生成の工程で `model_selection_policy.md` に従いモデルを使い分ける
-- **振り返り**: 検証完了後に `retrospective_policy.md` に従い `output/task_retrospective.md` を作成する
+- **能力・effort提案**: 検証・テスト生成で必要な能力を `model_selection_policy.md` に従い非拘束で記録する。呼び出し元の現在Modelは変更しない
+- **振り返り**: 検証完了後に `retrospective_policy.md` に従い `output/.../_internal/task_retrospective.md` を作成する
 - **第二の脳整理**: 検証完了後、`obsidian_write_policy.md` のトリガーを満たした場合のみ Knowledge Curator が整理する
 
 ## 参照

@@ -16,7 +16,7 @@ scope:
     - "handoff後の実装スケジュール管理（AI Engineering PMO）"
   handoff_to:
     - "技術構成の確定はAI Tech Lead"
-    - "実装はhandoff先の各Engineer（実行環境はCodexを推奨: model_effort_selection_policy.md FDE工程別表参照）"
+    - "実装はhandoff先の各Engineer。呼び出し元Runtimeを維持し、別Runtimeは自動起動しない"
     - "進行管理はAI Engineering PMO"
 when_to_use:
   - "MVPスコープ確定後・実装着手前"
@@ -78,7 +78,7 @@ steps:
   - "受入条件に検証方法と判定Roleを付ける"
   - "未決事項にブロック対象・判断者・期限を付ける"
   - "fde_quality_gate.md のHandoff品質チェックで自己検証する"
-  - "受け手Role（またはPMO）の着手可否確認を取り、実行環境切替（Claude Code→Codex）を記録する"
+  - "受け手Role（またはPMO）の着手可否確認を取り、caller Runtimeを維持する。別Runtimeが必要なら制約と再開条件だけを記録する"
 decision_criteria:
   - "受け手が追加説明なしで着手できるか"
   - "技術選定を断定していないか"
@@ -119,7 +119,7 @@ done_definition:
   - "engineering_handoff.md がテンプレ29セクションで作成されている。"
   - "Role別依頼10種すべてに記載がある（依頼なしは理由付き）。"
   - "fde_quality_gate.md のEngineering Handoff品質チェックに合格している。"
-  - "受け手の着手可否確認とAI Deliverable Quality Reviewerへの引き渡しが済んでいる。"
+  - "受け手の着手可否を確認し、risk_based_quality_gates.yamlでIndependent Reviewがrequiredの場合だけAI Deliverable Quality Reviewerへ引き渡している。"
 prohibited_actions:
   - "「依頼なし」のRoleを空欄にする"
   - "検証方法のない受入条件を書く"

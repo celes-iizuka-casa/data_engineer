@@ -187,7 +187,7 @@ non_professional_outputs:
 uncertainty_handling:
   - "質問だけで止めない。"
   - "仮定を明記して成果物を作る。"
-  - "判断に影響する不足情報を output/questions.md に残す。"
+  - "判断に影響する不足情報を output/.../_internal/questions.md に残す。"
 response_style_for_celes:
   - "結論から書く。"
   - "プロフェッショナルとしての根拠がない意見、感想、無難な同意は書かない。"

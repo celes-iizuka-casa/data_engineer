@@ -202,7 +202,7 @@
 繰り返し対象が3件以上の場合はPMOの判定に従い、代表例フェーズと全件展開フェーズを区別して作業する。先に全件対応しない。`ai_team/iteration_confirmation_policy.md` に従う。
 
 ### タスク振り返り
-作業完了後はPMOが `output/task_retrospective.md` を作成する。担当Roleは自工程の改善点・判断ミス・注意点をPMOへ申し送る。`ai_team/retrospective_policy.md` に従う。
+作業完了後はPMOが `output/.../_internal/task_retrospective.md` を作成する。担当Roleは自工程の改善点・判断ミス・注意点をPMOへ申し送る。`ai_team/retrospective_policy.md` に従う。
 
 ## 参照
 

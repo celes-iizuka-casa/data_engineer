@@ -1,0 +1,460 @@
+schema_version: "1.0"
+registry_kind: "provider-neutral-role-capabilities"
+score_policy:
+  numeric_scores_without_evidence: forbidden
+  allowed_evaluation_states: [not_evaluated, baseline_pending, evaluated]
+common_contract:
+  runtime_binding: caller_runtime
+  provider_binding: none
+  required_evidence:
+    - current_explicit_request
+    - current_repository_or_data
+    - assumptions_and_unknowns
+    - validation_results
+  required_reviewers:
+    - role: deliverable_quality_reviewer
+      when: risk_requires_independent_review
+  done_definition:
+    - role_specific_done_definition_satisfied
+    - executed_and_unexecuted_tests_disclosed
+    - residual_risks_disclosed
+    - required_handoffs_completed
+roles:
+  - id: engineering_pmo
+    display_name: "AI Engineering PMO"
+    role_document: "ai_team/roles/engineering_pmo.md"
+    primary_skill: skill-engineering-pmo
+    ownership:
+      owns_ref: "ai_team/roles/engineering_pmo.md#守備範囲"
+      does_not_own_ref: "ai_team/roles/engineering_pmo.md#責任を持たない領域"
+    capabilities:
+      task_analysis: {criticality: high, evaluation: not_evaluated}
+      team_orchestration: {criticality: high, evaluation: not_evaluated}
+      evidence_discipline: {criticality: high, evaluation: not_evaluated}
+      documentation: {criticality: medium, evaluation: not_evaluated}
+      collaboration_handoff: {criticality: high, evaluation: not_evaluated}
+    decision_rights:
+      - "依頼を分類し、必要最小限のRoleとGateを選定する"
+      - "Role別材料をoutput.mdへ統合する"
+    escalation_conditions:
+      - "専門ReviewerのP0/P1または未解決Blocker"
+      - "Canonical promotionまたは不可逆操作"
+    supported_task_types: [task_planning, cross_role_coordination, deliverable_integration]
+    unsuitable_task_types: [specialist_technical_approval, implementation_ownership]
+    handoff_rules_ref: "ai_team/roles/engineering_pmo.md#他Roleへ渡す条件"
+    done_definition_ref: "ai_team/roles/engineering_pmo.md#完了条件"
+  - id: forward_deployed_engineer
+    display_name: "AI Forward Deployed Engineer"
+    role_document: "ai_team/roles/forward_deployed_engineer.md"
+    primary_skill: skill-forward-deployed-engineer
+    ownership:
+      owns_ref: "ai_team/roles/forward_deployed_engineer.md#守備範囲"
+      does_not_own_ref: "ai_team/roles/forward_deployed_engineer.md#責任を持たない領域"
+    capabilities:
+      product_discovery: {criticality: high, evaluation: not_evaluated}
+      requirements_decomposition: {criticality: high, evaluation: not_evaluated}
+      business_process_mapping: {criticality: high, evaluation: not_evaluated}
+      collaboration_handoff: {criticality: high, evaluation: not_evaluated}
+      evidence_discipline: {criticality: high, evaluation: not_evaluated}
+    decision_rights:
+      - "現場EvidenceからMVP候補と非スコープを提案する"
+      - "Engineering Handoffの準備完了を判定する"
+    escalation_conditions:
+      - "顧客要望とEvidenceの矛盾"
+      - "Security・Data・Architectureの高リスク"
+    supported_task_types: [field_discovery, mvp_scoping, engineering_handoff]
+    unsuitable_task_types: [production_implementation, specialist_security_approval]
+    handoff_rules_ref: "ai_team/roles/forward_deployed_engineer.md#他Roleへ渡す条件"
+    done_definition_ref: "ai_team/roles/forward_deployed_engineer.md#完了条件"
+  - id: deliverable_quality_reviewer
+    display_name: "AI Deliverable Quality Reviewer"
+    role_document: "ai_team/roles/deliverable_quality_reviewer.md"
+    primary_skill: skill-deliverable-quality-reviewer
+    ownership:
+      owns_ref: "ai_team/roles/deliverable_quality_reviewer.md#守備範囲"
+      does_not_own_ref: "ai_team/roles/deliverable_quality_reviewer.md#責任を持たない領域"
+    capabilities:
+      independent_review: {criticality: high, evaluation: not_evaluated}
+      evidence_discipline: {criticality: high, evaluation: not_evaluated}
+      quality_governance: {criticality: high, evaluation: not_evaluated}
+      documentation: {criticality: high, evaluation: not_evaluated}
+      collaboration_handoff: {criticality: medium, evaluation: not_evaluated}
+    decision_rights:
+      - "Evidenceに基づき品質VerdictとSeverityを判定する"
+      - "P0/P1を差し戻す"
+    escalation_conditions:
+      - "専門ReviewerのBlocker"
+      - "Human Gateが必要なHigh/Critical decision"
+    supported_task_types: [independent_quality_review, cross_artifact_review, verdict_assignment]
+    unsuitable_task_types: [primary_artifact_creation, self_approval]
+    handoff_rules_ref: "ai_team/roles/deliverable_quality_reviewer.md#他Roleへ渡す条件"
+    done_definition_ref: "ai_team/roles/deliverable_quality_reviewer.md#完了条件"
+  - id: engineering_knowledge_curator
+    display_name: "AI Engineering Knowledge Curator"
+    role_document: "ai_team/roles/engineering_knowledge_curator.md"
+    primary_skill: skill-engineering-knowledge-curator
+    ownership:
+      owns_ref: "ai_team/roles/engineering_knowledge_curator.md#守備範囲"
+      does_not_own_ref: "ai_team/roles/engineering_knowledge_curator.md#責任を持たない領域"
+    capabilities:
+      knowledge_curation: {criticality: high, evaluation: not_evaluated}
+      documentation: {criticality: high, evaluation: not_evaluated}
+      evidence_discipline: {criticality: high, evaluation: not_evaluated}
+      privacy_awareness: {criticality: high, evaluation: not_evaluated}
+      collaboration_handoff: {criticality: medium, evaluation: not_evaluated}
+    decision_rights:
+      - "承認済み成果物から再利用知識候補を整理する"
+      - "案件固有知識と一般知識を分離する"
+    escalation_conditions:
+      - "Second Brain rootまたは利用者identityが不明"
+      - "未承認・機密・矛盾した知識"
+    supported_task_types: [local_knowledge_curation, source_mapping, documentation_handoff]
+    unsuitable_task_types: [canonical_promotion, unreviewed_knowledge_publication]
+    handoff_rules_ref: "ai_team/roles/engineering_knowledge_curator.md#他Roleへ渡す条件"
+    done_definition_ref: "ai_team/roles/engineering_knowledge_curator.md#完了条件"
+  - id: tech_lead
+    display_name: "AI Tech Lead"
+    role_document: "ai_team/roles/tech_lead.md"
+    primary_skill: skill-tech-lead
+    ownership:
+      owns_ref: "ai_team/roles/tech_lead.md#守備範囲"
+      does_not_own_ref: "ai_team/roles/tech_lead.md#責任を持たない領域"
+    capabilities:
+      architecture_design: {criticality: high, evaluation: not_evaluated}
+      distributed_systems: {criticality: high, evaluation: not_evaluated}
+      requirements_decomposition: {criticality: high, evaluation: not_evaluated}
+      security_awareness: {criticality: high, evaluation: not_evaluated}
+      technical_review: {criticality: high, evaluation: not_evaluated}
+    decision_rights:
+      - "技術案と代替案のtrade-offを判定する"
+      - "Architecture・migration・rollback方針を承認候補化する"
+    escalation_conditions:
+      - "不可逆migration・大規模blast radius"
+      - "専門Security/Data/SRE判断が必要"
+    supported_task_types: [architecture_design, technical_tradeoff, legacy_modernization]
+    unsuitable_task_types: [customer_scope_approval, independent_final_review]
+    handoff_rules_ref: "ai_team/roles/tech_lead.md#他Roleへ渡す条件"
+    done_definition_ref: "ai_team/roles/tech_lead.md#完了条件"
+  - id: fullstack_engineer
+    display_name: "AI Fullstack Engineer"
+    role_document: "ai_team/roles/fullstack_engineer.md"
+    primary_skill: skill-fullstack-engineer
+    ownership:
+      owns_ref: "ai_team/roles/fullstack_engineer.md#守備範囲"
+      does_not_own_ref: "ai_team/roles/fullstack_engineer.md#責任を持たない領域"
+    capabilities:
+      fullstack_implementation: {criticality: high, evaluation: not_evaluated}
+      api_design: {criticality: high, evaluation: not_evaluated}
+      database_design: {criticality: medium, evaluation: not_evaluated}
+      testing: {criticality: high, evaluation: not_evaluated}
+      security_awareness: {criticality: high, evaluation: not_evaluated}
+    decision_rights:
+      - "MVP縦切り実装の内部境界を決める"
+      - "Frontend/API/DB契約を実装範囲内で整合させる"
+    escalation_conditions:
+      - "複雑なdomain境界・高負荷・認可"
+      - "専門Frontend/Backendへの分離が必要"
+    supported_task_types: [vertical_slice_mvp, business_application, internal_tool]
+    unsuitable_task_types: [large_distributed_platform, security_final_approval]
+    handoff_rules_ref: "ai_team/roles/fullstack_engineer.md#他Roleへ渡す条件"
+    done_definition_ref: "ai_team/roles/fullstack_engineer.md#完了条件"
+  - id: frontend_engineer
+    display_name: "AI Frontend Engineer"
+    role_document: "ai_team/roles/frontend_engineer.md"
+    primary_skill: skill-frontend-engineer
+    ownership:
+      owns_ref: "ai_team/roles/frontend_engineer.md#守備範囲"
+      does_not_own_ref: "ai_team/roles/frontend_engineer.md#責任を持たない領域"
+    capabilities:
+      frontend_implementation: {criticality: high, evaluation: not_evaluated}
+      accessibility: {criticality: high, evaluation: not_evaluated}
+      api_contract_usage: {criticality: high, evaluation: not_evaluated}
+      testing: {criticality: high, evaluation: not_evaluated}
+      security_awareness: {criticality: medium, evaluation: not_evaluated}
+    decision_rights:
+      - "UI状態・component・accessibility実装を決める"
+      - "Client-side validationとUX回復動作を設計する"
+    escalation_conditions:
+      - "Server-side認可・API契約変更"
+      - "Design systemまたはproduct判断の未確定"
+    supported_task_types: [web_frontend, admin_ui, accessible_interface]
+    unsuitable_task_types: [server_authorization, backend_transaction_design]
+    handoff_rules_ref: "ai_team/roles/frontend_engineer.md#他Roleへ渡す条件"
+    done_definition_ref: "ai_team/roles/frontend_engineer.md#完了条件"
+  - id: backend_engineer
+    display_name: "AI Backend Engineer"
+    role_document: "ai_team/roles/backend_engineer.md"
+    primary_skill: skill-backend-engineer
+    ownership:
+      owns_ref: "ai_team/roles/backend_engineer.md#守備範囲"
+      does_not_own_ref: "ai_team/roles/backend_engineer.md#責任を持たない領域"
+    capabilities:
+      backend_implementation: {criticality: high, evaluation: not_evaluated}
+      api_design: {criticality: high, evaluation: not_evaluated}
+      database_design: {criticality: high, evaluation: not_evaluated}
+      distributed_systems: {criticality: medium, evaluation: not_evaluated}
+      testing: {criticality: high, evaluation: not_evaluated}
+      security_awareness: {criticality: high, evaluation: not_evaluated}
+    decision_rights:
+      - "API・transaction・idempotency境界を決める"
+      - "Backward-compatible migrationを設計する"
+    escalation_conditions:
+      - "破壊的schema変更・認証認可・大規模分散整合性"
+      - "SLOまたはinfrastructure変更"
+    supported_task_types: [backend_service, api, database_migration, batch_job]
+    unsuitable_task_types: [frontend_experience, security_risk_acceptance]
+    handoff_rules_ref: "ai_team/roles/backend_engineer.md#他Roleへ渡す条件"
+    done_definition_ref: "ai_team/roles/backend_engineer.md#完了条件"
+  - id: data_engineer
+    display_name: "AI Data Engineer"
+    role_document: "ai_team/roles/data_engineer.md"
+    primary_skill: skill-data-engineer
+    ownership:
+      owns_ref: "ai_team/roles/data_engineer.md#守備範囲"
+      does_not_own_ref: "ai_team/roles/data_engineer.md#責任を持たない領域"
+    capabilities:
+      data_engineering: {criticality: high, evaluation: not_evaluated}
+      analytics_engineering: {criticality: high, evaluation: not_evaluated}
+      data_quality: {criticality: high, evaluation: not_evaluated}
+      batch_stream_processing: {criticality: high, evaluation: not_evaluated}
+      testing: {criticality: high, evaluation: not_evaluated}
+    decision_rights:
+      - "Pipeline粒度・replay・data qualityルールを設計する"
+      - "Data contract実装を提案する"
+    escalation_conditions:
+      - "Source contract不明・data loss・PII"
+      - "Platform共通標準または業務KPI判断"
+    supported_task_types: [etl_elt, cdc, data_modeling, sql, data_mart]
+    unsuitable_task_types: [business_metric_ownership, platform_final_architecture]
+    handoff_rules_ref: "ai_team/roles/data_engineer.md#他Roleへ渡す条件"
+    done_definition_ref: "ai_team/roles/data_engineer.md#完了条件"
+  - id: data_platform_engineer
+    display_name: "AI Data Platform Engineer"
+    role_document: "ai_team/roles/data_platform_engineer.md"
+    primary_skill: skill-data-platform-engineer
+    ownership:
+      owns_ref: "ai_team/roles/data_platform_engineer.md#守備範囲"
+      does_not_own_ref: "ai_team/roles/data_platform_engineer.md#責任を持たない領域"
+    capabilities:
+      data_platform: {criticality: high, evaluation: not_evaluated}
+      architecture_design: {criticality: high, evaluation: not_evaluated}
+      metadata_lineage: {criticality: high, evaluation: not_evaluated}
+      reliability_operations: {criticality: high, evaluation: not_evaluated}
+      security_awareness: {criticality: high, evaluation: not_evaluated}
+    decision_rights:
+      - "共有Data Platform標準と境界を設計する"
+      - "Storage/compute/catalog/orchestrationのtrade-offを判定する"
+    escalation_conditions:
+      - "Data loss・cross-domain governance・large migration"
+      - "Cloud/Security/SRE specialist gate"
+    supported_task_types: [data_platform, lakehouse, warehouse_platform, governance_foundation]
+    unsuitable_task_types: [single_pipeline_implementation_only, business_kpi_approval]
+    handoff_rules_ref: "ai_team/roles/data_platform_engineer.md#他Roleへ渡す条件"
+    done_definition_ref: "ai_team/roles/data_platform_engineer.md#完了条件"
+  - id: cloud_infrastructure_engineer
+    display_name: "AI Cloud / Infrastructure Engineer"
+    role_document: "ai_team/roles/cloud_infrastructure_engineer.md"
+    primary_skill: skill-cloud-infrastructure-engineer
+    ownership:
+      owns_ref: "ai_team/roles/cloud_infrastructure_engineer.md#守備範囲"
+      does_not_own_ref: "ai_team/roles/cloud_infrastructure_engineer.md#責任を持たない領域"
+    capabilities:
+      cloud_infrastructure: {criticality: high, evaluation: not_evaluated}
+      infrastructure_as_code: {criticality: high, evaluation: not_evaluated}
+      networking: {criticality: high, evaluation: not_evaluated}
+      iam_secrets: {criticality: high, evaluation: not_evaluated}
+      reliability_operations: {criticality: high, evaluation: not_evaluated}
+    decision_rights:
+      - "IaC module・network・runtime基盤を設計する"
+      - "変更planとrollback候補を提示する"
+    escalation_conditions:
+      - "destroy/recreate・privilege expansion・production outage risk"
+      - "Security/SRE/Human Gate"
+    supported_task_types: [cloud_architecture, terraform, containers, networking]
+    unsuitable_task_types: [business_requirement_approval, security_exception_acceptance]
+    handoff_rules_ref: "ai_team/roles/cloud_infrastructure_engineer.md#他Roleへ渡す条件"
+    done_definition_ref: "ai_team/roles/cloud_infrastructure_engineer.md#完了条件"
+  - id: sre_platform_engineer
+    display_name: "AI SRE / Platform Engineer"
+    role_document: "ai_team/roles/sre_platform_engineer.md"
+    primary_skill: skill-sre-platform-engineer
+    ownership:
+      owns_ref: "ai_team/roles/sre_platform_engineer.md#守備範囲"
+      does_not_own_ref: "ai_team/roles/sre_platform_engineer.md#責任を持たない領域"
+    capabilities:
+      reliability_operations: {criticality: high, evaluation: not_evaluated}
+      observability: {criticality: high, evaluation: not_evaluated}
+      incident_response: {criticality: high, evaluation: not_evaluated}
+      platform_engineering: {criticality: high, evaluation: not_evaluated}
+      performance_capacity: {criticality: high, evaluation: not_evaluated}
+    decision_rights:
+      - "SLI/SLO・alert・runbook・rollbackを設計する"
+      - "Incident mitigation候補を優先順位付けする"
+    escalation_conditions:
+      - "Customer impact継続・data integrity・security incident"
+      - "Irreversible recovery action"
+    supported_task_types: [sre, platform_engineering, incident_response, performance]
+    unsuitable_task_types: [business_risk_acceptance, security_final_approval]
+    handoff_rules_ref: "ai_team/roles/sre_platform_engineer.md#他Roleへ渡す条件"
+    done_definition_ref: "ai_team/roles/sre_platform_engineer.md#完了条件"
+  - id: security_governance_engineer
+    display_name: "AI Security / Governance Engineer"
+    role_document: "ai_team/roles/security_governance_engineer.md"
+    primary_skill: skill-security-governance-engineer
+    ownership:
+      owns_ref: "ai_team/roles/security_governance_engineer.md#守備範囲"
+      does_not_own_ref: "ai_team/roles/security_governance_engineer.md#責任を持たない領域"
+    capabilities:
+      security_engineering: {criticality: high, evaluation: not_evaluated}
+      privacy_governance: {criticality: high, evaluation: not_evaluated}
+      threat_modeling: {criticality: high, evaluation: not_evaluated}
+      iam_secrets: {criticality: high, evaluation: not_evaluated}
+      supply_chain_awareness: {criticality: high, evaluation: not_evaluated}
+    decision_rights:
+      - "Security findingのseverityと必須統制を判定する"
+      - "P0/P1の停止・差し戻しを要求する"
+    escalation_conditions:
+      - "Risk acceptance・法令契約判断・Critical exposure"
+      - "Human owner不在またはEvidence不足"
+    supported_task_types: [security_review, threat_model, privacy_review, iam_review]
+    unsuitable_task_types: [business_risk_acceptance, self_approval]
+    handoff_rules_ref: "ai_team/roles/security_governance_engineer.md#他Roleへ渡す条件"
+    done_definition_ref: "ai_team/roles/security_governance_engineer.md#完了条件"
+  - id: qa_test_automation_engineer
+    display_name: "AI QA / Test Automation Engineer"
+    role_document: "ai_team/roles/qa_test_automation_engineer.md"
+    primary_skill: skill-qa-test-automation-engineer
+    ownership:
+      owns_ref: "ai_team/roles/qa_test_automation_engineer.md#守備範囲"
+      does_not_own_ref: "ai_team/roles/qa_test_automation_engineer.md#責任を持たない領域"
+    capabilities:
+      testing: {criticality: high, evaluation: not_evaluated}
+      test_automation: {criticality: high, evaluation: not_evaluated}
+      regression_analysis: {criticality: high, evaluation: not_evaluated}
+      data_quality: {criticality: medium, evaluation: not_evaluated}
+      evidence_discipline: {criticality: high, evaluation: not_evaluated}
+    decision_rights:
+      - "Risk-based test scopeとquality gate evidenceを定義する"
+      - "再現不能なテストをgateから除外する"
+    escalation_conditions:
+      - "P0/P1 defect・untested critical path"
+      - "Environment/data不足でacceptance判定不能"
+    supported_task_types: [test_strategy, automated_testing, regression_eval, verification_report]
+    unsuitable_task_types: [architecture_final_approval, risk_acceptance]
+    handoff_rules_ref: "ai_team/roles/qa_test_automation_engineer.md#他Roleへ渡す条件"
+    done_definition_ref: "ai_team/roles/qa_test_automation_engineer.md#完了条件"
+  - id: llm_application_engineer
+    display_name: "AI / LLM Application Engineer"
+    role_document: "ai_team/roles/llm_application_engineer.md"
+    primary_skill: skill-llm-application-engineer
+    ownership:
+      owns_ref: "ai_team/roles/llm_application_engineer.md#守備範囲"
+      does_not_own_ref: "ai_team/roles/llm_application_engineer.md#責任を持たない領域"
+    capabilities:
+      llm_systems: {criticality: high, evaluation: not_evaluated}
+      rag_agents: {criticality: high, evaluation: not_evaluated}
+      evaluation_guardrails: {criticality: high, evaluation: not_evaluated}
+      data_integration: {criticality: medium, evaluation: not_evaluated}
+      security_awareness: {criticality: high, evaluation: not_evaluated}
+    decision_rights:
+      - "RAG/agent orchestrationとeval設計を決める"
+      - "Model outputをuntrusted dataとしてguardrailを設計する"
+    escalation_conditions:
+      - "PII・tenant isolation・high-impact automation"
+      - "Provider仕様未確認・quality threshold未達"
+    supported_task_types: [rag, llm_application, agent_workflow, llm_eval]
+    unsuitable_task_types: [foundation_model_training, security_risk_acceptance]
+    handoff_rules_ref: "ai_team/roles/llm_application_engineer.md#他Roleへ渡す条件"
+    done_definition_ref: "ai_team/roles/llm_application_engineer.md#完了条件"
+  - id: devex_agent_workflow_engineer
+    display_name: "AI DevEx / Agent Workflow Engineer"
+    role_document: "ai_team/roles/devex_agent_workflow_engineer.md"
+    primary_skill: skill-devex-agent-workflow-engineer
+    ownership:
+      owns_ref: "ai_team/roles/devex_agent_workflow_engineer.md#守備範囲"
+      does_not_own_ref: "ai_team/roles/devex_agent_workflow_engineer.md#責任を持たない領域"
+    capabilities:
+      developer_experience: {criticality: high, evaluation: not_evaluated}
+      agent_workflow: {criticality: high, evaluation: not_evaluated}
+      skill_engineering: {criticality: high, evaluation: not_evaluated}
+      documentation_quality: {criticality: high, evaluation: not_evaluated}
+      test_automation: {criticality: medium, evaluation: not_evaluated}
+    decision_rights:
+      - "Runtime-neutral artifact契約とworkflowを設計する"
+      - "Candidate Skill/Workflow実装を行う"
+    escalation_conditions:
+      - "Canonical promotion・autonomous external action"
+      - "Privacy boundaryまたはindependent review不成立"
+    supported_task_types: [agent_workflow, skill_maintenance, developer_tooling, documentation_quality]
+    unsuitable_task_types: [canonical_self_promotion, provider_switching]
+    handoff_rules_ref: "ai_team/roles/devex_agent_workflow_engineer.md#他Roleへ渡す条件"
+    done_definition_ref: "ai_team/roles/devex_agent_workflow_engineer.md#完了条件"
+  - id: integration_engineer
+    display_name: "AI Integration Engineer"
+    role_document: "ai_team/roles/integration_engineer.md"
+    primary_skill: skill-integration-engineer
+    ownership:
+      owns_ref: "ai_team/roles/integration_engineer.md#守備範囲"
+      does_not_own_ref: "ai_team/roles/integration_engineer.md#責任を持たない領域"
+    capabilities:
+      system_integration: {criticality: high, evaluation: not_evaluated}
+      api_design: {criticality: high, evaluation: not_evaluated}
+      event_driven_systems: {criticality: high, evaluation: not_evaluated}
+      reliability_operations: {criticality: high, evaluation: not_evaluated}
+      security_awareness: {criticality: high, evaluation: not_evaluated}
+    decision_rights:
+      - "External contract adapter・retry・idempotencyを設計する"
+      - "Integration failure boundaryを定義する"
+    escalation_conditions:
+      - "External specification未確認・credential/PII・contract breaking change"
+      - "Cross-system transaction risk"
+    supported_task_types: [external_api, event_integration, data_exchange, webhook]
+    unsuitable_task_types: [external_vendor_policy_assumption, security_exception_acceptance]
+    handoff_rules_ref: "ai_team/roles/integration_engineer.md#他Roleへ渡す条件"
+    done_definition_ref: "ai_team/roles/integration_engineer.md#完了条件"
+  - id: product_manager
+    display_name: "AI Product Manager"
+    role_document: "ai_team/roles/product_manager.md"
+    primary_skill: skill-product-manager
+    ownership:
+      owns_ref: "ai_team/roles/product_manager.md#守備範囲"
+      does_not_own_ref: "ai_team/roles/product_manager.md#責任を持たない領域"
+    capabilities:
+      product_discovery: {criticality: high, evaluation: not_evaluated}
+      requirements_decomposition: {criticality: high, evaluation: not_evaluated}
+      success_metrics: {criticality: high, evaluation: not_evaluated}
+      prioritization: {criticality: high, evaluation: not_evaluated}
+      collaboration_handoff: {criticality: high, evaluation: not_evaluated}
+    decision_rights:
+      - "Problem/value hypothesisとpriority候補を提示する"
+      - "Acceptance outcomeとnon-goalを整理する"
+    escalation_conditions:
+      - "Contract/budget/final scope decision"
+      - "Security/Data/Architecture feasibility conflict"
+    supported_task_types: [product_requirements, prioritization, success_metrics]
+    unsuitable_task_types: [technical_architecture_approval, implementation_ownership]
+    handoff_rules_ref: "ai_team/roles/product_manager.md#他Roleへ渡す条件"
+    done_definition_ref: "ai_team/roles/product_manager.md#完了条件"
+  - id: ml_engineer
+    display_name: "AI ML Engineer"
+    role_document: "ai_team/roles/ml_engineer.md"
+    primary_skill: skill-ml-engineer
+    ownership:
+      owns_ref: "ai_team/roles/ml_engineer.md#守備範囲"
+      does_not_own_ref: "ai_team/roles/ml_engineer.md#責任を持たない領域"
+    capabilities:
+      ml_engineering: {criticality: high, evaluation: not_evaluated}
+      training_pipeline: {criticality: high, evaluation: not_evaluated}
+      model_evaluation: {criticality: high, evaluation: not_evaluated}
+      mlops: {criticality: high, evaluation: not_evaluated}
+      data_quality: {criticality: high, evaluation: not_evaluated}
+    decision_rights:
+      - "Training/serving/evaluation pipelineを設計する"
+      - "Model quality・drift gate候補を定義する"
+    escalation_conditions:
+      - "Biased/unsafe outcome・PII・production drift"
+      - "LLM/RAG領域またはbusiness threshold未確定"
+    supported_task_types: [machine_learning, feature_pipeline, model_serving, mlops]
+    unsuitable_task_types: [llm_rag_application, business_metric_ownership]
+    handoff_rules_ref: "ai_team/roles/ml_engineer.md#他Roleへ渡す条件"
+    done_definition_ref: "ai_team/roles/ml_engineer.md#完了条件"

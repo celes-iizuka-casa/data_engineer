@@ -2,10 +2,44 @@
 /input/*
 !/input/README.md
 /output/*
-/projects/*
+/projects/
+/clients/
+/client/
+/customers/
+/customer/
+/sources/
+/source/
 /tools/*
 !/tools/validate_repository.py
 /tests/
+
+# Local private state (never distribute)
+/.local/
+/**/_internal/
+/evidence/
+/ai_team/evidence/*
+!/ai_team/evidence/execution_evidence.schema.json
+!/ai_team/evidence/new_execution_evidence.py
+/secrets/
+/secret/
+/credentials/
+/tokens/
+/temp/
+/.ssh/
+/.aws/
+/.gnupg/
+/**/.local/
+/**/second_brain/
+/**/secrets/
+/**/secret/
+/**/credentials/
+/**/tokens/
+/**/temp/
+/**/evidence/*
+!/ai_team/evidence/execution_evidence.schema.json
+!/ai_team/evidence/new_execution_evidence.py
+/.claude/settings.local.json
+/.claude/.needs_validation
 
 # Local second-brain exports or copied vaults
 /second_brain/

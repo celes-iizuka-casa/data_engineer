@@ -88,9 +88,9 @@ output/<client>/<YYYYMMDD>/<task-name>/
 
 このリポジトリは Claude Code と Codex の両方で実行できる runtime-neutral 構成です。
 
-- Role / Skill / Workflow設計、方針整理、FDE設計は Claude Code を優先
-- 既存ファイル修正、コード、SQL、テスト、機械的な差分実装は Codex を優先
-- 設計と実装が混在する場合は併用
+- AI社員は呼び出し元Runtimeに従属し、自分で別Provider/Runtimeへ切り替えません
+- 具体Modelは固定せず、現在Runtimeで確認できたEvidenceだけを記録します
+- 別Runtimeが有利な場合もRecommendation/Handoff候補に留め、自動起動しません
 
 判断基準は以下を参照します。
 
@@ -113,8 +113,9 @@ skills/      # Role別Skill定義
 templates/   # 成果物テンプレート
 input/       # 依頼・資料・メモ
 output/      # 生成成果物
-tools/       # 検証・変換・生成スクリプト
-tests/       # pytestテスト
+tools/       # shared repository validator + local-only legacy utilities
+ai_team/evals/ # shared eval catalog / Golden Cases / deterministic runner
+ai_team/tests/ # shared foundation regression tests
 ```
 
 ## 利用するメリット
@@ -169,7 +170,7 @@ cd data_engineer
 既にローカルにある場合は、このディレクトリを開きます。
 
 ```bash
-cd /Users/celesiizuka/Celestian/CASA/data_engineer
+cd /path/to/data_engineer
 ```
 
 ### 2. Python環境を用意する
@@ -182,31 +183,22 @@ source .venv/bin/activate
 python3 -m pip install -r requirements-dev.txt
 ```
 
-テストを実行する場合は `pytest` も必要です。環境に入っていない場合は追加します。
-
-```bash
-python3 -m pip install pytest
-```
-
 ### 3. リポジトリ構造を検証する
 
 ```bash
 python3 tools/validate_repository.py
 ```
 
-このコマンドは、Role、Skill、Workflow、Templateの存在や基本契約を確認します。
+このコマンドはRole/Skill/Workflow/Templateに加え、Capability/Eval schema、canonical ownership、Provider neutrality、tracked private pathを確認します。
 
 ### 4. テストを実行する
 
 ```bash
-python3 -m pytest tests/ -v
+python3 -m unittest discover -s ai_team/tests -p 'test_*.py' -v
+python3 ai_team/evals/run_foundation_evals.py
 ```
 
-特定テストだけ実行する場合:
-
-```bash
-python3 -m pytest tests/test_split_table_statements.py -v
-```
+root `tools/` の変換utilityとroot `tests/` は過去案件のlocal-only資産で、shared AI Team Coreの正本ではありません。
 
 ## 基本的な使い方
 
@@ -279,14 +271,11 @@ output/<client>/<YYYYMMDD>/<task-name>/output.md
 # リポジトリ構造とSkill契約の検証
 python3 tools/validate_repository.py
 
-# 全テスト
-python3 -m pytest tests/ -v
+# Shared foundation regression tests
+python3 -m unittest discover -s ai_team/tests -p 'test_*.py' -v
 
-# CTAS DDL変換ツールのテスト
-python3 -m pytest tests/test_convert_ctas_ddl_to_iceberg.py -v
-
-# SQL分割ツールのテスト
-python3 -m pytest tests/test_split_table_statements.py -v
+# Before/After対応のdeterministic foundation eval
+python3 ai_team/evals/run_foundation_evals.py
 ```
 
 ## 主要ドキュメント
@@ -299,8 +288,10 @@ python3 -m pytest tests/test_split_table_statements.py -v
 - `ai_team/role_scope_matrix.md`: Roleごとの責任範囲
 - `ai_team/request_mode_policy.md`: 依頼タイプの分類
 - `ai_team/output_optimization_policy.md`: 成果物を増やしすぎないためのルール
-- `ai_team/runtime_selection_policy.md`: Claude Code / Codex の使い分け
-- `ai_team/model_effort_selection_policy.md`: モデルと工数の選定基準
+- `ai_team/runtime_selection_policy.md`: 呼び出し元Runtime従属とCross-provider禁止
+- `ai_team/model_effort_selection_policy.md`: 現在Runtime内の非拘束effort基準
+- `ai_team/governance/canonical_sources.yaml`: 正本とdeprecated generator
+- `ai_team/capability_registry.yaml`: 19 Roleの構造化Capability
 - `ai_team/professional_response_templates.md`: モード別の成果物構成
 - `ai_team/review/professional_quality_gate.md`: 品質レビュー基準
 
@@ -320,8 +311,9 @@ python3 -m pytest tests/test_split_table_statements.py -v
 ├── templates/
 ├── input/
 ├── output/
-├── tools/
-├── tests/
+├── tools/                    # validatorのみshared。その他はlocal-only
+├── ai_team/evals/
+├── ai_team/tests/
 ├── claude_code_team_execution.md
 └── codex_team_execution.md
 ```
@@ -334,7 +326,7 @@ python3 -m pytest tests/test_split_table_statements.py -v
 - 要件の曖昧さ、設計リスク、運用リスク、データ品質リスク、セキュリティリスクを見たか
 - `input/` と既存 `output/` を確認したか
 - 軽量依頼か、計画が必要な依頼かを判断したか
-- Claude Code / Codex のどちらで進めるべきか判断したか
+- 呼び出し元Runtimeを維持し、別Provider/Runtimeを自動起動していないか
 
 成果物を出す前:
 
@@ -360,7 +352,8 @@ python3 -m pytest tests/test_split_table_statements.py -v
 
 ```bash
 python3 tools/validate_repository.py
-python3 -m pytest tests/ -v
+python3 -m unittest discover -s ai_team/tests -p 'test_*.py' -v
+python3 ai_team/evals/run_foundation_evals.py
 ```
 
 失敗した場合は、エラーメッセージ、対象ファイル、再現コマンドを `input/` に残して、Verification Modeで扱います。

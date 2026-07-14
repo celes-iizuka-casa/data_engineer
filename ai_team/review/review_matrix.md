@@ -23,10 +23,12 @@
 ## リスク別レビュー深度
 | リスク | 例 | 必須レビュー |
 |---|---|---|
-| Low | 文言修正、内部メモ | Quality Reviewerの簡易レビュー |
+| Low | 文言修正、内部メモ | Producer self-check + repository validation（独立レビュー任意） |
 | Medium | 非破壊の機能・設計変更 | Tech LeadまたはQA + Quality Reviewer |
 | High | 認証、データモデル、外部公開、本番変更 | Tech Lead + QA + Security / SRE + Quality Reviewer |
 | Critical | PII、決済、マルチテナント、データ削除、Agent高影響操作 | 全該当専門Reviewer + Quality Reviewer + 人間承認 |
+
+機械可読な正本は `risk_based_quality_gates.yaml`。Canonical promotionではtask riskに関係なくIndependent ReviewとCeles Human Gateを必須とする。
 
 ## スコア
 - 0: 未確認。判定根拠に使用不可。

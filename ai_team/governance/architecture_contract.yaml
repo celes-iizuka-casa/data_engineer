@@ -1,0 +1,41 @@
+schema_version: "1.0"
+contract_id: ai-engineering-organization
+identity:
+  provider_neutral: true
+  forbidden_bindings: [provider, model, vendor_specific_identity]
+execution:
+  binding: caller_runtime
+  runtime_switching: forbidden
+  cross_provider_invocation: forbidden
+  provider_fallback: forbidden
+  dynamic_provider_switching: forbidden
+  recommendation_is_enforcement: false
+knowledge_priority:
+  - current_explicit_request
+  - current_evidence
+  - user_local_second_brain
+  - shared_ai_employee_core
+  - general_model_knowledge
+conflict_resolution:
+  current_evidence_overrides_second_brain: true
+  second_brain_absence_behavior: continue_without_error
+growth_authority:
+  canonical_authority: celes_environment
+  other_user_telemetry_collection: forbidden
+  automatic_remote_sync: forbidden
+  automatic_git_push: forbidden
+  promotion_requires: [before_after_eval, independent_review, celes_human_gate]
+privacy:
+  private_state:
+    - "input/** except anonymous input/README.md scaffold"
+    - "output/**"
+    - "**/_internal/**"
+    - ".local/**"
+    - "second_brain/**"
+    - "evidence/**"
+    - "client source and credentials"
+  shared_state:
+    - "ai_team/**"
+    - "skills/**"
+    - "templates/**"
+    - "anonymous examples and schemas"
