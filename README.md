@@ -1,164 +1,234 @@
 # AI Engineering Team
 
-セレス向けのAI社員エンジニアチーム運用リポジトリです。
-`input/` に依頼・資料・エラー・顧客メモを置き、AI Agentが専門Roleとして意見、設計、実装、検証を行い、成果物を `output/` に作成します。
+> 自然な言葉で受けた開発・設計・検証の依頼を、必要最小限の専門Role、Skill、品質ゲートで扱い、実務で使える成果物に整理するためのリポジトリです。
 
-単なる作業代行ではなく、データエンジニアリング、業務アプリ、AI Agent、FDE、PMO、SRE、セキュリティ、QAなどの観点を分担し、MVPと商用化・保守性・運用性のバランスを見ます。
+**決まった依頼フォーマットはありません。自然な言葉で自由に依頼できます。** 一言だけでも、背景や制約を含む詳しい依頼でも構いません。
 
-## 目的
+このREADMEは、初めて利用する人が「何があるか」「どう始めるか」「何を信頼できるか」を把握するための入口です。詳細な仕様はリンク先のCanonical Documentationを正とします。
 
-このリポジトリの目的は、セレスからの依頼を「実務で使える成果物」に変換することです。
+## このリポジトリでできること
 
-- 顧客課題、設計相談、実装依頼、レビュー依頼を専門Roleに振り分ける
-- 依頼を Professional Opinion / Design / Implementation / Verification Mode に分類する
-- 必要なテンプレート、Skill、Workflowを使って成果物を作る
-- 成果物を `output/<client>/<YYYYMMDD>/<task-name>/output.md` に統合する
-- 必要に応じて品質レビュー、実行計画、ナレッジ化を行う
+このリポジトリには、AI Agentを専門職能ごとの「AI社員」として扱うための定義、Skill、Workflow、Review契約、テンプレート、検証コードがあります。依頼を Opinion / Design / Implementation / Verification に分類し、必要な担当だけを選んで、通常は1つの統合成果物へまとめます。
 
-## 基本コンセプト
+定義・Workflowがある対象領域は、次を含みます。
 
-このリポジトリでは、AI Agentを「便利なチャット相手」ではなく、専門職能を持つAI社員として扱います。
+- 要件整理、MVPスコープ、顧客・現場課題の整理、アーキテクチャ
+- Backend、Frontend、Full-stack、API、Database、外部SaaS/API連携
+- Data Engineering、ETL / ELT、Analytics Engineering、Data Platform
+- Cloud / Infrastructure、IaC、SRE / Platform、CI/CD・運用・インシデント対応
+- Security / Governance、QA / Test Automation
+- AI / ML、LLM、RAG、AI Agent、DevEx / Agent Workflow
+- 性能、分散システム、Legacy Modernizationの設計・レビュー・検証観点
 
-主な考え方は以下です。
+これは対象領域のRole/Skill/Workflowが実装されていることを示します。個別案件での成功率、工数削減、専門家を代替できることを示すものではありません。実案件での有効性は後述の「現時点の限界」を参照してください。
 
-- セレスの依頼に無条件で同意しない
-- 危ない設計、曖昧な要件、運用で詰まりそうな構成は率直に指摘する
-- ただし否定だけで終わらず、MVPとして現実的な代替案を出す
-- 不明な外部仕様、未確認のライブラリ機能、顧客事情を断定しない
-- 認証認可、秘密管理、監視、再実行性、テスト、データ品質を後回しにしない
+## これは何か、何ではないか
 
-## 主な機能
+### これは何か
 
-### 1. 依頼の受付
+- 依頼をそのまま鵜呑みにせず、前提、MVP、リスク、保守性、運用性、セキュリティ、テストを確認するための共有Coreです。
+- Roleの責任範囲、Skillの利用指針、Workflow、品質ゲート、成果物形式を再利用できるようにした運用リポジトリです。
+- CodexまたはClaude Codeから、**呼び出し元のRuntime内で**使うことを前提にしたruntime-neutralな構成です。
 
-`input/` に依頼文、顧客資料、設計メモ、エラー内容、コード断片などを配置します。
+### これは何ではないか
 
-例:
+- 完全自律で何でも実装・本番反映するシステムではありません。
+- Human Gate、専門家レビュー、利用者の確認を不要にするものではありません。
+- 特定Provider・特定Modelに属するAI社員集ではありません。
+- Role数やSkill数を増やすこと自体、またはValidatorのPASSだけを能力証明にする仕組みではありません。
+- 他利用者のinput、output、Second Brain、raw feedbackを中央収集して改善する仕組みではありません。
+- 秘密情報や個人情報を安全に扱えることを保証するDLP製品・秘密管理製品ではありません。
 
-```text
-input/example-client/data-platform-operations-request.md
-input/example-client/analytics-onboarding-request.md
+## 全体像
+
+以下は、依頼を扱う標準的な判断の流れです。すべてのRoleを毎回使うのではなく、依頼とRiskに必要なものだけを選びます。
+
+```mermaid
+flowchart TD
+    A["自然言語の依頼 / input"] --> B["依頼・Risk・Evidenceを確認"]
+    B --> C["必要なAI社員 + Skillを選定"]
+    C --> D["呼び出し元Runtime内で実行"]
+    D --> E["output.mdへ統合"]
+    E --> F["Riskに応じたReview / Human Gate"]
+    F --> G["Local execution evidence"]
+    G --> H["必要な場合だけCapability Growth候補へ"]
 ```
 
-### 2. Role選定
+## 基本機能
 
-`ai_team/role_scope_matrix.md` に基づき、依頼に合うRoleを選びます。
+### AI社員（Role）
 
-代表的なRole:
+AI社員は、依頼の担当範囲と判断責任を定義したRoleです。各Roleは単なる名称ではなく、`ai_team/capability_registry.yaml` と `ai_team/roles/` で次を持ちます。
 
-- `AI Engineering PMO`: 課題分類、作業分解、成果物統合、進行管理
-- `AI Forward Deployed Engineer`: 顧客・現場課題整理、MVPスコープ、導入観点
-- `AI Tech Lead`: 技術方針、アーキテクチャ、非機能要件、品質ゲート
-- `AI Data Engineer`: ETL/ELT、SQL、dbt、DWH、データ品質、再実行性
-- `AI Data Platform Engineer`: データ基盤標準化、メタデータ、リネージ、共通パイプライン
-- `AI Fullstack / Backend / Frontend Engineer`: 業務アプリやWebアプリの設計・実装
-- `AI Security / Governance Engineer`: 認証認可、IAM、監査、機密情報、データ保護
-- `AI QA / Test Automation Engineer`: テスト方針、テスト自動化、検証レポート
-- `AI Deliverable Quality Reviewer`: 成果物の独立品質レビュー
-- `AI Engineering Knowledge Curator`: 再利用価値のある成果物のナレッジ化
+- Responsibilities / Capabilities
+- owns と does_not_own（責任を持つこと・持たないこと）
+- Decision rights、Escalation conditions
+- Handoff先と完了条件
 
-### 3. Professional Mode分類
+現在、19 RoleがLifecycle Registryで `ACTIVE` として登録されています。例として、PMO、FDE、Tech Lead、Frontend / Backend / Full-stack、Data Engineer / Data Platform Engineer、Cloud / Infrastructure、SRE、Security、QA、LLM Application、ML、Integration、Product Manager、Knowledge Curatorがあります。全一覧と責任境界は [Role Scope Matrix](ai_team/role_scope_matrix.md) を参照してください。
 
-依頼内容を `ai_team/request_mode_policy.md` に従って分類します。
+`ACTIVE` は、共有Coreとしての定義と登録状態を表します。各Roleの実案件での有効性は、現時点では `not_evaluated`、すなわち **UNKNOWN — insufficient evidence** です。
 
-- `Professional Opinion Mode`: 妥当性、懸念、判断、代替案を出す
-- `Professional Design Mode`: 設計、アーキテクチャ、非機能、運用を整理する
-- `Professional Implementation Mode`: コード、SQL、設定、テストを実装する
-- `Professional Verification Mode`: 検証、レビュー、再現手順、修正案を出す
+### Skills
 
-### 4. 成果物の最適化
+Skillは、Roleが依頼を扱う際の専門的な実行指針です。Roleが「誰がどこまで責任を持つか」を示すのに対し、Skillは「どのように依頼を進め、何を確認するか」を示します。
 
-成果物は原則として1依頼につき `output.md` 1本に統合します。
-詳細な計画、品質レビュー、実行サマリーなどは必要性ゲートを満たす場合だけ `_internal/` に作成します。
+- `skills/*/SKILL.md`: 実行指針
+- `skills/*/skill.yaml`: Skillメタデータ
+- `skills/*/README.md`: 利用者向け説明
+- `skills/*/agents/openai.yaml`: Runtime UI用アダプター。Role/SkillのIdentity Authorityではありません。
 
-標準構成:
+現在のSkill Registryには29 Skillがあります。19 Roleに対応する主要Skillと、FDEの10 Sub-skill（Discovery、業務フロー、Stakeholder、MVP、Engineering Handoff、Adoption、Metricsなど）で構成されます。全一覧は [Skills README](skills/README.md) を参照してください。
+
+### Team Formation
+
+依頼ごとに、Task type、曖昧さ、影響範囲、可逆性、外部依存、Production / Security / PII / data lossなどのRiskを見て、必要最小限のRoleとSkillを選びます。
+
+- Roleを固定チームとして全員起動しません。
+- Primary Roleが責任を持たない領域だけをSupporting Roleへhandoffします。
+- Candidate Skillを通常タスクのActive Skillとして扱いません。
+- High / Critical Riskの必須ゲートを省略しません。
+
+選定ルールの詳細は [Risk-based Team Formation Workflow](ai_team/workflows/risk_based_team_formation_workflow.md) を参照してください。
+
+### Workflowと成果物
+
+依頼は原則として次の4 Modeへ分類されます。
+
+| Mode | 主な用途 |
+|---|---|
+| Opinion | 妥当性、懸念、代替案、推奨の整理 |
+| Design | 要件、構成、非機能、運用設計の整理 |
+| Implementation | コード、SQL、設定、テストの作成・更新 |
+| Verification | レビュー、再現、検証、修正案の整理 |
+
+成果物は通常、`output/<client>/<YYYYMMDD>/<task-name>/output.md` に統合します。高Risk・複数工程・顧客提出・再利用物など、必要性ゲートを満たす場合だけ、計画・レビュー・証跡を `_internal/` に置きます。依頼入力と成果物はLocal Private Stateとして扱います。
+
+詳細は [Input to Output Workflow](ai_team/workflows/input_to_output_workflow.md) と [Output Optimization Policy](ai_team/output_optimization_policy.md) を参照してください。
+
+### Review / Quality Gate / Human Gate
+
+作成者の確認と独立レビューは別物です。Risk-based Quality Gateでは、Riskに応じて必要な確認を変えます。
+
+| Risk | 基本ゲート |
+|---|---|
+| Low | 作成者self-checkとrepository validation。独立レビューは任意。 |
+| Medium | repository validationと独立品質レビュー。 |
+| High | validation、automated test、独立専門レビュー、独立品質レビュー。 |
+| Critical | unsafe executionの停止、High相当のレビュー、Celes Human Gate。 |
+
+Canonical promotionには、Before / After Eval、Independent Review、Celes Human Gateが必要です。AIやPMOが専門ReviewerのP0/P1 Blockerを独断で解除することはできません。詳細は [Risk-based Quality Gates](ai_team/review/risk_based_quality_gates.yaml) を参照してください。
+
+## Provider Neutral / Runtime-dependent Execution
+
+AI社員のIdentity、Role、Capability、Quality StandardはProviderやModelから分離されています。一方、実行は呼び出し元Runtimeに従います。
 
 ```text
-output/<client>/<YYYYMMDD>/<task-name>/
-├── output.md
-└── _internal/
-    ├── execution_plan.md
-    ├── quality_review_report.md
-    └── ...
+Codex      → AI Engineering Team → 現在のCodex Runtime内で実行
+Claude Code → AI Engineering Team → 現在のClaude Code Runtime内で実行
 ```
 
-軽量依頼では `_internal/work_plan.md` を作らず、すぐに成果物へ進みます。
+- **Recommendation ≠ Enforcement**: Modelやeffortの推奨は、現在の設定を変更する命令ではありません。
+- AI社員は呼び出し元のRuntime、Provider、Model、token sourceを上書きしません。
+- AI社員が別Provider APIへ切り替える、cross-provider invocation、fallback、dynamic switchingは現在の契約で禁止されています。
+- Model、token、costを実測・明示できない場合は推測せず `unavailable` と記録します。
+- 別Runtimeが適している場合も、自動移行せず、制約とhandoff候補として報告します。
 
-### 5. Claude Code / Codex 両対応
+CodexとClaude Code向けのガイドはありますが、Runtimeを選択・起動するrouterではありません。利用者は使用中のRuntimeでこのリポジトリを開いてください。詳細は [Runtime Selection Policy](ai_team/runtime_selection_policy.md)、[Codex guide](codex_team_execution.md)、[Claude Code guide](claude_code_team_execution.md) を参照してください。
 
-このリポジトリは Claude Code と Codex の両方で実行できる runtime-neutral 構成です。
+## Second BrainとPersonalization
 
-- AI社員は呼び出し元Runtimeに従属し、自分で別Provider/Runtimeへ切り替えません
-- 具体Modelは固定せず、現在Runtimeで確認できたEvidenceだけを記録します
-- 別Runtimeが有利な場合もRecommendation/Handoff候補に留め、自動起動しません
+Second Brainは、現在の利用者だけが任意で使えるLocal Private Stateです。なくてもAI社員チームはShared Coreだけで継続します。
 
-判断基準は以下を参照します。
+判断時の優先順位は次のとおりです。
 
-- `ai_team/runtime_selection_policy.md`
-- `ai_team/model_effort_selection_policy.md`
-- `ai_team/runtime_neutral_design_policy.md`
-- `claude_code_team_execution.md`
-- `codex_team_execution.md`
+1. Current Explicit Request
+2. Current Evidence（現在のリポジトリ、コード、データ、設定、Runtime、input）
+3. User-local Second Brain
+4. Shared AI Employee Core
+5. General Model Knowledge
 
-### 6. テンプレートとSkill
+- Current EvidenceとSecond Brainが矛盾する場合、Current Evidenceを優先します。
+- 利用者の明示指定、`SECOND_BRAIN_ROOT`、利用者ローカル設定のいずれかでrootを解決できる場合だけ使います。
+- home directoryを探索しません。他利用者のSecond Brainを読取・同期しません。
+- 文体や詳細さなどの個人の好みを、Universal Capabilityへ自動昇格させません。
+- Second Brainの内容をGit commit、telemetry、remote syncへ出すことは禁止されています。
 
-`templates/` には要件定義、設計、テスト、運用、データ基盤、FDE、品質レビューなどのテンプレートがあります。
-`skills/` にはRoleごとの実行指針があります。
+書き込みは、現在利用者からの明示依頼、または `Accepted` かつ再利用価値がありrootが確認できた場合だけ候補になります。詳細は [Local Context and Personalization Policy](ai_team/personalization_policy.md) と [Local Second Brain Policy](ai_team/obsidian_write_policy.md) を参照してください。
 
-主なディレクトリ:
+## Capability GrowthとLifecycle
+
+### Single-Authority Capability Growth
+
+公式AI Engineering TeamのCanonical Growth Authorityは **Celes環境だけ**です。他の利用者はGitHubからclone / pullしてローカル利用できますが、その利用者のinput、output、raw evidence、Second Brain、raw feedback、private dataを自動収集・自動同期して公式Capability Growthへ反映することはありません。
+
+正式な成長は、実務Evidenceを出発点にした次の流れです。
 
 ```text
-ai_team/     # Role定義、運用ポリシー、レビュー基準
-skills/      # Role別Skill定義
-templates/   # 成果物テンプレート
-input/       # 依頼・資料・メモ
-output/      # 生成成果物
-tools/       # shared repository validator + local-only legacy utilities
-ai_team/evals/ # shared eval catalog / Golden Cases / deterministic runner
-ai_team/tests/ # shared foundation regression tests
+Real Work
+→ Local Evidence
+→ Capability Gap
+→ Improvement Proposal
+→ Candidate
+→ Before / After Eval
+→ Independent Review
+→ Celes Human Gate
+→ PROMOTE / REJECT / ROLLBACK
 ```
+
+Evidenceが不足する場合の結論は **UNKNOWN — insufficient evidence** です。Candidateの作成者は自己承認できず、Canonical promotionを自動commit・自動pushしません。詳細は [Capability Growth Policy](ai_team/governance/capability_growth_policy.yaml) と [Capability Growth Workflow](ai_team/workflows/capability_growth_workflow.md) を参照してください。
+
+### AI Employee Lifecycle
+
+AI Employee RegistryのLifecycleは次の状態を持ちます。
+
+```text
+DISCOVERED → PROPOSED → CANDIDATE → EVALUATED
+→ INDEPENDENTLY_REVIEWED → HUMAN_GATE → ACTIVE
+```
+
+`DEPRECATED` は登録済みRoleを廃止する状態です。`REJECTED` と `ROLLED_BACK` はCapability Growthの意思決定結果であり、AI Employee Lifecycleの状態名ではありません。Roleの作成・変更を `ACTIVE` にするには、評価、独立レビュー、Celes Human Gateが必要です。
+
+### Skill Lifecycle
+
+Skillも同じく `DISCOVERED` から `ACTIVE`、`DEPRECATED` までのLifecycleを持ちます。新Skillは、EvidenceのあるCapability Gapがあり、既存Skill更新・統合・Workflow・Documentation・Toolなどでは解決できず、再利用可能かつ評価可能な場合だけ候補にできます。
+
+現在のRegistryでは、19 Roleは `ACTIVE`、29 Skillは `ACTIVE` と登録されています。ただし、これは構造・統制上の登録状態です。Live usage evidenceがないため、Role / Skill effectivenessは `not_evaluated` です。
+
+## Local Privacy BoundaryとGit Safety
+
+利用者・顧客固有の情報は共有Coreと分離します。少なくとも次はLocal Private Stateとして扱う契約です。
+
+- `input/`、`output/`、`_internal/`、intermediate artifacts
+- execution evidence、raw reviewer findings、raw human feedback、raw retrospectives
+- `.local/`、Second Brain、顧客・案件情報
+- credentials、secrets、tokens、raw/private source
+
+`.gitignore`はこれらの代表的なパスを除外し、`tools/validate_repository.py` はtracked private path、秘密情報らしい文字列、個人の絶対パス、共有Coreにおけるcross-provider codeなどを検査します。Architecture ContractはLocal Private Stateのファイル権限をdirectory `0700`、file `0600` とすることも求めています。
+
+ただし、これは完全な安全性の保証ではありません。秘密情報を入力しないこと、必要ならマスク・匿名化すること、顧客データ・PII・契約情報を最小限にすることは利用者の責務です。Validatorの検出パターンには限界があり、暗号化、アクセス制御、外部共有の安全性をこのリポジトリ単独で保証しません。
 
 ## 利用するメリット
 
-- 依頼が曖昧でも、前提・MVP・リスク・次アクションに分解しやすい
-- データ基盤、AI Agent、業務アプリ、FDE、PMOを同じ運用ルールで扱える
-- 成果物が `output.md` に統合されるため、読むべきファイルが増えすぎにくい
-- RoleとModeが分かれるため、意見、設計、実装、検証の責任範囲を明確にしやすい
-- テンプレートとSkillにより、案件ごとの成果物品質を揃えやすい
-- 軽量依頼と重い依頼を分けられるため、過剰なドキュメント作成を避けやすい
-- 顧客提出物や再利用価値のある成果物は、品質レビューやナレッジ化につなげやすい
+- 依頼に合わせて専門Role、Skill、Reviewを選び、責任境界を見える形にできます。
+- 意見・設計・実装・検証を区別し、成果物を原則 `output.md` に統合できます。
+- Provider/ModelにRole Identityを固定せず、使用中のRuntimeを維持できます。
+- Riskに応じた独立レビューとHuman Gateの契約があります。
+- CandidateとACTIVE、構造契約と実案件有効性を分けて扱えます。
+- Second Brainを任意かつ利用者ローカルで使えます。
+- Validator、foundation regression test、deterministic foundation evalで、共有Coreの構造的な破損を検出できます。
 
-## デメリット・向かないケース
+## デメリットと留意点
 
-- 小さなメモや一問一答には、Role選定や成果物形式が重く感じることがある
-- ポリシー、Skill、テンプレートが多いため、初回は読む場所を迷いやすい
-- 外部仕様や顧客固有情報が不足している場合、仮定ベースの成果物になる
-- 独立品質レビューが必要な依頼では、軽いチャットより時間がかかる
-- AI Agentの運用前提があるため、人間だけで使う場合はルールを取捨選択する必要がある
+- すべてが自動ではありません。高Riskの変更は人間のレビューや承認が必要です。
+- AIの判断・出力は常に正しいわけではなく、専門家の確認が必要な領域があります。
+- Role、Skill、Workflow、Evalを維持する運用コストがあります。
+- Runtimeごとに利用可能な機能・Model・権限は異なり得ます。
+- Second Brainを使うには、利用者がrootを明示またはローカル設定する必要があります。
+- token / costは常に取得できるわけではありません。
+- 本番データ、不可逆操作、schema migration、infrastructure変更、認証認可、secrets、PII、規制・財務影響がある依頼は、出力をそのまま投入してはいけません。
 
-## 使用する際の注意点
-
-### 機密情報を入れない
-
-`input/` や `output/` には、APIキー、パスワード、接続文字列、個人情報、顧客の機密情報をそのまま置かないでください。必要な場合はマスク済みサンプル、スキーマ、項目定義、エラー抜粋に変換します。
-
-### 未確認仕様を断定しない
-
-外部サービス、ライブラリ、クラウド仕様、SaaS APIの挙動は、公式資料または実データで確認してから書きます。確認できていない場合は「未確認」「仮定」として明記します。
-
-### outputを増やしすぎない
-
-基本は `output.md` 1本です。`execution_summary.md`、`questions.md`、`work_plan.md` などの独立ファイルは、必要性ゲートを満たす場合だけ作ります。
-
-### 品質レビューを自己レビューにしない
-
-作成者自身の確認は独立レビューではありません。顧客提出物、本番影響、セキュリティ影響、再利用価値がある成果物は、必要に応じて `AI Deliverable Quality Reviewer` が独立レビューします。
-
-### MVPでも運用観点を捨てない
-
-MVPではスコープを小さくしますが、認証認可、秘密管理、監視、ログ、テスト、再実行性、ロールバック方針を完全に省略しないでください。
-
-## セットアップ
+## Quick Start
 
 ### 1. リポジトリを取得する
 
@@ -167,15 +237,9 @@ git clone <repository-url>
 cd data_engineer
 ```
 
-既にローカルにある場合は、このディレクトリを開きます。
+### 2. 必要なら検証用のPython環境を用意する
 
-```bash
-cd /path/to/data_engineer
-```
-
-### 2. Python環境を用意する
-
-Python 3.9以降を推奨します。
+共有CoreのValidator/Test/Evalを実行する場合は、`requirements-dev.txt` の依存関係を入れます。
 
 ```bash
 python3 -m venv .venv
@@ -183,50 +247,80 @@ source .venv/bin/activate
 python3 -m pip install -r requirements-dev.txt
 ```
 
-### 3. リポジトリ構造を検証する
+### 3. 使用中のRuntimeでリポジトリを開く
 
-```bash
-python3 tools/validate_repository.py
-```
+CodexまたはClaude Codeで、このリポジトリを開きます。AI社員チームは、開いたRuntime内で作業します。別のProviderやModelをAI社員が自動で選ぶことはありません。
 
-このコマンドはRole/Skill/Workflow/Templateに加え、AI Employee / Skill lifecycle、Capability/Eval schema、canonical ownership、Provider neutrality、tracked private pathを確認します。
+### 4. 自然な言葉で依頼する
 
-### 4. テストを実行する
-
-```bash
-python3 -m unittest discover -s ai_team/tests -p 'test_*.py' -v
-python3 ai_team/evals/run_foundation_evals.py
-```
-
-Foundation Evalの`PASS`はdeterministicな構造契約の合格を示す。実案件のTask success、human correction、token / cost、Role / Skill effectivenessは、live Evidenceがなければ`UNKNOWN — insufficient evidence`であり、synthetic fixtureから推測しない。
-
-root `tools/` の変換utilityとroot `tests/` は過去案件のlocal-only資産で、shared AI Team Coreの正本ではありません。
-
-## 基本的な使い方
-
-### 1. 依頼を `input/` に置く
-
-顧客名または案件名ごとにサブディレクトリを作り、依頼文や資料を配置します。
+チャットに直接書いても、依頼文・資料・ログを `input/` に置いても構いません。ローカル資料を置く場合は、次のように案件単位で整理できます。
 
 ```text
+input/example-client/request.md  # 匿名の記載例
 input/<client>/<task>.md
 ```
 
-依頼には以下があると処理しやすくなります。
+`input/` はprivate扱いです。APIキー、パスワード、接続文字列、個人情報、未マスクの顧客機密情報は置かないでください。
 
-- 背景
-- 目的
-- 期待する成果物
-- 現在の制約
-- 入力データや対象コード
-- 期限や優先度
-- 顧客提出物か内部利用か
+### 5. 成果物を確認する
 
-### 2. 依頼タイプを分類する
+標準成果物は次に作られます。
 
-`ai_team/request_mode_policy.md` を見て、依頼が意見、設計、実装、検証のどれかを判断します。
+```text
+output/<client>/<YYYYMMDD>/<task-name>/output.md
+```
 
-自然文でも問題ありません。必要なら以下のタグを依頼文に付けます。
+High Risk、複数工程、顧客提出、再利用などに該当する場合だけ、`_internal/` に計画・レビュー・証跡が追加されます。
+
+### 6. 必要な検証を実行する
+
+```bash
+# repository構造・privacy・runtime-neutralityなどの検証
+python3 tools/validate_repository.py
+
+# shared foundation regression tests
+python3 -m unittest discover -s ai_team/tests -p 'test_*.py' -v
+
+# deterministic foundation eval
+python3 ai_team/evals/run_foundation_evals.py
+```
+
+これらのPASSは、Role / Skill / Lifecycle / canonical ownership / privacy / provider-neutralityなどの**構造契約**が通ったことを示します。Live AIの実案件成功、human correction削減、token/cost削減、Role/Skill effectivenessを証明するものではありません。
+
+## 依頼方法
+
+**決まった依頼フォーマットを使う必要はありません。普通の言葉で、自由に依頼できます。**
+
+例えば、次の一文から始められます。
+
+```text
+SnowflakeのTaskを使ってRAWからSTGへ1時間ごとに差分更新したい。
+現在の構成を確認して、設計、SQL、テスト観点までお願い。
+```
+
+短い依頼でも大丈夫です。
+
+```text
+このエラーを直して。
+```
+
+```text
+このアーキテクチャをレビューして。
+```
+
+```text
+このSQLを高速化して。
+```
+
+```text
+Terraform変更の影響範囲を調べて。
+```
+
+```text
+この機能を設計・実装・テストして。
+```
+
+依頼からRole、Mode、Risk、必要なSkillを判断します。指定したい場合だけ、任意のワンライナータグも使えます。
 
 ```text
 @role:data_engineer
@@ -235,141 +329,167 @@ input/<client>/<task>.md
 @full
 ```
 
-### 3. RoleとSkillを選ぶ
+タグは必須ではありません。`@light` は軽量出力を、`@full` は必要な詳細成果物を希望する目安です。詳細は [Output Optimization Policy](ai_team/output_optimization_policy.md) を参照してください。
 
-`ai_team/role_scope_matrix.md` を見て担当Roleを選び、対応する `skills/skill-*/README.md` と `SKILL.md` を確認します。
+## 任意の依頼フォーマット
 
-例:
+**これは任意の参考フォーマットです。使用は強制ではありません。空欄があっても問題ありません。自然文だけでも依頼できます。**
 
-- データパイプライン設計: `skill-data-engineer`
-- データ基盤標準化: `skill-data-platform-engineer`
-- 顧客課題整理: `skill-forward-deployed-engineer`
-- 業務アプリ実装: `skill-fullstack-engineer`
-- 品質レビュー: `skill-deliverable-quality-reviewer`
+```markdown
+## 依頼内容
+何をしてほしいか自由に書いてください。
 
-### 4. 成果物を作成する
+## 背景
+なぜ必要なのか。分かる範囲で構いません。
 
-成果物は以下に保存します。
+## 対象
+対象のコード、システム、データ、ファイル、ディレクトリなど。
 
-```text
-output/<client>/<YYYYMMDD>/<task-name>/output.md
+## 期待する成果物
+設計書、コード、SQL、レビュー、調査結果など。
+分からなければ空欄で問題ありません。
+
+## 制約
+使用技術、変更禁止箇所、期限、セキュリティ条件など。
+
+## 参考情報
+関連ファイル、ログ、URL、過去経緯など。
+
+## 重視したいこと
+- 正確性
+- 速度
+- コスト
+- セキュリティ
+- 保守性
+- 分かりやすさ
+
+## 補足
+その他自由記述。
 ```
 
-顧客名や日付が特定できない場合だけ、合理的な仮名を置き、前提として明記します。
+## 対応する依頼の例
 
-### 5. 必要に応じてレビューする
+Role / Skill / Workflowに定義がある依頼例です。個別の技術スタック、外部サービス仕様、実行権限は依頼時のEvidenceで確認します。
 
-以下に該当する場合は、品質レビューを検討します。
+| 依頼例 | 主に使うRoleの例 |
+|---|---|
+| API、業務ロジック、DB設計、外部連携 | Backend / Integration Engineer |
+| 画面、UX、フロント実装、MVP | Frontend / Full-stack Engineer |
+| ETL / ELT、SQL、データ品質、DWH | Data Engineer |
+| データアーキテクチャ、カタログ、共通基盤 | Data Platform Engineer |
+| Cloud、Terraform、ネットワーク、IAM | Cloud / Infrastructure Engineer |
+| 監視、SLO、障害、リリース安全性 | SRE / Platform Engineer |
+| 脅威分析、認証認可、secrets、privacy | Security / Governance Engineer |
+| テスト設計、自動化、回帰検証 | QA / Test Automation Engineer |
+| RAG、LLMアプリ、AI Agent、eval | LLM Application Engineer |
+| 学習・評価パイプライン、MLOps | ML Engineer |
+| 要件、優先順位、MVP、現場導入 | Product Manager / FDE |
+| 設計レビュー、性能・Legacy・分散システムの検討 | Tech Leadと該当専門Role |
 
-- 顧客提出物
-- 本番運用に影響する成果物
-- セキュリティ、認証認可、機密情報、権限が絡む成果物
-- 複数案件で再利用する成果物
-- 破壊的変更や大きな設計判断を含む成果物
+## 品質保証の考え方
 
-## よく使うコマンド
+信頼できる根拠と、まだ証明されていないことを分けます。
 
-```bash
-# リポジトリ構造とSkill契約の検証
-python3 tools/validate_repository.py
+- **Evidence before Improvement**: 実務Evidenceなしに「改善済み」と断定しません。
+- **Candidate / ACTIVE separation**: Candidateは評価・レビュー・Human Gateを通るまでCanonical Active扱いにしません。
+- **Independent Review**: 作成者のself-checkは独立レビューの代わりになりません。
+- **Risk-based Quality Gate**: 影響が大きいほど、専門レビューとHuman Gateを増やします。
+- **Regression protection**: Validator、foundation tests、deterministic evalで構造契約の後退を検出します。
+- **Before / After Eval**: Capability Growthでは同一Eval contractで比較します。
+- **UNKNOWN — insufficient evidence**: live Evidenceがない有効性・コスト・効率は不明のままにします。
 
-# Shared foundation regression tests
-python3 -m unittest discover -s ai_team/tests -p 'test_*.py' -v
+## 現時点の限界
 
-# Before/After対応のdeterministic foundation eval
-python3 ai_team/evals/run_foundation_evals.py
-```
+次は、このリポジトリの現時点のEvidenceからは断定できません。
 
-## 主要ドキュメント
+| 項目 | 現在の状態 |
+|---|---|
+| Real-world effectiveness | **UNKNOWN — insufficient evidence** |
+| Role / Skill effectiveness | Registryでは `not_evaluated` |
+| Token efficiency | 計測がなければ `unavailable` |
+| Cost reduction | 計測がなければ `unavailable` |
+| Human correction reduction | **UNKNOWN — insufficient evidence** |
+| 実案件での再現性・成功率 | **UNKNOWN — insufficient evidence** |
 
-まず読むべきもの:
+Foundation EvalのPASSはdeterministicな構造契約の合格です。実運用の性能評価、利用者満足、ROI、専門家レビュー不要を意味しません。
 
-- `AGENTS.md`: このリポジトリで作業するAI Agent向けの最上位ルール
-- `CLAUDE.md`: Claude Code向けの実行ガイド
-- `ai_team/README.md`: AI Engineering Teamの基本方針
-- `ai_team/role_scope_matrix.md`: Roleごとの責任範囲
-- `ai_team/request_mode_policy.md`: 依頼タイプの分類
-- `ai_team/output_optimization_policy.md`: 成果物を増やしすぎないためのルール
-- `ai_team/runtime_selection_policy.md`: 呼び出し元Runtime従属とCross-provider禁止
-- `ai_team/model_effort_selection_policy.md`: 現在Runtime内の非拘束effort基準
-- `ai_team/governance/canonical_sources.yaml`: 正本とdeprecated generator
-- `ai_team/capability_registry.yaml`: 19 Roleの構造化Capability
-- `ai_team/governance/ai_employee_lifecycle_registry.yaml`: 19 Roleのrevision、lifecycle、disposition、Evidence判断
-- `ai_team/evals/skill_eval_bindings.yaml`: 29 Skillのpositive / negative Eval binding
-- `ai_team/professional_response_templates.md`: モード別の成果物構成
-- `ai_team/review/professional_quality_gate.md`: 品質レビュー基準
+## 向いている人
 
-## ディレクトリ構成
+- AIを開発パートナーとして使いたい個人開発者、小規模チーム
+- Software / Backend / Frontend / Full-stack Engineer
+- Data Engineer、Analytics Engineer、Data Platform Engineer
+- Cloud / Platform Engineer、SRE、Security Engineer、QA Engineer
+- AI / ML / LLM / RAG Engineer
+- Technical Lead、Architect、Product Manager、Consultant、FDE
+- 設計、実装、レビュー、ドキュメント作成を、責任境界と品質ゲート付きで進めたい人
+
+## ディレクトリ構成と主要ドキュメント
 
 ```text
 .
-├── AGENTS.md
-├── CLAUDE.md
-├── README.md
-├── ai_team/
-│   ├── roles/
-│   ├── review/
-│   ├── workflows/
-│   └── fde/
-├── skills/
-├── templates/
-├── input/
-├── output/
-├── tools/                    # validatorのみshared。その他はlocal-only
-├── ai_team/evals/
-├── ai_team/tests/
-├── claude_code_team_execution.md
-└── codex_team_execution.md
+├── README.md                       # この入口
+├── AGENTS.md                       # AI Agentが作業する際の最上位ルール
+├── CLAUDE.md                       # Claude Code向けの補足ガイド
+├── ai_team/                        # Role、Policy、Workflow、Review、Governance、Eval
+├── skills/                         # Skill定義と利用説明
+├── templates/                      # 設計・実装・テスト・運用などのテンプレート
+├── input/                          # 利用者ローカルの依頼・資料
+├── output/                         # 利用者ローカルの成果物
+├── tools/validate_repository.py    # shared repository validator
+├── ai_team/tests/                  # shared foundation regression tests
+├── ai_team/evals/                  # deterministic foundation eval
+├── codex_team_execution.md         # Codexからの実行ガイド
+└── claude_code_team_execution.md   # Claude Codeからの実行ガイド
 ```
 
-## 成果物作成時の最低限チェック
+最初に読む候補は次です。
 
-成果物を作る前:
+- [AI Team Overview](ai_team/team_overview.md)
+- [Role Scope Matrix](ai_team/role_scope_matrix.md)
+- [Request Mode Policy](ai_team/request_mode_policy.md)
+- [Runtime Neutral Design Policy](ai_team/runtime_neutral_design_policy.md)
+- [Capability Registry](ai_team/capability_registry.yaml)
+- [AI Employee Lifecycle Registry](ai_team/governance/ai_employee_lifecycle_registry.yaml)
+- [Skill Lifecycle Registry](ai_team/governance/skill_lifecycle_registry.yaml)
+- [Canonical Sources](ai_team/governance/canonical_sources.yaml)
 
-- 目的、前提、MVP範囲、スケール時の拡張余地を整理したか
-- 要件の曖昧さ、設計リスク、運用リスク、データ品質リスク、セキュリティリスクを見たか
-- `input/` と既存 `output/` を確認したか
-- 軽量依頼か、計画が必要な依頼かを判断したか
-- 呼び出し元Runtimeを維持し、別Provider/Runtimeを自動起動していないか
+## FAQ
 
-成果物を出す前:
+### 決まったフォーマットで依頼する必要がありますか？
 
-- `output.md` に本成果物と制御ブロックを統合したか
-- 実行したテスト、未実行テスト、残存リスクを書いたか
-- 顧客提出物や本番影響がある場合、品質レビューの要否を判断したか
-- 破壊的変更がある場合、理由、影響範囲、移行、ロールバックを書いたか
-- 不明点を断定せず、仮定と未確認事項に分けたか
+いいえ。自然な文章で自由に依頼できます。参考フォーマットは任意です。
 
-## トラブルシュート
+### CodexとClaude Codeのどちらで使えますか？
 
-### どのRoleを使うか迷う
+両方のRuntime向けガイドがあります。実行は、利用者が開いているCodexまたはClaude CodeのRuntime内で完結します。AI社員は別Runtimeを自動起動しません。
 
-`ai_team/role_scope_matrix.md` を確認します。顧客・現場課題ならFDE、技術方針ならTech Lead、データ処理ならData Engineer、データ基盤標準化ならData Platform Engineerを起点にします。
+### AI社員は特定Modelに固定されていますか？
 
-### 成果物が増えすぎる
+いいえ。AI社員のIdentityにはProviderやModelを固定しません。実行時は呼び出し元Runtimeの現在のModelとtoken sourceを使い、Model / effortの推奨は非拘束です。
 
-`ai_team/output_optimization_policy.md` を確認します。基本は `output.md` 1本です。`_internal/` は必要性ゲートを満たす場合だけ使います。
+### すべて自動で実装・本番反映されますか？
 
-### 検証で失敗する
+いいえ。High / Critical Riskでは独立レビューが必要で、Critical操作とCanonical promotionにはCeles Human Gateが必要です。出力を無条件で本番投入しないでください。
 
-まず以下を実行します。
+### Second Brainは必須ですか？
 
-```bash
-python3 tools/validate_repository.py
-python3 -m unittest discover -s ai_team/tests -p 'test_*.py' -v
-python3 ai_team/evals/run_foundation_evals.py
-```
+いいえ。rootを解決できる場合だけ利用する任意のLocal Private Stateです。なくてもShared Coreを使って作業を継続します。
 
-失敗した場合は、エラーメッセージ、対象ファイル、再現コマンドを `input/` に残して、Verification Modeで扱います。
+### 他利用者に自分のinput / outputは見えますか？
 
-### 顧客情報をどこまで入れてよいか迷う
+共有Coreへ自動収集・自動同期する設計ではありません。`input/`、`output/`、`_internal/`、Second Brainなどはprivate扱いでGit除外・Validator検査の対象です。ただし、秘密情報の混入を完全に防ぐ保証ではないため、入力前のマスク・最小化は必要です。
 
-原則として秘密情報は入れません。顧客名、業務概要、スキーマ、匿名化済みサンプル、マスク済みエラーは扱えますが、APIキー、認証情報、個人情報、契約上の機密情報は入れないでください。
+### AI社員やSkillは増えますか？
 
-## 運用上の留意点
+EvidenceのあるCapability Gapを起点に、Candidate、Before / After Eval、Independent Review、Celes Human Gateを通る場合だけ追加・変更・昇格できます。数を増やすこと自体は目的ではありません。
 
-- ルールが多いため、最初から全ファイルを読むより、依頼に必要なRole、Skill、Templateに絞って読む
-- READMEは入口、詳細ルールは `ai_team/` と `skills/` を正とする
-- 軽量依頼では過剰な計画書を作らない
-- 大きな設計変更、Skill追加、Role変更は既存ポリシーとの整合を確認する
-- 再利用価値のある成果物は、レビュー完了後にKnowledge Curatorでナレッジ化を検討する
+## 変更・運用時の最低限チェック
+
+- `input/` と既存 `output/` を確認する。
+- 目的、前提、MVP、スケール時の拡張余地、設計・運用・データ品質・セキュリティRiskを整理する。
+- 呼び出し元Runtimeを維持し、未確認のModel / token / costを推測しない。
+- 実行した検証、未実行検証、残存Riskを成果物に記録する。
+- 破壊的変更には理由、影響範囲、移行、ロールバックを付ける。
+- 顧客提出、本番影響、security、再利用物はRisk-based Quality Gateを適用する。
+
+詳しい作業ルールは [AGENTS.md](AGENTS.md) を参照してください。
