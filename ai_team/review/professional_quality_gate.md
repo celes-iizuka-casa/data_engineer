@@ -21,6 +21,7 @@
 - 呼び出し元Runtimeを維持し、未確認のModel/token/costを推測していないか。
 - 振り返り（`output/.../_internal/task_retrospective.md`）が作成されているか。
 - FDE成果物の場合、`../fde/fde_quality_gate.md` の成果物別チェック（特にEngineering HandoffのRole別依頼10種と受入条件の検証方法）に合格しているか。
+- チーム拡張（Role / Skill追加）を含む場合、`../agent_quality_gate.md` のチェックに合格しているか。
 
 ## 判定
 - PASS: 必須観点を満たす。

@@ -16,9 +16,11 @@
 - FDE成果物（Discovery / 業務フロー / MVP / Handoff / 導入定着 / 指標 / フィードバック）は `../fde/fde_quality_gate.md` の成果物別チェックを併用している。
 - Risk別レビュー深度は `risk_based_quality_gates.yaml` と一致している。
 - Canonical promotionにはBefore/After Eval、Independent Review、Celes Human Gate recordがある。
+- Role / Skillを追加・変更した場合、`../agent_quality_gate.md` のチェックを通過している。
 
 ## 参照
 - `../professional_only_policy.md`
+- `../agent_quality_gate.md`
 - `quality_scoring_rubric.md`
 - `professional_quality_gate.md`
 - `definition_of_done.md`

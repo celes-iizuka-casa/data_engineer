@@ -39,3 +39,7 @@ bindings:
   - {skill: skill-adoption-planning, positive_case: SF-FDE-ADOPTION-001, negative_case: SF-FDE-DISCOVERY-001, conflict_group: fde_adoption, rubric: *required_rubric}
   - {skill: skill-success-metrics-design, positive_case: SF-FDE-SCOPING-001, negative_case: SF-FDE-DISCOVERY-001, conflict_group: fde_measurement, rubric: *required_rubric}
   - {skill: skill-feedback-to-backlog, positive_case: SF-FDE-FEEDBACK-001, negative_case: SF-FDE-DISCOVERY-001, conflict_group: fde_feedback, rubric: *required_rubric}
+  - {skill: skill-capability-gap-analysis, positive_case: GC-CAPGAP-001, negative_case: SF-BOUNDED-SQL-001, conflict_group: capability_governance, rubric: *required_rubric}
+  - {skill: skill-agent-creation, positive_case: GC-CAPGAP-002, negative_case: GC-CAPGAP-001, conflict_group: capability_governance, rubric: *required_rubric}
+  - {skill: skill-skill-creation, positive_case: GC-CAPGAP-001, negative_case: GC-CAPGAP-002, conflict_group: capability_governance, rubric: *required_rubric}
+  - {skill: skill-agent-registry-management, positive_case: GC-CAPGAP-002, negative_case: SF-BOUNDED-SQL-001, conflict_group: capability_governance, rubric: *required_rubric}

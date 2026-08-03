@@ -69,6 +69,10 @@ ownership:
       - "ai_team/professional_response_templates.md"
       - "ai_team/role_scope_matrix.md"
       - "ai_team/team_overview.md"
+      - "ai_team/agent_registry.md"
+      - "ai_team/capability_matrix.md"
+      - "ai_team/role_skill_map.md"
+      - "ai_team/agent_quality_gate.md"
       - "docs/**/*"
     mode: manual_canonical
     historical_docs_require_superseded_marker: true

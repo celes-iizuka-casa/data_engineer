@@ -41,6 +41,10 @@ Rootは `personalization_policy.md` の順序（明示指定 → `SECOND_BRAIN_R
 
 既存ノートを無条件上書きせず、競合は利用者判断へ戻す。Second BrainからSkill/Policyを直接更新しない。
 
+## チーム拡張の整理対象
+
+Role / Skill追加を含む成果物がAcceptedになった場合、追加したRole / Skill、追加理由、Capability Gap、判断ログ、追加テンプレート、Quality Gate、再利用可能なパターンを整理候補に含める。書き込みGate・手順・root解決は上記と同一で、保存先は現在利用者のLocal root配下のみとする。
+
 ## Canonical Growthとの境界
 
 Second BrainはPersonalizationとLocal Knowledgeのsourceであり、Canonical Growth Authorityではない。Universal candidateは `capability_growth_policy.yaml` のEvidence・Before/After Eval・Independent Review・Celes Human Gateを通す。

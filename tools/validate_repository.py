@@ -58,6 +58,11 @@ SKILLS = [
     "skill-adoption-planning",
     "skill-success-metrics-design",
     "skill-feedback-to-backlog",
+    # Capability Architect skills (role: capability_architect)
+    "skill-capability-gap-analysis",
+    "skill-agent-creation",
+    "skill-skill-creation",
+    "skill-agent-registry-management",
 ]
 
 ROLES = [
@@ -410,6 +415,13 @@ TEMPLATES = [
     "fde/customer_explanation_template.md",
     "examples/golden_sample_output.md",
     "examples/golden_sample_quality_review.md",
+    "agent_creation/capability_gap_analysis_template.md",
+    "agent_creation/agent_need_assessment_template.md",
+    "agent_creation/new_agent_proposal_template.md",
+    "agent_creation/new_agent_definition_template.md",
+    "agent_creation/new_skill_definition_template.md",
+    "agent_creation/agent_registry_entry_template.md",
+    "agent_creation/capability_matrix_entry_template.md",
 ]
 
 ROLE_HEADINGS = [
@@ -2603,7 +2615,9 @@ def validate_capability_foundation(validation: Validation) -> None:
             "DISCOVERED", "PROPOSED", "CANDIDATE", "EVALUATED", "INDEPENDENTLY_REVIEWED",
             "HUMAN_GATE", "ACTIVE", "DEPRECATED",
         }
-        expected_dispositions = {"KEEP", "UPDATE", "MERGE", "SPLIT", "DEPRECATE", "UNKNOWN"}
+        expected_dispositions = {
+            "CREATE", "KEEP", "UPDATE", "MERGE", "SPLIT", "DEPRECATE", "UNKNOWN",
+        }
         if set(lifecycle.get("lifecycle_states", [])) != expected_states:
             validation.fail("Skill lifecycle states are invalid")
         if set(lifecycle.get("dispositions", [])) != expected_dispositions:

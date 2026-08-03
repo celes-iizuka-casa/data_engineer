@@ -60,7 +60,25 @@ decision_history_contract:
   rollback_required_fields: [promoted_revision, rollback_revision, reason, evidence_refs, celes_decision]
   persistence: append_only_across_reachable_git_history
   mutation_or_deletion: forbidden
-decision_history: []
+decision_history:
+  - schema_version: "1.1"
+    gate_id: "Celes-HG-20260802-CAPABILITY-ARCHITECT-CREATE"
+    decision_type: canonical_promotion
+    subject_id: capability_architect
+    from_revision: null
+    subject_revision: "sha256:aec16f5719a2fd8612dd6d00952750695edf455ee8b0d899bdce91086b2aad66"
+    target_state: ACTIVE
+    disposition: CREATE
+    decision: PROMOTE
+    decided_by: Celes
+    timestamp: "2026-08-03T06:37:02+09:00"
+    before_after_eval_ref: "local-evidence:capability-gap-agent-creation-20260802/before_after_evaluation"
+    independent_review_ref: "local-review:capability-gap-agent-creation-20260802/quality_review_report"
+    evidence_refs:
+      - "celes-instruction:20260802-capability-gap-agent-creation"
+      - "local-evidence:capability-gap-agent-creation-20260802/capability_gap_analysis"
+      - "local-evidence:capability-gap-agent-creation-20260802/agent_need_assessment"
+    notes: "Recorded from Celes's written instruction of 2026-08-02 explicitly ordering creation of AI Capability Architect together with the capability gap / agent creation mechanism. Structural contract promotion only; live effectiveness remains not_evaluated. Rollback path remains available; commit and push are not part of this decision."
 decision_rules:
   create_requires:
     - evidenced_responsibility_or_capability_gap
@@ -263,3 +281,34 @@ roles:
     decision_rationale: "Dataset, training, evaluation, serving, and model monitoring remain distinct from LLM application behavior."
     overlap_review: boundary_preserved
     evidence_refs: ["ai_team/capability_registry.yaml#ml_engineer", "ai_team/roles/ml_engineer.md"]
+  - id: capability_architect
+    active_revision: "sha256:aec16f5719a2fd8612dd6d00952750695edf455ee8b0d899bdce91086b2aad66"
+    state: ACTIVE
+    candidate_revision: "sha256:aec16f5719a2fd8612dd6d00952750695edf455ee8b0d899bdce91086b2aad66"
+    candidate_state: ACTIVE
+    disposition: CREATE
+    effectiveness: not_evaluated
+    decision_rationale: "Team capability design, gap classification, creation governance, and anti-sprawl stewardship form a distinct responsibility boundary that no existing role owns; it is separated from PMO orchestration, DevEx tooling, and Tech Lead architecture authority."
+    overlap_review: boundary_preserved
+    evidence_refs: ["ai_team/capability_registry.yaml#capability_architect", "ai_team/roles/capability_architect.md", "local-evidence:capability-gap-agent-creation-20260802/capability_gap_analysis"]
+    create_criteria:
+      evidenced_responsibility_or_capability_gap: "local-evidence:capability-gap-agent-creation-20260802/capability_gap_analysis#Gap分類"
+      existing_role_update_cannot_resolve: "local-evidence:capability-gap-agent-creation-20260802/agent_need_assessment#既存Roleでは不足する理由"
+      merge_or_split_cannot_resolve: "local-evidence:capability-gap-agent-creation-20260802/agent_need_assessment#Skill追加では不足する理由"
+      recurring_reuse_value: "local-evidence:capability-gap-agent-creation-20260802/agent_need_assessment#再利用可能性"
+      clear_responsibility_boundary: "ai_team/roles/capability_architect.md#責任を持たない領域"
+      evaluable_contract: "ai_team/roles/capability_architect.md#完了条件"
+      overlap_explained: "local-evidence:capability-gap-agent-creation-20260802/new_agent_proposal#既存Roleとの違い"
+    transition:
+      from_state: PROPOSED
+      from_revision: null
+      to_state: ACTIVE
+      candidate_revision: "sha256:aec16f5719a2fd8612dd6d00952750695edf455ee8b0d899bdce91086b2aad66"
+      evidence_refs:
+        - "celes-instruction:20260802-capability-gap-agent-creation"
+        - "local-evidence:capability-gap-agent-creation-20260802/capability_gap_analysis"
+        - "local-evidence:capability-gap-agent-creation-20260802/agent_need_assessment"
+      before_after_eval_ref: "local-evidence:capability-gap-agent-creation-20260802/before_after_evaluation"
+      independent_review_ref: "local-review:capability-gap-agent-creation-20260802/quality_review_report"
+      human_gate_status: promoted
+      celes_human_gate_ref: "Celes-HG-20260802-CAPABILITY-ARCHITECT-CREATE"

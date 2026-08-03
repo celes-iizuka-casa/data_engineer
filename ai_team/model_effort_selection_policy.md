@@ -19,7 +19,7 @@
 | low | typo、整形、単一の可逆な軽微変更 | 対象確認 + focused check |
 | medium | 通常実装、限定設計、単発review | 影響確認 + relevant tests |
 | high | 複数file、Architecture、Security/Data/Operations | alternatives + specialist lens + regression |
-| very_high | 全体基盤、不可逆変更、Critical risk | phase validation + independent specialist review + human gate |
+| very_high | 全体基盤、不可逆変更、Critical risk、Canonical promotion（Role / Skill追加を含むチーム構造変更） | phase validation + independent specialist review + human gate |
 
 Tierは現在Runtime内の作業深度を表し、Model parameterを変更する命令ではない。
 

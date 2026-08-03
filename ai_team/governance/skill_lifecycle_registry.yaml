@@ -6,7 +6,7 @@ revision_strategy:
   value_format: "sha256:<hex>"
   capture: "Each Skill entry stores baseline active_revision and current candidate_revision."
 lifecycle_states: [DISCOVERED, PROPOSED, CANDIDATE, EVALUATED, INDEPENDENTLY_REVIEWED, HUMAN_GATE, ACTIVE, DEPRECATED]
-dispositions: [KEEP, UPDATE, MERGE, SPLIT, DEPRECATE, UNKNOWN]
+dispositions: [CREATE, KEEP, UPDATE, MERGE, SPLIT, DEPRECATE, UNKNOWN]
 transition_record_contract:
   required_fields: [from_state, to_state, candidate_revision, evidence_refs, independent_review_ref, human_gate_status]
   human_gate_status: [not_required, pending, promoted, rejected, rework, rolled_back]
@@ -24,10 +24,10 @@ baseline:
   observed_on: "2026-07-14"
   usage_evidence: unavailable
 candidate:
-  source: "Celes-approved canonical promotion candidate based on HEAD 437bfe2"
-  purpose: "Align 19 Role Skills with the risk-based Independent Review gate"
+  source: "Celes-instructed capability gap / agent creation mechanism (request of 2026-08-02)"
+  purpose: "Add the 4 Capability Architect skills (gap analysis, agent creation, skill creation, registry management)"
   human_gate_status: promoted
-  changed_skills: 19
+  changed_skills: 4
   effectiveness: not_evaluated
   improvement_type: structural_contract
   effectiveness_claim: "UNKNOWN — insufficient live evidence"
@@ -70,26 +70,45 @@ promotion_history:
       - "tools/validate_repository.py"
       - "ai_team/evals/skill_eval_bindings.yaml"
     notes: "Celes approved PROMOTE in the current task. Structural contract promotion only; live Skill effectiveness remains not_evaluated. Commit and push are not part of this decision."
+  - schema_version: "1.1"
+    gate_id: "Celes-HG-20260802-CAPABILITY-SKILLS-CREATE"
+    decision_type: canonical_promotion
+    subject_id: capability-architect-skill-creation-20260802
+    from_revision: "sha256:b40e3c161959d2efb0248ca41eef0ca838136f5f7944ba115f3661b6227fb2f3"
+    subject_revision: "sha256:6cb23226c5856f52269e9ac82f853da188b71dba5b74427e4df4fbca678114cc"
+    target_state: ACTIVE
+    disposition: CREATE
+    decision: PROMOTE
+    decided_by: Celes
+    timestamp: "2026-08-03T06:37:02+09:00"
+    before_after_eval_ref: "local-evidence:capability-gap-agent-creation-20260802/before_after_evaluation"
+    independent_review_ref: "local-review:capability-gap-agent-creation-20260802/quality_review_report"
+    evidence_refs:
+      - "ai_team/evals/run_foundation_evals.py"
+      - "ai_team/tests/test_ai_team_foundation.py"
+      - "tools/validate_repository.py"
+      - "ai_team/evals/skill_eval_bindings.yaml"
+    notes: "Recorded from Celes's written instruction of 2026-08-02 ordering the four Capability Architect skills. subject_revision is the sha256 over the four new skill content revisions. Structural contract promotion only; live effectiveness remains not_evaluated. Commit and push are not part of this decision."
 last_promotion_decision:
   schema_version: "1.1"
-  gate_id: "Celes-HG-20260714-AI-CAPABILITY-PROMOTE"
+  gate_id: "Celes-HG-20260802-CAPABILITY-SKILLS-CREATE"
   decision_type: canonical_promotion
-  subject_id: ai-engineering-role-skill-review-alignment-20260714
-  from_revision: "sha256:b5a1793e71bb2186244a89cbe22a903ae261bfde54aa0b255f10cafeff9f3aa8"
-  subject_revision: "sha256:b40e3c161959d2efb0248ca41eef0ca838136f5f7944ba115f3661b6227fb2f3"
+  subject_id: capability-architect-skill-creation-20260802
+  from_revision: "sha256:b40e3c161959d2efb0248ca41eef0ca838136f5f7944ba115f3661b6227fb2f3"
+  subject_revision: "sha256:6cb23226c5856f52269e9ac82f853da188b71dba5b74427e4df4fbca678114cc"
   target_state: ACTIVE
-  disposition: UPDATE
+  disposition: CREATE
   decision: PROMOTE
   decided_by: Celes
-  timestamp: "2026-07-14T12:50:18+09:00"
-  before_after_eval_ref: "local-evidence:ai-capability-growth-evolution/before_after_evaluation"
-  independent_review_ref: "local-review:ai-capability-growth-evolution/quality_review_report"
+  timestamp: "2026-08-03T06:37:02+09:00"
+  before_after_eval_ref: "local-evidence:capability-gap-agent-creation-20260802/before_after_evaluation"
+  independent_review_ref: "local-review:capability-gap-agent-creation-20260802/quality_review_report"
   evidence_refs:
     - "ai_team/evals/run_foundation_evals.py"
     - "ai_team/tests/test_ai_team_foundation.py"
     - "tools/validate_repository.py"
     - "ai_team/evals/skill_eval_bindings.yaml"
-  notes: "Celes approved PROMOTE in the current task. Structural contract promotion only; live Skill effectiveness remains not_evaluated. Commit and push are not part of this decision."
+  notes: "Recorded from Celes's written instruction of 2026-08-02 ordering the four Capability Architect skills. subject_revision is the sha256 over the four new skill content revisions. Structural contract promotion only; live effectiveness remains not_evaluated. Commit and push are not part of this decision."
 skills:
   - id: skill-engineering-pmo
     active_revision: "sha256:ab716c943bfb6a2b97e4331a45dfe612f50cec9234bfbfb9d62e242b82841ea9"
@@ -652,3 +671,87 @@ skills:
       - type: structural
         value: "listed in skills/index.yaml and passed baseline repository validation"
     parent_skill: skill-forward-deployed-engineer
+  - id: skill-capability-gap-analysis
+    active_revision: "sha256:3d78173a7f0ff22f390351aa7486f0330b5efa168a76e210bc6655229edd5a0c"
+    candidate_revision: "sha256:3d78173a7f0ff22f390351aa7486f0330b5efa168a76e210bc6655229edd5a0c"
+    state: ACTIVE
+    candidate_state: ACTIVE
+    disposition: CREATE
+    transition:
+      from_state: ACTIVE
+      to_state: ACTIVE
+      candidate_revision: "sha256:3d78173a7f0ff22f390351aa7486f0330b5efa168a76e210bc6655229edd5a0c"
+      evidence_refs: ["local-evidence:capability-gap-agent-creation-20260802/capability_gap_analysis", "ai_team/capability_gap_policy.md"]
+      independent_review_ref: "local-review:capability-gap-agent-creation-20260802/quality_review_report"
+      human_gate_status: promoted
+    disposition_confidence: structural_only
+    effectiveness: not_evaluated
+    usage_evidence: unavailable
+    evidence:
+      - type: declared
+        value: "created per Celes written instruction of 2026-08-02 (capability gap / agent creation mechanism)"
+      - type: structural
+        value: "listed in skills/index.yaml and passed repository validation"
+  - id: skill-agent-creation
+    active_revision: "sha256:e0de32c434d0c7505992bbb7ffa23d42a33b3e9a4e2d493bb42fe2dc8894433a"
+    candidate_revision: "sha256:e0de32c434d0c7505992bbb7ffa23d42a33b3e9a4e2d493bb42fe2dc8894433a"
+    state: ACTIVE
+    candidate_state: ACTIVE
+    disposition: CREATE
+    transition:
+      from_state: ACTIVE
+      to_state: ACTIVE
+      candidate_revision: "sha256:e0de32c434d0c7505992bbb7ffa23d42a33b3e9a4e2d493bb42fe2dc8894433a"
+      evidence_refs: ["local-evidence:capability-gap-agent-creation-20260802/agent_need_assessment", "ai_team/agent_creation_policy.md"]
+      independent_review_ref: "local-review:capability-gap-agent-creation-20260802/quality_review_report"
+      human_gate_status: promoted
+    disposition_confidence: structural_only
+    effectiveness: not_evaluated
+    usage_evidence: unavailable
+    evidence:
+      - type: declared
+        value: "created per Celes written instruction of 2026-08-02 (capability gap / agent creation mechanism)"
+      - type: structural
+        value: "listed in skills/index.yaml and passed repository validation"
+  - id: skill-skill-creation
+    active_revision: "sha256:1c65680c94b02368a0c3ffdba1612ac77c13fe3590fe12b25748a3c7ab7c1276"
+    candidate_revision: "sha256:1c65680c94b02368a0c3ffdba1612ac77c13fe3590fe12b25748a3c7ab7c1276"
+    state: ACTIVE
+    candidate_state: ACTIVE
+    disposition: CREATE
+    transition:
+      from_state: ACTIVE
+      to_state: ACTIVE
+      candidate_revision: "sha256:1c65680c94b02368a0c3ffdba1612ac77c13fe3590fe12b25748a3c7ab7c1276"
+      evidence_refs: ["local-evidence:capability-gap-agent-creation-20260802/new_skill_creation_report", "ai_team/skill_creation_policy.md"]
+      independent_review_ref: "local-review:capability-gap-agent-creation-20260802/quality_review_report"
+      human_gate_status: promoted
+    disposition_confidence: structural_only
+    effectiveness: not_evaluated
+    usage_evidence: unavailable
+    evidence:
+      - type: declared
+        value: "created per Celes written instruction of 2026-08-02 (capability gap / agent creation mechanism)"
+      - type: structural
+        value: "listed in skills/index.yaml and passed repository validation"
+  - id: skill-agent-registry-management
+    active_revision: "sha256:d4814b0d992c5963a358d1ec6dc036cee202b7758bf0f2825d895aaffb54e2e0"
+    candidate_revision: "sha256:d4814b0d992c5963a358d1ec6dc036cee202b7758bf0f2825d895aaffb54e2e0"
+    state: ACTIVE
+    candidate_state: ACTIVE
+    disposition: CREATE
+    transition:
+      from_state: ACTIVE
+      to_state: ACTIVE
+      candidate_revision: "sha256:d4814b0d992c5963a358d1ec6dc036cee202b7758bf0f2825d895aaffb54e2e0"
+      evidence_refs: ["local-evidence:capability-gap-agent-creation-20260802/new_agent_creation_report", "ai_team/agent_registry.md"]
+      independent_review_ref: "local-review:capability-gap-agent-creation-20260802/quality_review_report"
+      human_gate_status: promoted
+    disposition_confidence: structural_only
+    effectiveness: not_evaluated
+    usage_evidence: unavailable
+    evidence:
+      - type: declared
+        value: "created per Celes written instruction of 2026-08-02 (capability gap / agent creation mechanism)"
+      - type: structural
+        value: "listed in skills/index.yaml and passed repository validation"

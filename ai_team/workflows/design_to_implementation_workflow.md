@@ -49,6 +49,7 @@
 - **能力・effort提案**: 設計・実装・検証で必要な能力を `model_selection_policy.md` に従い非拘束で記録する。呼び出し元の現在Modelは変更しない
 - **振り返り**: 実装完了後に `retrospective_policy.md` に従い `output/.../_internal/task_retrospective.md` を作成する
 - **第二の脳整理**: 成果物が承認されたとき、`obsidian_write_policy.md` のトリガーを満たした場合のみ Knowledge Curator が整理する
+- **Capability Gap**: 実装の途中で既存Role / Skillに無い能力が必要と判明した場合は、`capability_gap_policy.md` に従いAI Capability ArchitectがGap判定を行い、必要最小限の追加（Skill追加優先・新Role追加は最後の手段、Celes Human Gate必須）を経てから続行する
 
 ## 参照
 
@@ -56,3 +57,4 @@
 - `ai_team/model_selection_policy.md`
 - `ai_team/retrospective_policy.md`
 - `ai_team/obsidian_write_policy.md`
+- `ai_team/capability_gap_policy.md`

@@ -43,6 +43,7 @@
 - Role守備範囲不足
 - Skill手順不足
 - テンプレート不足
+- Capability不足（既存Role / Skillに無い能力。`capability_gap_policy.md` のGap判定へ回す）
 
 ## 解析手順
 

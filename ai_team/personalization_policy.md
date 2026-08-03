@@ -44,6 +44,10 @@ Home directoryを無差別scanしない。rootの利用者所有が確認でき�
 
 依頼者profileと成果物の読み手を分ける。顧客の属性・案件情報をshared defaultへ書き戻さない。
 
+## チーム拡張成果物のPersonalization
+
+Capability Gap分析・新Role / Skill提案などのチーム拡張成果物（`capability_gap_policy.md`）も、現在利用者のprofileに合わせて説明粒度を調整する。profileが不明な場合は匿名shared defaultに従い、Gap分類やライフサイクル用語には1行の補足を付ける。新設するRole / Skill定義自体には個人属性を書き込まない。
+
 ## 参照
 
 - `profiles/current_user_profile.yaml`

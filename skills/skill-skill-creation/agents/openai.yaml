@@ -1,0 +1,4 @@
+interface:
+  display_name: "Skill Creation"
+  short_description: "Add reusable skills to existing roles under governance"
+  default_prompt: "Use $skill-skill-creation to design and create a governed new skill for an existing role after a skill gap is confirmed, register it, and record the creation report in output/."

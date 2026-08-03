@@ -22,7 +22,7 @@ Each mode has specific required sections (see `professional_response_templates.m
 ## How Requests Work
 
 1. **Intake**: Check `input/` for the request and any context/code/errors
-2. **Route**: Use `ai_team/role_scope_matrix.md` to pick the right role(s)
+2. **Route**: Use `ai_team/role_scope_matrix.md` to pick the right role(s). 新規領域で既存Role / Skillに不足がある場合は `ai_team/capability_gap_policy.md` のCapability Gap判定（担当: AI Capability Architect）を先に行い、不足時のみ最小の追加（Skill追加優先・新Role追加はCeles Human Gate必須）を行う
 3. **Classify**: Check `ai_team/request_mode_policy.md` to determine Professional Mode(s)
 4. **Decide scope**: Use `ai_team/output_optimization_policy.md` to determine if this is a "lightweight request" (skip work plan) or needs detailed planning
 5. **Execute**: Use the relevant `skills/skill-<role-name>/` to guide your work
@@ -52,7 +52,7 @@ python3 ai_team/evals/run_foundation_evals.py
 │   └── settings.json              # Hooks (e.g., Stop hook reminder)
 │
 ├── ai_team/                       # Policies & role definitions
-│   ├── roles/                     # 19 role definitions (data_engineer.md, product_manager.md, etc.)
+│   ├── roles/                     # 20 role definitions (data_engineer.md, capability_architect.md, etc.)
 │   ├── professional_standards.md  # What "professional" means, what output to exclude
 │   ├── role_scope_matrix.md       # Which roles handle which request types
 │   ├── request_mode_policy.md     # How to classify requests into Professional Modes
@@ -60,7 +60,7 @@ python3 ai_team/evals/run_foundation_evals.py
 │   ├── professional_response_templates.md  # Required sections per mode
 │   └── obsidian_write_policy.md   # When to sync deliverables to second brain
 │
-├── skills/                        # 29 Skill definitions (19 Role Skills + 10 FDE sub-Skills)
+├── skills/                        # 33 Skill definitions (20 Role Skills + 10 FDE sub-Skills + 4 Capability Architect Skills)
 │   ├── skill-<role-name>/         # Each skill guides how that role operates
 │   └── README.md                  # Skill index & activation rules
 │

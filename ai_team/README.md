@@ -42,5 +42,11 @@
 - `evals/documentation_semantic_review.schema.json`
 - `review/risk_based_quality_gates.yaml`
 - `output_optimization_policy.md`
+- `capability_gap_policy.md`（依頼→必要Capability→Gap分類）
+- `agent_creation_policy.md`（新Role追加の判定と手順）
+- `skill_creation_policy.md`（新Skill追加の判定と手順）
+- `agent_lifecycle_policy.md`（Role / Skillの状態管理の運用ガイド）
+- `agent_quality_gate.md`（新Agent / Skill追加時の品質ゲート）
+- `agent_registry.md` / `capability_matrix.md` / `role_skill_map.md`（依頼受付時に読む一覧view。正本は `capability_registry.yaml` と governance登録簿）
 
 Foundation EvalのPASSはdeterministicな構造契約の合格であり、live AI実務性能の合格ではない。live EvidenceがないCapability effectivenessは`UNKNOWN — insufficient evidence`とする。

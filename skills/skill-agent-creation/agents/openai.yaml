@@ -1,0 +1,4 @@
+interface:
+  display_name: "Agent Creation"
+  short_description: "Create governed new AI employee roles when gaps demand"
+  default_prompt: "Use $skill-agent-creation to draft a governed proposal, definition set, and registration for a new AI employee role after an agent gap is confirmed, and record the creation report in output/."

@@ -630,7 +630,7 @@ class FoundationContractTests(unittest.TestCase):
         for item in lifecycle["skills"]:
             with self.subTest(skill=item["id"]):
                 self.assertEqual("ACTIVE", item["state"])
-                self.assertEqual("UPDATE", item["disposition"])
+                self.assertIn(item["disposition"], {"UPDATE", "CREATE"})
                 self.assertEqual(
                     validator.skill_content_revision(item["id"], ROOT),
                     item["candidate_revision"],

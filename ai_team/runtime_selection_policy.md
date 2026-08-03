@@ -13,6 +13,7 @@ AI社員を呼び出し元Runtimeへ従属させ、AI社員自身によるProvid
 - Cross-provider invocation、fallback、dynamic provider switchingを禁止する。
 - Role / Skill / WorkflowにProviderまたはModel固定identityを埋め込まない。
 - 現在のRuntimeで不足する能力がある場合は、実行を勝手に移さず、制約とhandoff候補を報告する。
+- チーム拡張（`agent_creation_policy.md` / `skill_creation_policy.md`）で追加されるRole / Skillにも本契約を適用し、ProviderまたはModel固定identityを与えない。
 
 ## 実行計画への記録
 

@@ -27,6 +27,7 @@
 6. QAが再現条件、受入条件、回帰テスト観点を定義する
 7. PMOが優先順位、担当、期限、セレスへの判断依頼を整理する
 8. 現在利用者の明示依頼、またはAccepted + 再利用価値 + Local root確認を満たす場合だけ、Knowledge Curatorが再利用できる失敗パターンと判断ログをLocal Second Brainへ反映する
+9. 対応に必要な能力が既存Role / Skillにないと判明した場合は、AI Capability Architectが `../capability_gap_policy.md` に従いGap判定を行い、必要最小限のSkill / Role追加（新Role追加はCeles Human Gate必須）を提案してから次サイクルへ渡す
 
 ## 品質ゲート
 - フィードバックの出典と業務場面が追跡できる

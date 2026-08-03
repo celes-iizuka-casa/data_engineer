@@ -1,0 +1,4 @@
+interface:
+  display_name: "Agent Registry Management"
+  short_description: "Maintain agent registry and capability matrix views"
+  default_prompt: "Use $skill-agent-registry-management to reconcile agent_registry, capability_matrix, and role_skill_map with the canonical capability registry and lifecycle registries, then record the update history."

@@ -65,7 +65,7 @@ AI社員は、依頼の担当範囲と判断責任を定義したRoleです。�
 - Decision rights、Escalation conditions
 - Handoff先と完了条件
 
-現在、19 RoleがLifecycle Registryで `ACTIVE` として登録されています。例として、PMO、FDE、Tech Lead、Frontend / Backend / Full-stack、Data Engineer / Data Platform Engineer、Cloud / Infrastructure、SRE、Security、QA、LLM Application、ML、Integration、Product Manager、Knowledge Curatorがあります。全一覧と責任境界は [Role Scope Matrix](ai_team/role_scope_matrix.md) を参照してください。
+現在、20 RoleがLifecycle Registryで `ACTIVE` として登録されています。例として、PMO、Capability Architect、FDE、Tech Lead、Frontend / Backend / Full-stack、Data Engineer / Data Platform Engineer、Cloud / Infrastructure、SRE、Security、QA、LLM Application、ML、Integration、Product Manager、Knowledge Curatorがあります。全一覧と責任境界は [Role Scope Matrix](ai_team/role_scope_matrix.md) を参照してください。
 
 `ACTIVE` は、共有Coreとしての定義と登録状態を表します。各Roleの実案件での有効性は、現時点では `not_evaluated`、すなわち **UNKNOWN — insufficient evidence** です。
 
@@ -78,7 +78,7 @@ Skillは、Roleが依頼を扱う際の専門的な実行指針です。Roleが�
 - `skills/*/README.md`: 利用者向け説明
 - `skills/*/agents/openai.yaml`: Runtime UI用アダプター。Role/SkillのIdentity Authorityではありません。
 
-現在のSkill Registryには29 Skillがあります。19 Roleに対応する主要Skillと、FDEの10 Sub-skill（Discovery、業務フロー、Stakeholder、MVP、Engineering Handoff、Adoption、Metricsなど）で構成されます。全一覧は [Skills README](skills/README.md) を参照してください。
+現在のSkill Registryには33 Skillがあります。20 Roleに対応する主要Skill、FDEの10 Sub-skill（Discovery、業務フロー、Stakeholder、MVP、Engineering Handoff、Adoption、Metricsなど）、Capability Architectの4 Skill（Capability Gap分析、Agent Creation、Skill Creation、Agent Registry管理）で構成されます。全一覧は [Skills README](skills/README.md) を参照してください。
 
 ### Team Formation
 
@@ -193,7 +193,7 @@ DISCOVERED → PROPOSED → CANDIDATE → EVALUATED
 
 Skillも同じく `DISCOVERED` から `ACTIVE`、`DEPRECATED` までのLifecycleを持ちます。新Skillは、EvidenceのあるCapability Gapがあり、既存Skill更新・統合・Workflow・Documentation・Toolなどでは解決できず、再利用可能かつ評価可能な場合だけ候補にできます。
 
-現在のRegistryでは、19 Roleは `ACTIVE`、29 Skillは `ACTIVE` と登録されています。ただし、これは構造・統制上の登録状態です。Live usage evidenceがないため、Role / Skill effectivenessは `not_evaluated` です。
+現在のRegistryでは、20 Roleは `ACTIVE`、33 Skillは `ACTIVE` と登録されています。ただし、これは構造・統制上の登録状態です。Live usage evidenceがないため、Role / Skill effectivenessは `not_evaluated` です。
 
 ## Local Privacy BoundaryとGit Safety
 
@@ -481,7 +481,7 @@ Foundation EvalのPASSはdeterministicな構造契約の合格です。実運用
 
 ### AI社員やSkillは増えますか？
 
-EvidenceのあるCapability Gapを起点に、Candidate、Before / After Eval、Independent Review、Celes Human Gateを通る場合だけ追加・変更・昇格できます。数を増やすこと自体は目的ではありません。
+EvidenceのあるCapability Gapを起点に、Candidate、Before / After Eval、Independent Review、Celes Human Gateを通る場合だけ追加・変更・昇格できます。数を増やすこと自体は目的ではありません。依頼受付時のGap判定と追加手順は [Capability Gap Policy](ai_team/capability_gap_policy.md)、[Agent Creation Policy](ai_team/agent_creation_policy.md)、[Skill Creation Policy](ai_team/skill_creation_policy.md) を参照してください（担当: AI Capability Architect）。
 
 ## 変更・運用時の最低限チェック
 

@@ -23,6 +23,10 @@
 4. 修正後3件で再発率を確認する。
 5. 閾値やレビュー深度を調整する。
 
+## 進行中の点検
+
+- **Capability Architect / Gap判定精度**（2026-08-04 セレス追認）: `capability_architect` によるGap判定・Skill選定の実効性は `not_evaluated`。初回実運用3件（新規領域の依頼で `input_to_output_workflow.md` 手順4のCapability Gap判定を実施したタスク）を本ページの記録単位で蓄積し、上記「改善ループ」に投入して精度を点検する。3件到達まではeffectivenessを`not_evaluated`のまま維持し、根拠のない数値化は行わない。
+
 ## 禁止
 - 合格率だけでAI社員を評価しない。
 - 指摘件数を減らすために重大度を下げない。

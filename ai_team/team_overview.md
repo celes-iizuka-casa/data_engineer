@@ -5,6 +5,7 @@ AI社員エンジニアチームは、セレスの依頼に対して、各Role�
 
 ## Role一覧
 - AI Engineering PMO: 課題分類、作業分解、成果物管理、成果物統合（Deliverable Optimizer）、実行文脈のEvidence記録と非拘束effort提案
+- AI Capability Architect: 依頼の必要Capability抽出、既存Role / Skill対応可否判定、Capability Gap分類、Skill追加・Role追加要否の設計、Role乱立防止、Agent Registry / Capability Matrix / Role Skill Mapの整合維持
 - AI Forward Deployed Engineer: 顧客・現場課題の整理、本質課題の抽出、MVPスコープ切り出し、Engineering Handoff、導入・定着・フィードバックBacklog化（親Skill + サブSkill 10本。運用モデル: `fde/fde_operating_model.md`）
 - AI Deliverable Quality Reviewer: 成果物横断レビュー、専門レビュー証跡確認、重大度判定
 - AI Engineering Knowledge Curator: 成果物のナレッジ化、Obsidian整理、MOC更新
@@ -31,11 +32,11 @@ AI社員エンジニアチームは、セレスの依頼に対して、各Role�
 - Verification
 
 ## 品質ゲート
-成果物は `professional_only_policy.md`、`review/professional_quality_gate.md`、`review/quality_gate.md` を通す。非プロフェッショナルな感想、一般論、無根拠な同意は差し戻す。
+成果物は `professional_only_policy.md`、`review/professional_quality_gate.md`、`review/quality_gate.md` を通す。非プロフェッショナルな感想、一般論、無根拠な同意は差し戻す。Role / Skillの追加は `agent_quality_gate.md` を通す。
 
 ## 自己改善方針
 
-5つの方針でチームの精度を継続的に高める。
+6つの方針でチームの精度と能力範囲を継続的に高める。
 
 - **iteration_confirmation_policy.md**: 繰り返し作業は代表例を先に確認し、全件への方針ミス波及を防ぐ
 - **retrospective_policy.md**: 作業完了後に振り返り・改善案を出し、次回精度を上げる
@@ -43,6 +44,7 @@ AI社員エンジニアチームは、セレスの依頼に対して、各Role�
 - **feedback_optimization_policy.md**: セレスのフィードバックをRole / Skill / Workflow改善に変換する
 - **model_selection_policy.md**: 呼び出し元の現在Modelを変えず、工程ごとに必要能力と非拘束effortを提案する
 - **runtime_selection_policy.md / model_effort_selection_policy.md**: 呼び出し元Runtimeを維持し、確認できたmodel EvidenceとRisk-based effortを非拘束で記録する
-- **capability_registry.yaml**: 19 RoleのCapability、decision rights、escalation、適否、handoffを構造化する
-- **governance/skill_lifecycle_registry.yaml**: 29 Skillのcontent-addressed revisionとLifecycleを管理する
+- **capability_gap_policy.md / agent_creation_policy.md / skill_creation_policy.md**: 依頼から必要Capabilityを抽出し、不足がある場合だけ最小のSkill / Role追加を統治手順で行う（Role乱立防止）
+- **capability_registry.yaml**: 20 RoleのCapability、decision rights、escalation、適否、handoffを構造化する
+- **governance/skill_lifecycle_registry.yaml**: 33 Skillのcontent-addressed revisionとLifecycleを管理する
 - **workflows/capability_growth_workflow.md**: Evidence → Before/After Eval → Independent Review → Celes Human Gateを接続する

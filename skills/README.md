@@ -28,6 +28,16 @@
 - `skill-integration-engineer`: AI Integration Engineer
 - `skill-product-manager`: AI Product Manager
 - `skill-ml-engineer`: AI ML Engineer
+- `skill-capability-gap-analysis`: AI Capability Architect
+
+## Capability Architect Skill一覧
+
+AI Capability Architect が使うチーム能力設計の職能群。依頼に対するGap判定を起点に、必要な場合のみCreation系を起動する（`ai_team/capability_gap_policy.md` の優先順位ラダー参照）。
+
+- `skill-capability-gap-analysis`: 依頼→必要Capability抽出→既存Role / Skill対応可否→Gap分類
+- `skill-agent-creation`: Agent Gap確定時のみ、新AI社員Roleを統治手順（CREATE基準 + Celes Human Gate）で追加
+- `skill-skill-creation`: Skill Gap確定時のみ、既存Roleへ新Skillを契約準拠で追加
+- `skill-agent-registry-management`: `agent_registry.md` / `capability_matrix.md` / `role_skill_map.md` を正本と整合維持
 
 ## FDEサブSkill一覧
 

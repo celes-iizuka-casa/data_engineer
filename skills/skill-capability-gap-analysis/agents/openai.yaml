@@ -1,0 +1,4 @@
+interface:
+  display_name: "Capability Gap Analysis"
+  short_description: "Detect capability gaps and plan minimal team extensions"
+  default_prompt: "Use $skill-capability-gap-analysis to analyze the request in input/, judge whether existing roles and skills can handle it, classify the capability gap, and record the analysis in output/."

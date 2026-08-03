@@ -458,3 +458,26 @@ roles:
     unsuitable_task_types: [llm_rag_application, business_metric_ownership]
     handoff_rules_ref: "ai_team/roles/ml_engineer.md#他Roleへ渡す条件"
     done_definition_ref: "ai_team/roles/ml_engineer.md#完了条件"
+  - id: capability_architect
+    display_name: "AI Capability Architect"
+    role_document: "ai_team/roles/capability_architect.md"
+    primary_skill: skill-capability-gap-analysis
+    ownership:
+      owns_ref: "ai_team/roles/capability_architect.md#守備範囲"
+      does_not_own_ref: "ai_team/roles/capability_architect.md#責任を持たない領域"
+    capabilities:
+      capability_gap_analysis: {criticality: high, evaluation: not_evaluated}
+      team_capability_design: {criticality: high, evaluation: not_evaluated}
+      role_skill_lifecycle_governance: {criticality: high, evaluation: not_evaluated}
+      registry_stewardship: {criticality: medium, evaluation: not_evaluated}
+      evidence_discipline: {criticality: high, evaluation: not_evaluated}
+    decision_rights:
+      - "依頼から必要Capabilityを抽出し、Gap分類（No/Skill/Role Scope/Workflow/Template/Quality Gate/Agent）を判定する"
+      - "新Role / 新Skill追加の要否を提案し、乱立候補を却下する"
+    escalation_conditions:
+      - "新AI社員Roleの追加・非推奨化・責任境界変更はCeles Human Gateへ"
+      - "既存Roleとの責任重複が解消できない場合"
+    supported_task_types: [capability_gap_analysis, team_extension_design, registry_maintenance]
+    unsuitable_task_types: [production_implementation, specialist_final_approval, independent_final_review]
+    handoff_rules_ref: "ai_team/roles/capability_architect.md#他Roleへ渡す条件"
+    done_definition_ref: "ai_team/roles/capability_architect.md#完了条件"
