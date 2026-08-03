@@ -178,6 +178,37 @@ Real Work
 
 Evidenceが不足する場合の結論は **UNKNOWN — insufficient evidence** です。Candidateの作成者は自己承認できず、Canonical promotionを自動commit・自動pushしません。詳細は [Capability Growth Policy](ai_team/governance/capability_growth_policy.yaml) と [Capability Growth Workflow](ai_team/workflows/capability_growth_workflow.md) を参照してください。
 
+### Capability Gap判定とAgent Creation
+
+新しい領域の依頼を受けたときも、いきなり新しいAI社員（Role）を増やすことはしません。まず依頼内容を解析し、既存の体制で対応できるかを確認したうえで、不足がある場合だけ最小単位で追加します。基本フローは次のとおりです。
+
+```text
+1. 依頼内容を解析する
+2. 必要なCapabilityを抽出する
+3. agent_registry / capability_matrix / role_skill_map を確認する
+4. 既存AI社員・既存Skillで対応できるか判定する
+5. Capability Gapを分類する
+6. 最小対応を選ぶ
+7. 対応AI社員・Skill・モデル・工数を決定する
+8. 実作業に入る
+```
+
+`agent_registry.md` / `capability_matrix.md` / `role_skill_map.md` は、依頼受付時に読む一覧ビューです（正本は `capability_registry.yaml` と governance両登録簿）。Capability Gapは次のいずれかに分類し、対応の優先順位（既存Roleへ割当 → 既存Skillで対応 → 既存Skillを更新 → 既存Roleへ新Skill追加 → 既存Roleの守備範囲を明確化 → Workflow / Template / Quality Gateを追加 → 最後の手段として新AI社員Roleを提案）に沿って、最小対応から選びます。
+
+| Gap分類 | 意味 |
+|---|---|
+| No Gap | 既存Role / Skillで対応可能 |
+| Skill Gap | 既存Roleで担当可能だが、SkillやTemplateが不足している |
+| Role Scope Gap | 既存Roleの守備範囲を明確化・軽微拡張すれば対応可能 |
+| Workflow Gap | 作業順序やRole間連携ルールが不足している |
+| Template Gap | 成果物の型が不足している |
+| Quality Gate Gap | 成果物を検証する基準が不足している |
+| Agent Gap | 既存Roleでは責任境界が不自然で、新しいAI社員Roleが必要 |
+
+Skill追加、Template追加、Workflow追加、Quality Gate追加は「最小対応」として扱い、既存Roleの範囲内で完結します。これらはAgent Gapと判定された場合の最後の手段（新Role追加）より優先します。
+
+新しいAI社員Roleは、**自動では確定追加されません**。Agent Gapと判定された場合は、まず `output/new_agent_proposal.md` に追加候補Role・追加理由・既存Role/Skillで不足する理由・守備範囲・必要Skill/Template/Quality Gateなどを明記し、原則としてセレスの確認・承認を得たあとにのみ追加します（提案 → セレス確認 → 承認後に追加）。この仕組みの目的はAI Engineering Teamの自己拡張性を保つことであり、AI社員を無秩序に増やす（Role乱立）ことではありません。詳細は [Capability Gap Policy](ai_team/capability_gap_policy.md)、[Agent Creation Policy](ai_team/agent_creation_policy.md)、[Skill Creation Policy](ai_team/skill_creation_policy.md)、[Agent Lifecycle Policy](ai_team/agent_lifecycle_policy.md) を参照してください（担当: AI Capability Architect）。
+
 ### AI Employee Lifecycle
 
 AI Employee RegistryのLifecycleは次の状態を持ちます。
