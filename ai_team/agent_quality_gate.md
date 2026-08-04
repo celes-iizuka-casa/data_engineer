@@ -4,6 +4,8 @@
 
 新しく追加するAI社員Roleが、既存チームの品質・責任境界・運用ルールを壊さないことを確認する。Skill追加時も該当項目を適用する。
 
+**適用範囲**: 本ゲートは**共有層への追加にのみ適用する**。本ゲートは正本3ビュー・`capability_registry.yaml`・ライフサイクル登録簿・Golden Case・validator PASSを要求するが、ローカル層（`.local/capability/`）への追加はこれらを構造的に持たないため対象外である。ローカル層への追加は `local_capability_layer_policy.md` の完了条件を使う。
+
 ## 新Agent追加チェック
 
 - [ ] 既存Roleでは対応できない理由が明記されているか（capability_gap_analysis / agent_need_assessment）

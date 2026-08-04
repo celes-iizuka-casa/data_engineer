@@ -30,9 +30,10 @@ inputs:
   - "skills/index.yaml と skills/ 配下の実体"
   - "ai_team/model_effort_selection_policy.md（推奨・非拘束）"
 outputs:
-  - "ai_team/agent_registry.md"
-  - "ai_team/capability_matrix.md"
-  - "ai_team/role_skill_map.md"
+  - "ai_team/agent_registry.md（共有層のview）"
+  - "ai_team/capability_matrix.md（共有層のview）"
+  - "ai_team/role_skill_map.md（共有層のview）"
+  - ".local/capability/local_capability_registry.yaml（ローカル層が存在する場合のみ）"
 modes:
   professional_opinion:
     description: "AI Capability Architectとして、registry / matrix / mapの整合状態と改善点を判断する。"

@@ -672,15 +672,15 @@ skills:
         value: "listed in skills/index.yaml and passed baseline repository validation"
     parent_skill: skill-forward-deployed-engineer
   - id: skill-capability-gap-analysis
-    active_revision: "sha256:3d78173a7f0ff22f390351aa7486f0330b5efa168a76e210bc6655229edd5a0c"
-    candidate_revision: "sha256:3d78173a7f0ff22f390351aa7486f0330b5efa168a76e210bc6655229edd5a0c"
+    active_revision: "sha256:7cf73ab8f1d9c9044d16cc41776150db8f74b5ef348963dd1b307e9350252827"
+    candidate_revision: "sha256:7cf73ab8f1d9c9044d16cc41776150db8f74b5ef348963dd1b307e9350252827"
     state: ACTIVE
     candidate_state: ACTIVE
     disposition: CREATE
     transition:
       from_state: ACTIVE
       to_state: ACTIVE
-      candidate_revision: "sha256:3d78173a7f0ff22f390351aa7486f0330b5efa168a76e210bc6655229edd5a0c"
+      candidate_revision: "sha256:7cf73ab8f1d9c9044d16cc41776150db8f74b5ef348963dd1b307e9350252827"
       evidence_refs: ["local-evidence:capability-gap-agent-creation-20260802/capability_gap_analysis", "ai_team/capability_gap_policy.md"]
       independent_review_ref: "local-review:capability-gap-agent-creation-20260802/quality_review_report"
       human_gate_status: promoted
@@ -693,15 +693,15 @@ skills:
       - type: structural
         value: "listed in skills/index.yaml and passed repository validation"
   - id: skill-agent-creation
-    active_revision: "sha256:e0de32c434d0c7505992bbb7ffa23d42a33b3e9a4e2d493bb42fe2dc8894433a"
-    candidate_revision: "sha256:e0de32c434d0c7505992bbb7ffa23d42a33b3e9a4e2d493bb42fe2dc8894433a"
+    active_revision: "sha256:9680542e763e3383257f9de4686fecb916ab2ba044783637467f7cde80f9bc69"
+    candidate_revision: "sha256:9680542e763e3383257f9de4686fecb916ab2ba044783637467f7cde80f9bc69"
     state: ACTIVE
     candidate_state: ACTIVE
     disposition: CREATE
     transition:
       from_state: ACTIVE
       to_state: ACTIVE
-      candidate_revision: "sha256:e0de32c434d0c7505992bbb7ffa23d42a33b3e9a4e2d493bb42fe2dc8894433a"
+      candidate_revision: "sha256:9680542e763e3383257f9de4686fecb916ab2ba044783637467f7cde80f9bc69"
       evidence_refs: ["local-evidence:capability-gap-agent-creation-20260802/agent_need_assessment", "ai_team/agent_creation_policy.md"]
       independent_review_ref: "local-review:capability-gap-agent-creation-20260802/quality_review_report"
       human_gate_status: promoted
@@ -714,15 +714,15 @@ skills:
       - type: structural
         value: "listed in skills/index.yaml and passed repository validation"
   - id: skill-skill-creation
-    active_revision: "sha256:1c65680c94b02368a0c3ffdba1612ac77c13fe3590fe12b25748a3c7ab7c1276"
-    candidate_revision: "sha256:1c65680c94b02368a0c3ffdba1612ac77c13fe3590fe12b25748a3c7ab7c1276"
+    active_revision: "sha256:9cfce5d2046fce9cce2801ac2232f62e26db43694a30b89b2cd44098eb6ffc1a"
+    candidate_revision: "sha256:9cfce5d2046fce9cce2801ac2232f62e26db43694a30b89b2cd44098eb6ffc1a"
     state: ACTIVE
     candidate_state: ACTIVE
     disposition: CREATE
     transition:
       from_state: ACTIVE
       to_state: ACTIVE
-      candidate_revision: "sha256:1c65680c94b02368a0c3ffdba1612ac77c13fe3590fe12b25748a3c7ab7c1276"
+      candidate_revision: "sha256:9cfce5d2046fce9cce2801ac2232f62e26db43694a30b89b2cd44098eb6ffc1a"
       evidence_refs: ["local-evidence:capability-gap-agent-creation-20260802/new_skill_creation_report", "ai_team/skill_creation_policy.md"]
       independent_review_ref: "local-review:capability-gap-agent-creation-20260802/quality_review_report"
       human_gate_status: promoted
@@ -735,15 +735,15 @@ skills:
       - type: structural
         value: "listed in skills/index.yaml and passed repository validation"
   - id: skill-agent-registry-management
-    active_revision: "sha256:d4814b0d992c5963a358d1ec6dc036cee202b7758bf0f2825d895aaffb54e2e0"
-    candidate_revision: "sha256:d4814b0d992c5963a358d1ec6dc036cee202b7758bf0f2825d895aaffb54e2e0"
+    active_revision: "sha256:cf8c8e27460d11d682c0d5f879015a1bbad2e2e05b57e78fe10741407d25521f"
+    candidate_revision: "sha256:cf8c8e27460d11d682c0d5f879015a1bbad2e2e05b57e78fe10741407d25521f"
     state: ACTIVE
     candidate_state: ACTIVE
     disposition: CREATE
     transition:
       from_state: ACTIVE
       to_state: ACTIVE
-      candidate_revision: "sha256:d4814b0d992c5963a358d1ec6dc036cee202b7758bf0f2825d895aaffb54e2e0"
+      candidate_revision: "sha256:cf8c8e27460d11d682c0d5f879015a1bbad2e2e05b57e78fe10741407d25521f"
       evidence_refs: ["local-evidence:capability-gap-agent-creation-20260802/new_agent_creation_report", "ai_team/agent_registry.md"]
       independent_review_ref: "local-review:capability-gap-agent-creation-20260802/quality_review_report"
       human_gate_status: promoted

@@ -43,6 +43,7 @@
 - `review/risk_based_quality_gates.yaml`
 - `output_optimization_policy.md`
 - `capability_gap_policy.md`（依頼→必要Capability→Gap分類）
+- `local_capability_layer_policy.md`（共有層 / ローカル層の分離。追加先レイヤの判定と正本への昇格）
 - `agent_creation_policy.md`（新Role追加の判定と手順）
 - `skill_creation_policy.md`（新Skill追加の判定と手順）
 - `agent_lifecycle_policy.md`（Role / Skillの状態管理の運用ガイド）

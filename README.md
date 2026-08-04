@@ -178,6 +178,21 @@ Real Work
 
 Evidenceが不足する場合の結論は **UNKNOWN — insufficient evidence** です。Candidateの作成者は自己承認できず、Canonical promotionを自動commit・自動pushしません。詳細は [Capability Growth Policy](ai_team/governance/capability_growth_policy.yaml) と [Capability Growth Workflow](ai_team/workflows/capability_growth_workflow.md) を参照してください。
 
+### Shared CoreとUser-local Capability Layer
+
+Canonical Growth Authorityがセレス環境だけであることと、他の利用者が自分の環境でAI社員やSkillを増やせることは両立します。そのために能力を2層に分けています。
+
+| 層 | 置き場 | 追加できる人 | 配布 |
+|---|---|---|---|
+| Shared Core（正本） | `ai_team/**`、`skills/**`、`templates/**`、`tools/validate_repository.py` | セレスのみ（Celes Human Gate） | `git clone / pull` で全利用者へ |
+| User-local Capability Layer | `.local/capability/**` | その環境の利用者自身 | されません |
+
+`.local/` はGit管理から除外され、validatorのprivate path契約でも保護されているため、ローカル層に置いたAI社員・Skillは他の利用者へ配布されず、正本を `git pull` しても消えません。逆に、ローカル層の追加が正本へ混ざることもありません。これは文体や詳しさと同じ **Personalizationの一部** として扱います。
+
+自分の環境が正本かどうかは `git remote` と push権限で判定し、判定できない場合は派生環境として扱います（共有層へ書き込まない安全側に倒します）。ローカル層で有用と分かったAI社員・Skillは、個人情報を除いた独立Evidenceを添えて正本への昇格を提案できます。昇格には Before / After Eval、独立レビュー、Celes Human Gate が必要で、自動昇格はしません。
+
+詳細は [Local Capability Layer Policy](ai_team/local_capability_layer_policy.md) を参照してください。
+
 ### Capability Gap判定とAgent Creation
 
 新しい領域の依頼を受けたときも、いきなり新しいAI社員（Role）を増やすことはしません。まず依頼内容を解析し、既存の体制で対応できるかを確認したうえで、不足がある場合だけ最小単位で追加します。基本フローは次のとおりです。
@@ -189,8 +204,9 @@ Evidenceが不足する場合の結論は **UNKNOWN — insufficient evidence** 
 4. 既存AI社員・既存Skillで対応できるか判定する
 5. Capability Gapを分類する
 6. 最小対応を選ぶ
-7. 対応AI社員・Skill・モデル・工数を決定する
-8. 実作業に入る
+7. 追加先レイヤ（Shared Core / User-local）を決める
+8. 対応AI社員・Skill・モデル・工数を決定する
+9. 実作業に入る
 ```
 
 `agent_registry.md` / `capability_matrix.md` / `role_skill_map.md` は、依頼受付時に読む一覧ビューです（正本は `capability_registry.yaml` と governance両登録簿）。Capability Gapは次のいずれかに分類し、対応の優先順位（既存Roleへ割当 → 既存Skillで対応 → 既存Skillを更新 → 既存Roleへ新Skill追加 → 既存Roleの守備範囲を明確化 → Workflow / Template / Quality Gateを追加 → 最後の手段として新AI社員Roleを提案）に沿って、最小対応から選びます。
@@ -207,7 +223,11 @@ Evidenceが不足する場合の結論は **UNKNOWN — insufficient evidence** 
 
 Skill追加、Template追加、Workflow追加、Quality Gate追加は「最小対応」として扱い、既存Roleの範囲内で完結します。これらはAgent Gapと判定された場合の最後の手段（新Role追加）より優先します。
 
-新しいAI社員Roleは、**自動では確定追加されません**。Agent Gapと判定された場合は、まず `output/new_agent_proposal.md` に追加候補Role・追加理由・既存Role/Skillで不足する理由・守備範囲・必要Skill/Template/Quality Gateなどを明記し、原則としてセレスの確認・承認を得たあとにのみ追加します（提案 → セレス確認 → 承認後に追加）。この仕組みの目的はAI Engineering Teamの自己拡張性を保つことであり、AI社員を無秩序に増やす（Role乱立）ことではありません。詳細は [Capability Gap Policy](ai_team/capability_gap_policy.md)、[Agent Creation Policy](ai_team/agent_creation_policy.md)、[Skill Creation Policy](ai_team/skill_creation_policy.md)、[Agent Lifecycle Policy](ai_team/agent_lifecycle_policy.md) を参照してください（担当: AI Capability Architect）。
+追加が必要になった場合は、書き込む前に**追加先レイヤ**を決めます。正本（Shared Core）へ追加できるのはセレス環境だけで、それ以外の環境ではローカル層 `.local/capability/` へ追加します。この分岐によって、他の利用者が自分の環境でAI社員・Skillを増やしても、正本を `git pull` した時に消えたり衝突したりしません（前節「Shared CoreとUser-local Capability Layer」参照）。
+
+新しいAI社員Roleは、**自動では確定追加されません**。Agent Gapと判定された場合は、まず `output/new_agent_proposal.md` に追加候補Role・追加理由・既存Role/Skillで不足する理由・守備範囲・必要Skill/Template/Quality Gateなどを明記し、原則としてセレスの確認・承認を得たあとにのみ追加します（提案 → セレス確認 → 承認後に追加）。ローカル層への追加は利用者自身が判断でき、Celes Human Gateは不要です（記録先は `.local/capability/local_decision_log.md`）。ローカル層で有用と分かったRole / Skillは、独立Evidenceを添えて正本への昇格を提案できます。
+
+この仕組みの目的はAI Engineering Teamの自己拡張性を保つことであり、AI社員を無秩序に増やす（Role乱立）ことではありません。詳細は [Capability Gap Policy](ai_team/capability_gap_policy.md)、[Local Capability Layer Policy](ai_team/local_capability_layer_policy.md)、[Agent Creation Policy](ai_team/agent_creation_policy.md)、[Skill Creation Policy](ai_team/skill_creation_policy.md)、[Agent Lifecycle Policy](ai_team/agent_lifecycle_policy.md) を参照してください（担当: AI Capability Architect）。
 
 ### AI Employee Lifecycle
 

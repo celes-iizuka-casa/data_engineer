@@ -9,6 +9,7 @@ AIエンジニアチームに存在するAI社員Roleを一覧管理し、依頼
 - 能力・責任・ハンドオフの正本は `ai_team/capability_registry.yaml`、状態の正本は `ai_team/governance/ai_employee_lifecycle_registry.yaml`。本書は依頼受付時に読む一覧view。
 - 優先実行環境・デフォルトモデル・デフォルト工数は非拘束の推奨。実行は常に呼び出し元Runtimeと現在選択済みModelを継承する（`ai_team/model_effort_selection_policy.md`）。
 - 能力評価の数値スコアは記載しない（根拠なきスコア禁止）。
+- 本書は配布される共有層のRoleだけを載せる。利用者ローカルで追加したRoleは `.local/capability/local_capability_registry.yaml` にあり、依頼受付時は本書と併せて読む（`ai_team/local_capability_layer_policy.md`）。
 
 ## Agent一覧
 

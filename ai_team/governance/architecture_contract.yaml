@@ -21,10 +21,35 @@ conflict_resolution:
   second_brain_absence_behavior: continue_without_error
 growth_authority:
   canonical_authority: celes_environment
+  # canonical_repository を移設・改名した場合は、この宣言値の更新が
+  # 正本環境判定の前提になる。更新責任は canonical 環境の所有者が持つ。
+  canonical_repository: "github.com/celes-iizuka-casa/data_engineer"
+  canonical_environment_detection:
+    checks: [origin_url_matches_canonical_repository, push_permission_confirmed]
+    all_checks_required: true
+    url_comparison: strip_scheme_userinfo_and_git_suffix_lowercase_host
+    unknown_result: derived_environment
+    explicit_user_declaration_override: origin_url_check_only
+    push_permission_check_override: forbidden
+    push_permission_is_sufficient_for_shared_core_write: false
+    shared_core_write_additionally_requires: celes_explicit_instruction
   other_user_telemetry_collection: forbidden
   automatic_remote_sync: forbidden
   automatic_git_push: forbidden
   promotion_requires: [before_after_eval, independent_review, celes_human_gate]
+capability_layers:
+  shared_core:
+    roots: ["ai_team/**", "skills/**", "templates/**", "tools/validate_repository.py"]
+    write_authority: celes_environment
+    distribution: git_clone_and_pull
+  user_local:
+    root: ".local/capability/**"
+    write_authority: current_user
+    distribution: forbidden
+    may_override_shared_core: false
+    absence_behavior: continue_without_error
+    promotion_to_shared_core_requires: [before_after_eval, independent_review, celes_human_gate]
+  derived_environment_write_targets: [user_local]
 privacy:
   local_filesystem_permissions:
     directories: "0700"
@@ -45,4 +70,5 @@ privacy:
     - "ai_team/**"
     - "skills/**"
     - "templates/**"
+    - "tools/validate_repository.py"
     - "anonymous examples and schemas"

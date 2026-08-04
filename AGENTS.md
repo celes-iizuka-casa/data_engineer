@@ -8,7 +8,8 @@
 2. 明示成果物、課題分類、MVP、制約、リスク、`@role`/`@mode`/`@light`/`@full` タグを整理する。
 3. `output_optimization_policy.md` の軽量依頼判定を行う。軽量でなく3工程以上なら `_internal/work_plan.md` を作る（軽量なら作らない）。
 4. `runtime_selection_policy.md` と `model_effort_selection_policy.md` に従い、呼び出し元Runtimeを変更せず、確認できたruntime/model Evidenceと推奨effortを記録する。高リスク / 大規模なら `_internal/execution_plan.md` を作る。取得不能なmodel/token/costは推測せず`unavailable`とする。
-5. 必要な `skills/` を選び、作業を進める。
+5. 新規領域で既存Role / Skillに不足がある場合は、`capability_gap_policy.md` のCapability Gap判定（担当: AI Capability Architect）を行う。追加が必要なら、書き込む前に `local_capability_layer_policy.md` で追加先レイヤを決める。派生環境（正本環境と判定できない環境）では `.local/capability/` にだけ追加する。既知の依頼タイプ・軽量依頼ではこのステップを飛ばしてよい。
+6. 必要な `skills/` を選び、作業を進める。
 
 ## Required Finish
 - 成果物は `output/<client>/<YYYYMMDD>/<task-name>/` に保存する。常時はタスクフォルダ直下に `output.md`（制御ブロック＋本成果物を統合した1ファイル）のみ。条件付き/要求時の成果物は `_internal/` 配下に置く（`output_optimization_policy.md`・`deliverable_optimization_policy.md`）。
@@ -29,6 +30,7 @@
 - 作成者自身の確認を独立レビューとして扱わない。
 - 専門ReviewerのBlockerをPMOや総合Reviewerが独断で解除しない。
 - AIエンジニアチームは Claude Code / Codex の両方で実行できる runtime-neutral 構成を保つ（`ai_team/runtime_neutral_design_policy.md`）。
+- 正本環境（セレス環境）と判定できない環境では、共有層（`ai_team/**`、`skills/**`、`templates/**`、`tools/validate_repository.py`）へRole / Skillを追加しない。追加は `.local/capability/` に閉じる（`ai_team/local_capability_layer_policy.md`）。
 
 ## Writing Style
 - 実務担当者がそのまま話しているような、自然で率直な日本語を使う。

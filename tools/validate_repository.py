@@ -422,6 +422,8 @@ TEMPLATES = [
     "agent_creation/new_skill_definition_template.md",
     "agent_creation/agent_registry_entry_template.md",
     "agent_creation/capability_matrix_entry_template.md",
+    "agent_creation/local_capability_registry_template.yaml",
+    "agent_creation/local_decision_log_template.md",
 ]
 
 ROLE_HEADINGS = [
@@ -2081,6 +2083,38 @@ def validate_capability_foundation(validation: Validation) -> None:
         required_promotion = {"before_after_eval", "independent_review", "celes_human_gate"}
         if set(architecture.get("growth_authority", {}).get("promotion_requires", [])) != required_promotion:
             validation.fail("Architecture promotion requirements are incomplete")
+        detection = architecture.get("growth_authority", {}).get(
+            "canonical_environment_detection", {}
+        )
+        if set(detection.get("checks", [])) != {
+            "origin_url_matches_canonical_repository",
+            "push_permission_confirmed",
+        }:
+            validation.fail("Canonical environment detection checks are incomplete")
+        if detection.get("all_checks_required") is not True:
+            validation.fail("Canonical environment detection must require all checks")
+        if detection.get("unknown_result") != "derived_environment":
+            validation.fail("Canonical environment detection must fail safe to derived")
+        if detection.get("push_permission_check_override") != "forbidden":
+            validation.fail("Canonical environment push permission check must not be overridable")
+        if detection.get("push_permission_is_sufficient_for_shared_core_write") is not False:
+            validation.fail("Push permission must not be sufficient for shared core writes")
+        layers = architecture.get("capability_layers", {})
+        user_local = layers.get("user_local", {})
+        if user_local.get("root") != ".local/capability/**":
+            validation.fail("User-local capability layer root is not declared")
+        if user_local.get("distribution") != "forbidden":
+            validation.fail("User-local capability layer must not be distributed")
+        if user_local.get("may_override_shared_core") is not False:
+            validation.fail("User-local capability layer must not override shared core")
+        if user_local.get("absence_behavior") != "continue_without_error":
+            validation.fail("Missing user-local capability layer must be a no-op")
+        if set(user_local.get("promotion_to_shared_core_requires", [])) != required_promotion:
+            validation.fail("User-local promotion requirements must match canonical promotion")
+        if layers.get("derived_environment_write_targets") != ["user_local"]:
+            validation.fail("Derived environments must write only to the user-local layer")
+        if layers.get("shared_core", {}).get("write_authority") != "celes_environment":
+            validation.fail("Shared core write authority must remain the Celes environment")
         if not architecture.get("conflict_resolution", {}).get("current_evidence_overrides_second_brain"):
             validation.fail("Architecture contract must prioritize Current Evidence over Second Brain")
         private_state = set(architecture.get("privacy", {}).get("private_state", []))
@@ -2831,6 +2865,25 @@ def validate_capability_foundation(validation: Validation) -> None:
         ):
             if required not in promotion:
                 validation.fail(f"Capability Growth promotion missing: {required}")
+        local_growth = growth.get("local_growth", {})
+        if local_growth.get("root") != ".local/capability":
+            validation.fail("Local capability growth root is not declared")
+        if local_growth.get("authority") != "current_user":
+            validation.fail("Local capability growth authority must be the current user")
+        if local_growth.get("git_distribution") != "forbidden":
+            validation.fail("Local capability growth must not be Git distributed")
+        if local_growth.get("may_override_shared_core") is not False:
+            validation.fail("Local capability growth must not override shared core")
+        from_local = growth.get("promotion_from_local", {})
+        if from_local.get("automatic_promotion") != "forbidden":
+            validation.fail("Promotion from the local layer must not be automatic")
+        for required in (
+            "independent_evidence_without_personal_or_customer_data",
+            "independent_review",
+            "celes_human_gate_record",
+        ):
+            if required not in from_local.get("required", []):
+                validation.fail(f"Promotion from local layer missing: {required}")
         validation.ok("Capability Growth separation and promotion contract parsed")
 
     evidence = validate_json(

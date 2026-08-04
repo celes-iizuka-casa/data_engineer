@@ -1,8 +1,32 @@
 schema_version: "1.0"
+# authority は Canonical Growth（共有層への昇格）だけを対象とする。
+# 利用者ローカル層（.local/capability）の追加権限は local_growth を参照する。
 authority: celes_environment_only
+authority_scope: canonical_growth_into_shared_core
 raw_evidence_storage:
   allowed_roots: [".local/evidence", "output"]
   git_distribution: forbidden
+local_growth:
+  scope: user_local_capability_layer
+  root: ".local/capability"
+  authority: current_user
+  git_distribution: forbidden
+  human_gate_required: false
+  independent_review_required: false
+  independent_review_recommended_from_risk: medium
+  may_override_shared_core: false
+  decision_record: ".local/capability/local_decision_log.md"
+promotion_from_local:
+  automatic_promotion: forbidden
+  proposal_root: ".local/capability/promotion"
+  required:
+    - independent_evidence_without_personal_or_customer_data
+    - capability_gap_reassessment
+    - create_criteria
+    - before_after_eval
+    - independent_review
+    - celes_human_gate_record
+  after_promote: remove_local_definition_to_avoid_duplicate
 evidence_types: [observed, declared, structural, inferred, unavailable]
 candidate_rules:
   repeated_pattern_min_occurrences: 2

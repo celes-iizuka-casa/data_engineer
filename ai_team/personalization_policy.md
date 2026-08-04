@@ -40,6 +40,18 @@ Home directoryを無差別scanしない。rootの利用者所有が確認でき�
 - Second Brainの内容はRaw Evidenceとして共有・送信・commitしない。
 - Canonical Growthへ使う場合は、個人情報を除いた独立Evidence、Before/After Eval、Independent Review、Celes Human Gateを別途要求する。
 
+## Local Capability Layer
+
+Personalizationはprofileと文体だけではない。依頼内容解析のフロー（Capability Gap判定）で追加したRole / Skillそのものも、現在の利用者のローカル領域に閉じる。
+
+- 共有層（`ai_team/**`、`skills/**`、`templates/**`、`tools/validate_repository.py`）へRole / Skillを追加できるのはセレス環境だけである。
+- それ以外の環境では、追加物を `.local/capability/` に置く。この領域はGit管理禁止で、他利用者へ配布しない。
+- ローカル層は追加専用で、共有層のRole / Skill定義を上書きしない。
+- `.local/capability/` が無い場合は正常なno-opとして継続する。Second Brainのrootが無い場合と同じ扱いにする。
+- ローカル層の追加物をCanonicalへ昇格させる場合は、個人情報を除いた独立Evidence、Before/After Eval、Independent Review、Celes Human Gateを別途要求する。自動昇格はしない。
+
+詳細な判定手順・命名規約・昇格経路は `ai_team/local_capability_layer_policy.md` に置く。
+
 ## 顧客向け成果物
 
 依頼者profileと成果物の読み手を分ける。顧客の属性・案件情報をshared defaultへ書き戻さない。
@@ -54,3 +66,4 @@ Capability Gap分析・新Role / Skill提案などのチーム拡張成果物（
 - `ai_team/obsidian_write_policy.md`
 - `ai_team/governance/architecture_contract.yaml`
 - `ai_team/governance/capability_growth_policy.yaml`
+- `ai_team/local_capability_layer_policy.md`

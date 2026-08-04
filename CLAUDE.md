@@ -22,7 +22,7 @@ Each mode has specific required sections (see `professional_response_templates.m
 ## How Requests Work
 
 1. **Intake**: Check `input/` for the request and any context/code/errors
-2. **Route**: Use `ai_team/role_scope_matrix.md` to pick the right role(s). 新規領域で既存Role / Skillに不足がある場合は `ai_team/capability_gap_policy.md` のCapability Gap判定（担当: AI Capability Architect）を先に行い、不足時のみ最小の追加（Skill追加優先・新Role追加はCeles Human Gate必須）を行う
+2. **Route**: Use `ai_team/role_scope_matrix.md` to pick the right role(s). 新規領域で既存Role / Skillに不足がある場合は `ai_team/capability_gap_policy.md` のCapability Gap判定（担当: AI Capability Architect）を先に行い、不足時のみ最小の追加（Skill追加優先・新Role追加はCeles Human Gate必須）を行う。追加する前に `ai_team/local_capability_layer_policy.md` で追加先レイヤを決める（派生環境では共有層へ書かず `.local/capability/` のみ）
 3. **Classify**: Check `ai_team/request_mode_policy.md` to determine Professional Mode(s)
 4. **Decide scope**: Use `ai_team/output_optimization_policy.md` to determine if this is a "lightweight request" (skip work plan) or needs detailed planning
 5. **Execute**: Use the relevant `skills/skill-<role-name>/` to guide your work
@@ -90,6 +90,7 @@ Before starting any work, familiarize yourself with:
 - **request_mode_policy.md** — how to classify requests into Opinion/Design/Implementation/Verification
 - **output_optimization_policy.md** — 3-tier output (A=always create, B=conditional on gates, C=request-only), lightweight request definition
 - **runtime_selection_policy.md / model_effort_selection_policy.md** — keep the caller runtime, record only observed/declared model evidence, and recommend non-binding effort; never switch providers automatically
+- **local_capability_layer_policy.md** — Shared Core（正本、セレス環境のみ書込可）と User-local Capability Layer（`.local/capability/`、非配布）の分離。Role / Skill を追加する前に必ず追加先レイヤを判定する
 - **professional_response_templates.md** — required sections per mode, section-trimming rules
 - **professional_standards.md** — what counts as professional output, prohibited outputs (baseless opinions, unverified specs, unsupported claims)
 - **role_scope_matrix.md** + role `.md` files — detailed scope, responsibilities, judgment criteria for each role

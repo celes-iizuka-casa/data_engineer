@@ -46,7 +46,8 @@ AI Capability Architectとして、view3本と正本・実体の整合を検証�
 2. view3本と1件ずつ突合する
 3. 差分を検出し、原因を確認する
 4. viewを更新し、更新履歴に日付・内容・根拠を追記する
-5. 正本側の変更が必要な乖離はCapability Architect本体の判断へ引き継ぐ
+5. ローカル層が存在する場合（`.local/capability/`）、`local_capability_registry.yaml` が実体（`.local/capability/roles/` と `skills/`）と一致しているか突合し、必要なら更新する。ローカル層の内容は共有層のview3本へ書き戻さない
+6. 正本側の変更が必要な乖離はCapability Architect本体の判断へ引き継ぐ
 
 ## 判断基準
 - 正本はcapability_registry.yamlとgovernance登録簿。viewが食い違ったら正本に合わせる
@@ -70,9 +71,10 @@ AI Capability Architectとして、view3本と正本・実体の整合を検証�
 - 誰が何を検証すべきか不明な結論
 
 ## 必須出力
-- `ai_team/agent_registry.md`
-- `ai_team/capability_matrix.md`
-- `ai_team/role_skill_map.md`
+- `ai_team/agent_registry.md`（共有層のview）
+- `ai_team/capability_matrix.md`（共有層のview）
+- `ai_team/role_skill_map.md`（共有層のview）
+- `.local/capability/local_capability_registry.yaml`（ローカル層が存在する場合のみ。共有層のviewとは分離して維持する）
 
 ## レビュー観点
 - 正本との整合

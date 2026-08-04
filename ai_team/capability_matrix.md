@@ -8,6 +8,7 @@
 
 - Role別Capabilityの正本は `ai_team/capability_registry.yaml`。本書は依頼→能力→担当の逆引きview。
 - 「対応度」は 対応 / 部分対応 / 不足 の3値のみ。数値スコアや根拠のない評価は書かない。
+- 本書は配布される共有層のCapabilityだけを載せる。利用者ローカルで追加したRole / Skillは `.local/capability/local_capability_registry.yaml` にあり、依頼受付時は本書と併せて読む（`ai_team/local_capability_layer_policy.md`）。
 
 ## Capability一覧
 

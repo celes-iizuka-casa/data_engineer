@@ -33,7 +33,7 @@ inputs:
   - "ai_team/agent_registry.md / ai_team/capability_matrix.md / ai_team/role_skill_map.md"
   - "profiles/current_user_profile.yaml"
 outputs:
-  - "capability_gap_analysis.md"
+  - "capability_gap_analysis.md（追加が発生する場合は追加先レイヤの判定結果と根拠を含む）"
   - "agent_need_assessment.md"
 modes:
   professional_opinion:

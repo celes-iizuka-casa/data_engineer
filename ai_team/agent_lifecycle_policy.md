@@ -70,6 +70,15 @@ P1差分に限定した再レビュー（全体を再レビューせず、指摘
 - 定義ファイルと登録簿エントリの物理削除は行わない（decision_historyはappend-only、mutation / deletion禁止）。
 - 退役はDEPRECATED状態の維持と `agent_registry.md` 上の「retired」表示で表現する。
 
+## ローカル層（User-local Capability Layer）の扱い
+
+本書のライフサイクル管理は**共有層のRole / Skillだけ**を対象とする。`.local/capability/` に置いたローカル層のRole / Skillは、両lifecycle registryに載せない。
+
+- ローカル層の状態は登録簿の正式state（DISCOVERED〜DEPRECATED）とは別軸で、`.local/capability/local_decision_log.md` に記録する。
+- decision_history / promotion_history のappend-only契約、subject_revisionごとの一意なPROMOTE記録の要求、sha256 revisionの計算は、ローカル層には適用しない。
+- ローカル層のRole / Skillは削除してよい（共有層の物理削除禁止ルールの対象外）。削除の事実は `local_decision_log.md` に残す。
+- ローカル層のRole / Skillを共有層へ昇格させる場合に限り、本書のCREATE系ルールとHuman Gate証跡ルールが適用される。経路は `local_capability_layer_policy.md` を参照する。
+
 ## Agent乱立防止
 
 - 新Role追加は最後の手段（`capability_gap_policy.md` の優先順位ラダー）。
@@ -84,7 +93,7 @@ P1差分に限定した再レビュー（全体を再レビューせず、指摘
 
 ## 完了条件
 
-- すべてのRole / Skillが登録簿に存在し、stateとdispositionが実体と一致している。
+- すべての共有層Role / Skillが登録簿に存在し、stateとdispositionが実体と一致している（ローカル層は対象外）。
 - ACTIVEなRole / SkillにはCeles Human Gate記録（baseline importを除く）がある。
 - `python3 tools/validate_repository.py` と Foundation evals がPASSしている。
 
@@ -93,6 +102,7 @@ P1差分に限定した再レビュー（全体を再レビューせず、指摘
 - `ai_team/governance/ai_employee_lifecycle_registry.yaml`
 - `ai_team/governance/skill_lifecycle_registry.yaml`
 - `ai_team/governance/capability_growth_policy.yaml`
+- `ai_team/local_capability_layer_policy.md`
 - `ai_team/agent_creation_policy.md`
 - `ai_team/skill_creation_policy.md`
 - `ai_team/agent_quality_gate.md`

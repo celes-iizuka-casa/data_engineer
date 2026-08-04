@@ -7,6 +7,7 @@
 ## 正本と本書の関係
 
 - primary skillの正本は `ai_team/capability_registry.yaml` の各role entry、Skillの実体は `skills/index.yaml`。本書はRole→Skillの逆引きview。
+- 本書は配布される共有層のRole / Skillだけを載せる。利用者ローカルで追加した分は `.local/capability/local_capability_registry.yaml` にあり、依頼受付時は本書と併せて読む（`ai_team/local_capability_layer_policy.md`）。
 
 ## Role x Skill Map
 

@@ -1,0 +1,55 @@
+# Local Capability Registry Template
+#
+# 配置先: .local/capability/local_capability_registry.yaml
+# この利用者のローカル層に追加したRole / Skillの一覧。共有層の
+# capability_registry.yaml とは別物で、Git管理せず他利用者へ配布しない。
+# 記入規約は ai_team/local_capability_layer_policy.md を参照する。
+#
+# 本テンプレート（書式）は共有層に置かれ配布されるが、記入後の実体は
+# .local/ 配下のため非配布になる。
+
+schema_version: "1.0"
+registry_kind: "user-local-capability"
+
+# ローカル層であることの明示。共有層のcanonicalを名乗らない。
+layer: user_local
+canonical_authority: false
+
+# 追加先レイヤをこの層と判定した根拠。
+environment_decision:
+  result: derived_environment          # derived_environment | canonical_environment
+  origin_url_normalized: "（host/owner/repo 形式。取得できない場合は unavailable）"
+  canonical_repository_declared: "（architecture_contract.yaml の宣言値）"
+  origin_url_matches: false            # true | false | unavailable
+  push_permission_confirmed: false     # true | false | unavailable
+  decided_at: "YYYY-MM-DD"
+
+roles:
+  - id: local_<name>                   # local_ 接頭辞は必須
+    display_name: "（AI <Role名>（ローカル））"
+    role_document: ".local/capability/roles/local_<name>.md"
+    primary_skill: skill-local-<name>  # 無い場合は null
+    owns: "（責任を持つ範囲）"
+    does_not_own: "（責任を持たない範囲）"
+    added_on: "YYYY-MM-DD"
+    reason: "（既存の正本Role / Skillで足りない理由）"
+    gap_classification: "（No / Skill / Role Scope / Workflow / Template / Quality Gate / Agent）"
+
+skills:
+  - id: skill-local-<name>             # skill-local- 接頭辞は必須
+    role: local_<name>                 # 既存の正本Roleに紐づける場合はそのid
+    modes:
+      - professional_opinion
+      - professional_design
+      - professional_implementation
+      - professional_verification
+    added_on: "YYYY-MM-DD"
+    reason: "（既存Skillの更新で足りない理由）"
+
+# 正本への昇格を提案したものを記録する（任意）。
+promotion_proposals:
+  - subject_id: local_<name>
+    proposal_path: ".local/capability/promotion/<file>.md"
+    submitted_on: "YYYY-MM-DD"
+    result: pending                    # pending | promoted | rejected
+    note: "（PROMOTE後はローカル定義を削除して git pull する）"

@@ -64,10 +64,22 @@ RoleやSkillではなく、作業順序や連携ルールが不足している�
 5. Workflow / Template / Quality Gateの追加
 6. 新しいAI社員Roleの追加
 
+## 追加先レイヤの判定
+
+最小対応を選んだあと、**実際に書き込む前に**、追加先が共有層かローカル層かを決める。判定基準は `local_capability_layer_policy.md` に置く。
+
+- 派生環境（正本環境と判定できない環境）では、追加先は常にローカル層 `.local/capability/` のみ。`ai_team/**`、`skills/**`、`templates/**`、`tools/validate_repository.py` へは書かない。
+- 正本環境（セレス環境）では、セレスの明示指示で正本へ追加する場合だけ共有層へ書く。個人的・実験的な追加はローカル層に置く。
+- 正本環境かどうかを確認できない場合は派生環境として扱う（共有層へ書かない側に倒す）。
+- No Gapと、既存Roleへ割り当てるだけのRole Scope Gapは、何も追加しないためこの判定が不要。
+
+判定結果と根拠（どちらの環境と判定したか、何を確認したか）を `capability_gap_analysis.md` に記録する。
+
 ## 完了条件
 
 - Gap分類が7種のいずれかに、根拠の引用付きで一意に決まっている。
 - 対応案が優先順位ラダーに沿って選ばれ、上位の代替案を却下した理由が書かれている。
+- 追加が発生する場合、追加先レイヤ（共有層 / ローカル層）と判定根拠が記録されている。
 - 次アクションと担当（Role / Skill）が明確になっている。
 - 判定結果が `capability_gap_analysis.md` として記録され、追加が発生する場合は各Creation Skillへ引き継がれている。
 
@@ -76,5 +88,6 @@ RoleやSkillではなく、作業順序や連携ルールが不足している�
 - `ai_team/agent_creation_policy.md`
 - `ai_team/skill_creation_policy.md`
 - `ai_team/agent_lifecycle_policy.md`
+- `ai_team/local_capability_layer_policy.md`
 - `ai_team/capability_registry.yaml`
 - `ai_team/workflows/input_to_output_workflow.md`

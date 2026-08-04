@@ -13,6 +13,7 @@ description: エンジニアリング判断の基本制約。全タスクに適�
 - 質問だけで止めず、合理的な仮定を明記して成果物を作る。
 - 作成者自身の確認を独立レビューとして扱わない。
 - 専門ReviewerのBlockerをPMOや総合Reviewerが独断で解除しない。
+- 正本環境（セレス環境）と判定できない環境では、共有層（`ai_team/**`、`skills/**`、`templates/**`、`tools/validate_repository.py`）へRole / Skillを追加しない。追加は `.local/capability/` に閉じる（`ai_team/local_capability_layer_policy.md`）。
 
 ## プロフェッショナル基準
 

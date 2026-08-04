@@ -46,11 +46,23 @@ AI Capability Architectとして、新Skill一式が契約・重複回避・ゲ�
 1. capability_gap_analysis のSkill Gap根拠を確認する
 2. `skill_creation_policy.md` の追加条件を照合する
 3. 既存Skill更新・テンプレート更新で足りないことを確認する
-4. 新Skill一式（README / skill.yaml / SKILL.md / agents/openai.yaml）を契約準拠で作成する
-5. skills/index.yaml・ライフサイクル登録簿・eval bindingsへの登録内容を作成する
-6. validator・テスト・evalで契約充足を検証する
-7. new_skill_creation_report.md に追加理由・判断ログ・更新ファイル一覧を記録する
-8. skill-agent-registry-management へ反映を引き継ぐ
+4. **追加先レイヤを判定する**（`local_capability_layer_policy.md`）。origin URLの正規化値と `architecture_contract.yaml` の `canonical_repository` の一致、およびcanonicalへのpush権限を実測する。いずれか1つでも満たさない、または確認できない場合は派生環境とし、以降は「ローカル層への追加」へ進む
+
+### 共有層への追加（正本環境の場合）
+5. 新Skill一式（README / skill.yaml / SKILL.md / agents/openai.yaml）を契約準拠で作成する
+6. skills/index.yaml・ライフサイクル登録簿・eval bindings・`SKILLS` 定数・`EXPECTED_SKILLS` への登録内容を作成する
+7. validator・テスト・evalで契約充足を検証する
+8. new_skill_creation_report.md に追加理由・判断ログ・更新ファイル一覧を記録する
+9. skill-agent-registry-management へ反映を引き継ぐ
+
+### ローカル層への追加（派生環境、または個人的・実験的な追加）
+5. `.local/capability/skills/skill-local-<capability>/` 一式を共有層と同じ4面ファイル契約で作成する
+6. `.local/capability/local_capability_registry.yaml` へ登録する（雛形: `templates/agent_creation/local_capability_registry_template.yaml`）
+7. `.local/capability/local_decision_log.md` へ判断記録を残す（雛形: `templates/agent_creation/local_decision_log_template.md`）
+8. 共有層に差分が出ていないことを `git status` で確認する
+9. 成果物の実行記録に、ローカル層のSkillを使った事実を明記する
+
+共有層のSkill一覧は完全一致契約（`SKILLS` 定数・`skills/index.yaml`・`skill_lifecycle_registry.yaml`・`skill_eval_bindings.yaml`）で守られている。派生環境で共有層へ1本足すとこれら全てに差分が出て、正本を `git pull` した時点で衝突する。ローカル層への追加ではこれらの更新もCeles Human Gateも**不要**である。
 
 ## 判断基準
 - 既存Roleの責務内であること（責務外なら新Role検討へ）
@@ -95,12 +107,25 @@ AI Capability Architectとして、新Skill一式が契約・重複回避・ゲ�
 - 一度しか使わないSkillを作る
 - 成果物がないSkillを作る
 - 判断基準が定義できないSkillを作る
-- 登録簿・eval bindingsを更新せずに追加を完了扱いにする
+- 追加先レイヤを判定せずに書き込みを始める
+- 派生環境で共有層（`skills/**`・`ai_team/**`・`templates/**`・`tools/validate_repository.py`）へ書き込む
+- 共有層へ追加する場合に、登録簿・eval bindingsを更新せずに追加を完了扱いにする
+- ローカル層への追加を `local_capability_registry.yaml` / `local_decision_log.md` に記録せずに終える
 
 ## 完了条件
 - 要求、仮定、未決事項が区別されている。
 - 既存Skill更新で足りない理由と再利用性の根拠が記録されている。
+- 追加先レイヤと判定根拠（正本環境か派生環境か、何を実測したか）が記録されている。
+
+**共有層へ追加した場合:**
+
 - 新Skill一式と登録内容がvalidator契約を満たしている。
+
+**ローカル層へ追加した場合:**
+
+- 共有層のファイルに差分が出ていない（`git status` で確認済み）。
+- `local_capability_registry.yaml` と `local_decision_log.md` の両方に記録がある。
+- 成果物の実行記録に、ローカル層のSkillを使った事実が書かれている。
 - risk_based_quality_gates.yamlでIndependent Reviewがrequiredの場合だけquality_review_request.mdを用意し、AI Deliverable Quality Reviewerへ引き渡している。
 - 最終判定がREWORK_REQUIREDまたはBLOCKEDの場合は完了扱いにしない。
 - 非プロフェッショナルな感想、無根拠な同意、責任範囲外の断定が除去されている。

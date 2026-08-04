@@ -31,7 +31,9 @@ inputs:
   - "対象Roleの定義と既存Skill"
   - "templates/agent_creation/new_skill_definition_template.md"
 outputs:
-  - "skills/skill-<capability>/ 一式"
+  - "追加先レイヤの判定結果と根拠"
+  - "共有層へ追加する場合: skills/skill-<capability>/ 一式と登録内容"
+  - "ローカル層へ追加する場合: .local/capability/skills/skill-local-<capability>/ 一式と local_capability_registry.yaml / local_decision_log.md"
   - "new_skill_creation_report.md"
 modes:
   professional_opinion:

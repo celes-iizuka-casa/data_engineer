@@ -30,9 +30,9 @@ inputs:
   - "ai_team/governance/ai_employee_lifecycle_registry.yaml のCREATE基準"
   - "templates/agent_creation/ の各テンプレート"
 outputs:
-  - "new_agent_proposal.md"
-  - "ai_team/roles/<new_role>.md"
-  - "skills/skill-<new-role>/ 一式"
+  - "new_agent_proposal.md（追加先レイヤの判定結果を含む）"
+  - "共有層へ追加する場合: ai_team/roles/<new_role>.md と skills/skill-<new-role>/ 一式"
+  - "ローカル層へ追加する場合: .local/capability/roles/local_<name>.md と local_capability_registry.yaml / local_decision_log.md"
   - "new_agent_creation_report.md"
 modes:
   professional_opinion:
@@ -72,9 +72,11 @@ modes:
   professional_implementation:
     description: "AI Capability Architectとして、新Role定義・Skill一式・登録内容を契約準拠で作成する。"
     outputs:
-      - "ai_team/roles/<new_role>.md（見出し契約準拠）"
-      - "skills/skill-<new-role>/ 一式（README / skill.yaml / SKILL.md / agents/openai.yaml）"
-      - "capability_registry.yaml / ライフサイクル登録簿への登録内容"
+      - "追加先レイヤの判定結果と根拠"
+      - "共有層: ai_team/roles/<new_role>.md（見出し契約準拠）"
+      - "共有層: skills/skill-<new-role>/ 一式（README / skill.yaml / SKILL.md / agents/openai.yaml）"
+      - "共有層: capability_registry.yaml / ライフサイクル登録簿への登録内容"
+      - "ローカル層: .local/capability/ 配下一式（登録簿・判断記録を含む）"
       - "new_agent_creation_report.md"
     review_points:
       - "動くだけでなく保守・再実行・エラー処理まで見ているか"

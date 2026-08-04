@@ -49,6 +49,13 @@
 
 （優先順位ラダー「割当 → Skill更新 → Skill追加 → Role明確化 → Workflow / Template / Gate追加 → 新Role」に沿った最小の対応案）
 
+## 追加先レイヤ
+
+判定: （共有層 / ローカル層 / 追加なし）
+環境判定: （正本環境 / 派生環境）
+確認した内容: （origin URLの正規化後の値と宣言値の一致有無、push権限の実測結果。確認できなかった項目は `unavailable` と書く）
+根拠: （`ai_team/local_capability_layer_policy.md` の該当条件）
+
 ## 新Roleが必要か
 
 （必要 / 不要。必要ならCREATE基準7項目の充足見込みを記載）
