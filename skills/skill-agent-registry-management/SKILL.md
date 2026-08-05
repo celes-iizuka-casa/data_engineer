@@ -84,9 +84,7 @@ AI Capability Architectとして、view3本と正本・実体の整合を検証�
 
 **共有層のview更新を行う場合（正本環境）:**
 
-- 共有層のview更新を行う場合（正本環境）: `ai_team/agent_registry.md`（共有層のview）
-- 共有層のview更新を行う場合（正本環境）: `ai_team/capability_matrix.md`（共有層のview）
-- 共有層のview更新を行う場合（正本環境）: `ai_team/role_skill_map.md`（共有層のview）
+- 共有層のview更新を行う場合（正本環境）: `ai_team/agent_registry.md` / `ai_team/capability_matrix.md` / `ai_team/role_skill_map.md`
 
 **ローカル層の突合を行う場合（派生環境、またはローカル層が存在する場合）:**
 

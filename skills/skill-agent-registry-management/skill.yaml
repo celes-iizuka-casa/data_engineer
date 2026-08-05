@@ -30,9 +30,7 @@ inputs:
   - "skills/index.yaml と skills/ 配下の実体"
   - "ai_team/model_effort_selection_policy.md（推奨・非拘束）"
 outputs:
-  - "共有層のview更新を行う場合（正本環境）: ai_team/agent_registry.md"
-  - "共有層のview更新を行う場合（正本環境）: ai_team/capability_matrix.md"
-  - "共有層のview更新を行う場合（正本環境）: ai_team/role_skill_map.md"
+  - "共有層のview更新を行う場合（正本環境）: ai_team/agent_registry.md / ai_team/capability_matrix.md / ai_team/role_skill_map.md"
   - "ローカル層の突合を行う場合（派生環境、またはローカル層が存在する場合）: .local/capability/local_capability_registry.yaml"
   - "共通: 追加先レイヤの判定結果と根拠（正本環境か派生環境か、何を実測したか）"
 modes:

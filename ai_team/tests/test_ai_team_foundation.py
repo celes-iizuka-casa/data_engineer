@@ -1962,5 +1962,105 @@ class SkillSurfaceParityTests(unittest.TestCase):
         )
 
 
+class SkillValidationWiringTests(unittest.TestCase):
+    """Exercise the SKILL_MD_REQUIRED_HEADINGS / skill_item_matches wiring
+    inside validate_skills() itself, not just the pure functions it calls.
+
+    SkillSurfaceParityTests above proves the primitives are correct in
+    isolation; it does not prove validate_skills() actually calls them on
+    the right inputs and turns a mismatch into a validation.fail(). This
+    mutates a real, otherwise-compliant Skill fixture (a temp copy of
+    skill-field-discovery) so a regression that silently dropped the wiring
+    (e.g. reverting to a count-only comparison, or dropping the heading
+    loop) would leave these tests red even though SkillSurfaceParityTests
+    stayed green.
+    """
+
+    FIXTURE_SKILL = "skill-field-discovery"
+
+    def setUp(self) -> None:
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        tmp_root = Path(self.tmp.name)
+        import shutil
+
+        shutil.copytree(
+            ROOT / "skills" / self.FIXTURE_SKILL,
+            tmp_root / "skills" / self.FIXTURE_SKILL,
+        )
+        self.skill_md_path = (
+            tmp_root / "skills" / self.FIXTURE_SKILL / "SKILL.md"
+        )
+
+        self.original_root = validator.ROOT
+        self.original_skills = validator.SKILLS
+        validator.ROOT = tmp_root
+        validator.SKILLS = [self.FIXTURE_SKILL]
+        self.addCleanup(self._restore_module_globals)
+
+    def _restore_module_globals(self) -> None:
+        validator.ROOT = self.original_root
+        validator.SKILLS = self.original_skills
+
+    def _run(self) -> validator.Validation:
+        validation = validator.Validation()
+        validator.validate_skills(validation)
+        return validation
+
+    def test_unmutated_fixture_has_no_surface_drift_errors(self) -> None:
+        validation = self._run()
+        drift_errors = [
+            error for error in validation.errors if "drift" in error
+        ]
+        heading_errors = [
+            error
+            for error in validation.errors
+            if "Missing required heading" in error
+        ]
+        self.assertEqual([], drift_errors)
+        self.assertEqual([], heading_errors)
+
+    def test_removing_a_required_heading_fails_validation(self) -> None:
+        content = self.skill_md_path.read_text(encoding="utf-8")
+        self.assertIn("## 完了条件", content.splitlines())
+        mutated = "\n".join(
+            line for line in content.splitlines() if line != "## 完了条件"
+        )
+        self.skill_md_path.write_text(mutated, encoding="utf-8")
+
+        validation = self._run()
+        self.assertTrue(
+            any(
+                "Missing required heading" in error and "完了条件" in error
+                for error in validation.errors
+            ),
+            validation.errors,
+        )
+
+    def test_reordering_items_fails_validation_despite_matching_count(
+        self,
+    ) -> None:
+        content = self.skill_md_path.read_text(encoding="utf-8")
+        lines = content.splitlines()
+        start = lines.index("## 必須出力") + 1
+        # Fixture's 必須出力 section: three "- ..." items in the same order
+        # as skill.yaml's outputs. Swap the first two to keep the item count
+        # identical while breaking positional agreement -- a count-only
+        # check would miss this.
+        self.assertTrue(lines[start].startswith("- "))
+        self.assertTrue(lines[start + 1].startswith("- "))
+        lines[start], lines[start + 1] = lines[start + 1], lines[start]
+        self.skill_md_path.write_text("\n".join(lines), encoding="utf-8")
+
+        validation = self._run()
+        self.assertTrue(
+            any(
+                "drift" in error and "必須出力" in error
+                for error in validation.errors
+            ),
+            validation.errors,
+        )
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -41,10 +41,10 @@ candidate:
   # "no candidate" steady state -- unlike the Role registry, validate_repository.py
   # requires candidate_state to be one of lifecycle_states, so null is invalid).
   # changed_skills therefore counts the Skills this batch actually changed.
-  source: "Celes-instructed SKILL.md surface alignment follow-up, remediating the 2026-08-05 independent review's 5 open items (request of 2026-08-05)"
-  purpose: "Close P2-1 (10 FDE sub-Skills lacked ## 完了条件), P2-2 (count-only check missed reordering; replaced with a containment rule and the SKILL_MD_YAML_LIST_DRIFT_EXCEPTIONS bypass removed), P2-3 (SKILL.md required headings now enforced), P2-4 (direct unit tests added), P3-1 (parser hardened) across 16 skills"
+  source: "Celes-instructed next-cycle follow-up, closing the 2 items the 2026-08-05 skill-surface-alignment-2 independent review deferred (request of 2026-08-05)"
+  purpose: "Add direct unit tests (SkillValidationWiringTests) exercising the SKILL_MD_REQUIRED_HEADINGS / skill_item_matches wiring inside validate_skills() itself via a mutated real-Skill fixture; consolidate skill-agent-registry-management's 3 duplicated 必須出力 bullets into 1 (skill.yaml outputs: 5 items -> 3, SKILL.md correspondingly updated)"
   human_gate_status: promoted
-  changed_skills: 16
+  changed_skills: 1
   effectiveness: not_evaluated
   improvement_type: structural_contract
   effectiveness_claim: "UNKNOWN — insufficient live evidence"
@@ -158,25 +158,43 @@ promotion_history:
       - "ai_team/tests/test_ai_team_foundation.py"
       - "celes-instruction:20260805-skill-surface-alignment-2"
     notes: "Remediates the 5 open items the prior gate (Celes-HG-20260805-SKILL-SURFACE-ALIGNMENT) left unclosed. P2-1: all 10 FDE sub-Skills gained ## 完了条件 matching done_definition exactly. P2-2: an independent sweep found the prior review's own estimate wrong (it predicted 1 new failure under stricter comparison; the actual count was 20 skills / 31 items under strict text+order, 19/27 after normalization). A similarity-threshold approach was rejected as undecidable (real drift scored 0.079-0.39, benign decoration 0.39-0.99, overlapping); a containment rule (skill_item_matches, exact substring in either direction after normalization) was implemented instead and wired into validate_skills(), and SKILL_MD_YAML_LIST_DRIFT_EXCEPTIONS was deleted entirely -- all 4 previously-exempted Capability Architect skills now pass on their own merits. P2-3: SKILL_MD_REQUIRED_HEADINGS enforces 7 headings with a line-anchored match. P2-4: SkillSurfaceParityTests (8 cases) added. P3-1: parser hardened for */+ bullets, fenced blocks, and nesting (measured zero behavioral change across all 33 skills, so no risk). Only SKILL.md was edited in all 16 skills; skill.yaml is byte-identical to before (git diff confirms zero skill.yaml changes). Independent review (Opus 5, REWORK_REQUIRED 2.9/4.0) verified all of the above against real files and commands, not against the report's claims, and found one P1: after the hash resync the 16 entries' transition.human_gate_status had been left at 'promoted' from the prior gate while content was still unapproved, making the registry misrepresent unapproved content as already independently-reviewed and PROMOTEd. Fixed before this gate: active_revision was reset to the committed (HEAD) hash and candidate_state/human_gate_status were set to HUMAN_GATE/pending until this PROMOTE. Covered skills (16, the exact set subject_revision is computed over): skill-adoption-planning, skill-agent-creation, skill-agent-registry-management, skill-business-flow-mapping, skill-capability-gap-analysis, skill-engineering-handoff, skill-engineering-knowledge-curator, skill-engineering-pmo, skill-feedback-to-backlog, skill-field-discovery, skill-mvp-scoping, skill-pain-point-analysis, skill-skill-creation, skill-solution-framing, skill-stakeholder-mapping, skill-success-metrics-design. Open items not covered here (next cycle, per independent review P2/P3): no direct unit test for SKILL_MD_REQUIRED_HEADINGS / the skill_item_matches wiring itself; skill-agent-registry-management's 必須出力 bullets duplicate their bold subsection header verbatim, which is faithful but hurts SKILL.md readability."
+  - schema_version: "1.1"
+    gate_id: "Celes-HG-20260805-SKILL-SURFACE-ALIGNMENT-3"
+    decision_type: canonical_promotion
+    subject_id: skill-surface-alignment-20260805-3
+    from_revision: "sha256:2654b610e810ee3c196c94a9c7ff57a4a814c5a57fd7614306ae6b7122a1b5d1"
+    subject_revision: "sha256:dd5e412c33f983708d201661e35f14414840857ed8c9d318da714248710eaf86"
+    target_state: ACTIVE
+    disposition: UPDATE
+    decision: PROMOTE
+    decided_by: Celes
+    timestamp: "2026-08-05T17:54:40+09:00"
+    before_after_eval_ref: "local-evidence:skill-surface-alignment-20260805-3/validator_drift_check"
+    independent_review_ref: "local-review:skill-surface-alignment-3-20260805/quality_review_report"
+    evidence_refs:
+      - "tools/validate_repository.py"
+      - "ai_team/tests/test_ai_team_foundation.py"
+      - "celes-instruction:20260805-skill-surface-alignment-3"
+    notes: "Closes the 2 items the prior gate (Celes-HG-20260805-SKILL-SURFACE-ALIGNMENT-2) deferred to next cycle. Item 1 (test-only, no gate needed on its own): added SkillValidationWiringTests to ai_team/tests/test_ai_team_foundation.py, which copies the real skill-field-discovery directory into a temp dir, monkeypatches validator.ROOT/SKILLS, and calls the real validate_skills() -- not just the pure extract_markdown_list_section/skill_item_matches functions -- to prove the SKILL_MD_REQUIRED_HEADINGS loop and the skill_item_matches wiring inside validate_skills() actually fire. Independent review confirmed both mutation tests go red when the corresponding lines in validate_skills() are neutered. Item 2 (the sole content change requiring this gate): skill-agent-registry-management's skill.yaml top-level outputs list (5 items) had 3 that each independently repeated the identical prefix '共有層のview更新を行う場合（正本環境）:' -- one per file. Consolidated into 1 item listing all 3 files (outputs: 5 -> 3); SKILL.md's ## 必須出力 section correspondingly collapsed its 3 duplicated bullets into 1. modes.professional_implementation.outputs (a separate, unrelated key) still lists the 3 files individually and was left untouched. subject_revision follows revision_strategy.batch_subject_revision applied to the single covered skill: sha256(id + NUL + candidate_revision + NUL). Independent review (Opus 5): PASS, no findings -- verified the 3 verification commands, confirmed both mutation tests via direct neutering of validate_skills(), confirmed active_revision still equals the HEAD-committed hash and candidate_revision equals the live-content hash by independently recomputing both, and confirmed the consolidation loses no information (the per-file detail also survives in modes.professional_implementation.outputs, untouched). Covered skill (1): skill-agent-registry-management."
 last_promotion_decision:
   schema_version: "1.1"
-  gate_id: "Celes-HG-20260805-SKILL-SURFACE-ALIGNMENT-2"
+  gate_id: "Celes-HG-20260805-SKILL-SURFACE-ALIGNMENT-3"
   decision_type: canonical_promotion
-  subject_id: skill-surface-alignment-20260805-2
-  from_revision: "sha256:665d0e0425f3de574a54b5ba1a6be39b93379b2cd2d659032984c7a21112d561"
-  subject_revision: "sha256:2654b610e810ee3c196c94a9c7ff57a4a814c5a57fd7614306ae6b7122a1b5d1"
+  subject_id: skill-surface-alignment-20260805-3
+  from_revision: "sha256:2654b610e810ee3c196c94a9c7ff57a4a814c5a57fd7614306ae6b7122a1b5d1"
+  subject_revision: "sha256:dd5e412c33f983708d201661e35f14414840857ed8c9d318da714248710eaf86"
   target_state: ACTIVE
   disposition: UPDATE
   decision: PROMOTE
   decided_by: Celes
-  timestamp: "2026-08-05T16:11:47+09:00"
-  before_after_eval_ref: "local-evidence:skill-surface-alignment-20260805-2/validator_drift_check"
-  independent_review_ref: "local-review:skill-surface-alignment-20260805-2/quality_review_report"
+  timestamp: "2026-08-05T17:54:40+09:00"
+  before_after_eval_ref: "local-evidence:skill-surface-alignment-20260805-3/validator_drift_check"
+  independent_review_ref: "local-review:skill-surface-alignment-3-20260805/quality_review_report"
   evidence_refs:
     - "tools/validate_repository.py"
     - "ai_team/tests/test_ai_team_foundation.py"
-    - "celes-instruction:20260805-skill-surface-alignment-2"
-  notes: "Remediates the 5 open items the prior gate (Celes-HG-20260805-SKILL-SURFACE-ALIGNMENT) left unclosed. P2-1: all 10 FDE sub-Skills gained ## 完了条件 matching done_definition exactly. P2-2: an independent sweep found the prior review's own estimate wrong (it predicted 1 new failure under stricter comparison; the actual count was 20 skills / 31 items under strict text+order, 19/27 after normalization). A similarity-threshold approach was rejected as undecidable (real drift scored 0.079-0.39, benign decoration 0.39-0.99, overlapping); a containment rule (skill_item_matches, exact substring in either direction after normalization) was implemented instead and wired into validate_skills(), and SKILL_MD_YAML_LIST_DRIFT_EXCEPTIONS was deleted entirely -- all 4 previously-exempted Capability Architect skills now pass on their own merits. P2-3: SKILL_MD_REQUIRED_HEADINGS enforces 7 headings with a line-anchored match. P2-4: SkillSurfaceParityTests (8 cases) added. P3-1: parser hardened for */+ bullets, fenced blocks, and nesting (measured zero behavioral change across all 33 skills, so no risk). Only SKILL.md was edited in all 16 skills; skill.yaml is byte-identical to before (git diff confirms zero skill.yaml changes). Independent review (Opus 5, REWORK_REQUIRED 2.9/4.0) verified all of the above against real files and commands, not against the report's claims, and found one P1: after the hash resync the 16 entries' transition.human_gate_status had been left at 'promoted' from the prior gate while content was still unapproved, making the registry misrepresent unapproved content as already independently-reviewed and PROMOTEd. Fixed before this gate: active_revision was reset to the committed (HEAD) hash and candidate_state/human_gate_status were set to HUMAN_GATE/pending until this PROMOTE. Covered skills (16, the exact set subject_revision is computed over): skill-adoption-planning, skill-agent-creation, skill-agent-registry-management, skill-business-flow-mapping, skill-capability-gap-analysis, skill-engineering-handoff, skill-engineering-knowledge-curator, skill-engineering-pmo, skill-feedback-to-backlog, skill-field-discovery, skill-mvp-scoping, skill-pain-point-analysis, skill-skill-creation, skill-solution-framing, skill-stakeholder-mapping, skill-success-metrics-design. Open items not covered here (next cycle, per independent review P2/P3): no direct unit test for SKILL_MD_REQUIRED_HEADINGS / the skill_item_matches wiring itself; skill-agent-registry-management's 必須出力 bullets duplicate their bold subsection header verbatim, which is faithful but hurts SKILL.md readability."
+    - "celes-instruction:20260805-skill-surface-alignment-3"
+  notes: "Closes the 2 items the prior gate (Celes-HG-20260805-SKILL-SURFACE-ALIGNMENT-2) deferred to next cycle. Item 1 (test-only, no gate needed on its own): added SkillValidationWiringTests to ai_team/tests/test_ai_team_foundation.py, which copies the real skill-field-discovery directory into a temp dir, monkeypatches validator.ROOT/SKILLS, and calls the real validate_skills() -- not just the pure extract_markdown_list_section/skill_item_matches functions -- to prove the SKILL_MD_REQUIRED_HEADINGS loop and the skill_item_matches wiring inside validate_skills() actually fire. Independent review confirmed both mutation tests go red when the corresponding lines in validate_skills() are neutered. Item 2 (the sole content change requiring this gate): skill-agent-registry-management's skill.yaml top-level outputs list (5 items) had 3 that each independently repeated the identical prefix '共有層のview更新を行う場合（正本環境）:' -- one per file. Consolidated into 1 item listing all 3 files (outputs: 5 -> 3); SKILL.md's ## 必須出力 section correspondingly collapsed its 3 duplicated bullets into 1. modes.professional_implementation.outputs (a separate, unrelated key) still lists the 3 files individually and was left untouched. subject_revision follows revision_strategy.batch_subject_revision applied to the single covered skill: sha256(id + NUL + candidate_revision + NUL). Independent review (Opus 5): PASS, no findings -- verified the 3 verification commands, confirmed both mutation tests via direct neutering of validate_skills(), confirmed active_revision still equals the HEAD-committed hash and candidate_revision equals the live-content hash by independently recomputing both, and confirmed the consolidation loses no information (the per-file detail also survives in modes.professional_implementation.outputs, untouched). Covered skill (1): skill-agent-registry-management."
 skills:
   - id: skill-engineering-pmo
     active_revision: "sha256:bed03e0203110221816b17183c28916bc1255035dc3546d40e09c2d4e810c8fd"
@@ -803,17 +821,17 @@ skills:
       - type: structural
         value: "listed in skills/index.yaml and passed repository validation"
   - id: skill-agent-registry-management
-    active_revision: "sha256:1b32411c9de43aed007d4b7b700594cb05ea667172d9a5dd62bd681bcbcd474f"
-    candidate_revision: "sha256:1b32411c9de43aed007d4b7b700594cb05ea667172d9a5dd62bd681bcbcd474f"
+    active_revision: "sha256:9a8965c82943854e3194e57762f5dcb2a199817b23aefa7a31b437abf2e392b3"
+    candidate_revision: "sha256:9a8965c82943854e3194e57762f5dcb2a199817b23aefa7a31b437abf2e392b3"
     state: ACTIVE
     candidate_state: ACTIVE
     disposition: UPDATE
     transition:
       from_state: ACTIVE
       to_state: ACTIVE
-      candidate_revision: "sha256:1b32411c9de43aed007d4b7b700594cb05ea667172d9a5dd62bd681bcbcd474f"
+      candidate_revision: "sha256:9a8965c82943854e3194e57762f5dcb2a199817b23aefa7a31b437abf2e392b3"
       evidence_refs: ["local-evidence:capability-gap-agent-creation-20260802/new_agent_creation_report", "ai_team/agent_registry.md", "ai_team/local_capability_layer_policy.md"]
-      independent_review_ref: "local-review:skill-surface-alignment-20260805-2/quality_review_report"
+      independent_review_ref: "local-review:skill-surface-alignment-3-20260805/quality_review_report"
       human_gate_status: promoted
     disposition_confidence: structural_only
     effectiveness: not_evaluated
