@@ -46,6 +46,12 @@ description: 顧客課題を、技術的に実現可能な解決方針へ変換�
 - 1案だけ提示して比較を省略する
 - 技術的に面白い解を業務価値より優先する
 
+## 完了条件
+- solution_framing.md / solution_options.md / recommended_approach.md が作成されている。
+- 候補が2案以上比較され、推奨に採用条件が付いている。
+- Tech Leadへの確認依頼が作成されている。
+- `risk_based_quality_gates.yaml`でIndependent Reviewがrequiredの場合だけAI Deliverable Quality Reviewerへ引き渡している。
+
 ## 参照
 - `templates/fde/solution_framing_template.md`
 - `ai_team/fde/fde_scope_boundary.md`

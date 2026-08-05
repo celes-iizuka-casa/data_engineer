@@ -49,6 +49,12 @@ description: FDEが整理した現場課題・制約・MVPスコープを、Tech
 - 技術選定を先取りして断定する
 - 議事録の要約で終わらせる
 
+## 完了条件
+- engineering_handoff.md がテンプレ29セクションで作成されている。
+- Role別依頼10種すべてに記載がある（依頼なしは理由付き）。
+- `ai_team/fde/fde_quality_gate.md` のEngineering Handoff品質チェックに合格している。
+- 受け手の着手可否を確認し、`risk_based_quality_gates.yaml`でIndependent Reviewがrequiredの場合だけAI Deliverable Quality Reviewerへ引き渡している。
+
 ## 参照
 - `ai_team/fde/fde_engineering_handoff_guide.md`
 - `templates/engineering_handoff_template.md`

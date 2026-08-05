@@ -44,7 +44,7 @@ AI Capability Architectとして、新Role一式が契約・境界・ゲート�
 
 ## Workflow
 1. capability_gap_analysis / agent_need_assessment のAgent Gap根拠を確認する
-2. **追加先レイヤを判定する**（`local_capability_layer_policy.md`）。origin URLの正規化値と `architecture_contract.yaml` の `canonical_repository` の一致、およびcanonicalへのpush権限を実測する。いずれか1つでも満たさない、または確認できない場合は派生環境とし、以降は「ローカル層への追加」へ進む。共有層への追加はセレスの明示指示がある場合に限る
+2. **追加先レイヤを判定する**（`local_capability_layer_policy.md`）。origin URLの正規化値と `architecture_contract.yaml` の `canonical_repository` の一致、およびcanonicalへのpush権限を実測する。いずれか1つでも満たさない、または確認できない場合は派生環境とし、以降はローカル層への追加へ進む。共有層への追加はセレスの明示指示がある場合に限る
 3. 判定結果と根拠を new_agent_proposal.md の「追加先レイヤ」へ記録する
 
 ### 共有層への追加（正本環境 + セレスの明示指示がある場合のみ）
@@ -88,21 +88,10 @@ AI Capability Architectとして、新Role一式が契約・境界・ゲート�
 
 ## 必須出力
 
-**共通:**
-
-- new_agent_proposal.md（追加先レイヤの判定結果を手順3で記録する。層に関わらず作成する）
-- new_agent_creation_report.md（追加先レイヤと判定根拠を含む）
-
-**共有層へ追加する場合（正本環境 + セレスの明示指示がある場合のみ）:**
-
-- new_agent_proposal.md をCeles Human Gateの判断材料として完成させる（手順5）
-- `ai_team/roles/<new_role>.md` と `skills/skill-<new-role>/` 一式（承認後）
-- ライフサイクル登録簿・正本3ビューへの登録内容
-
-**ローカル層へ追加する場合（派生環境、または個人的・実験的な追加）:**
-
-- `.local/capability/roles/local_<name>.md`（必要なら `.local/capability/skills/skill-local-<name>/` 一式）
-- `.local/capability/local_capability_registry.yaml` と `.local/capability/local_decision_log.md` への記録
+- new_agent_proposal.md（追加先レイヤの判定結果を含む）
+- 共有層へ追加する場合: `ai_team/roles/<new_role>.md` と `skills/skill-<new-role>/` 一式
+- ローカル層へ追加する場合: `.local/capability/roles/local_<name>.md` と `local_capability_registry.yaml` / `local_decision_log.md`
+- new_agent_creation_report.md
 
 ## レビュー観点
 - CREATE基準7項目の証跡
@@ -138,7 +127,7 @@ AI Capability Architectとして、新Role一式が契約・境界・ゲート�
 
 - CREATE基準7項目の証跡が記録されている。
 - Role定義・Skill一式・登録内容がvalidator契約を満たしている。
-- Registry / Matrix / Map反映が引き継がれている。
+- Registry / Matrix / Map反映が skill-agent-registry-management へ引き継がれている。
 
 **ローカル層へ追加した場合:**
 

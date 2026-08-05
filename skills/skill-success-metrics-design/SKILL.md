@@ -46,6 +46,12 @@ description: 導入後の成功条件、効果測定指標、利用状況確認�
 - 測定手段のない指標を設定する
 - 投資判断・撤退判断を単独で確定する
 
+## 完了条件
+- success_metrics.md / measurement_plan.md / usage_metrics.md が作成されている。
+- ベースライン取得計画と測定計画がある。
+- `ai_team/fde/fde_quality_gate.md` のSuccess Metrics品質チェックに合格している。
+- `risk_based_quality_gates.yaml`でIndependent Reviewがrequiredの場合だけAI Deliverable Quality Reviewerへ引き渡している。
+
 ## 参照
 - `ai_team/fde/fde_adoption_success_guide.md`
 - `templates/success_metrics_template.md`

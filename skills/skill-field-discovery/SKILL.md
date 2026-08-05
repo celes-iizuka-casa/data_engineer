@@ -21,12 +21,12 @@ description: 顧客・現場の相談内容から、背景、要望、本質課�
 ## Workflow
 1. profiles/current_user_profile.yaml と personalization_policy.md を読む
 2. inputの相談・メモ・資料を確認する
-3. 顧客背景・業務背景を customer_context.md に整理する
+3. 顧客背景・業務背景を整理する（customer_context.md に記録する）
 4. 要望を顧客の言葉のまま記録する
 5. `ai_team/fde/fde_discovery_checklist.md` を走査し確認済み/未確認を分ける
 6. 制約・データ発生源・既存システム・セキュリティ権限を事実として整理する
 7. 成功条件・受入条件候補を記録する
-8. discovery_questions.md に未確認事項を確認方法付きで整理する
+8. 未確認事項を `discovery_questions.md` に確認方法付きで整理する
 9. skill-pain-point-analysis へ本質課題の特定材料を渡す
 
 ## 必須出力
@@ -42,6 +42,12 @@ description: 顧客・現場の相談内容から、背景、要望、本質課�
 - 顧客の要望を言い換えて記録する（原文を失う）
 - 未確認事項を残したまま「確認済み」として次工程へ渡す
 - 本質課題を本Skill単独で確定させる
+
+## 完了条件
+- field_discovery.md / customer_context.md がテンプレに沿って作成されている。
+- 未確認事項が discovery_questions.md に確認方法付きで整理されている。
+- `ai_team/fde/fde_quality_gate.md` のDiscovery品質チェックに合格している。
+- `risk_based_quality_gates.yaml`でIndependent Reviewがrequiredの場合だけAI Deliverable Quality Reviewerへ引き渡している。
 
 ## 参照
 - `ai_team/fde/fde_discovery_checklist.md`

@@ -56,9 +56,9 @@ AI Engineering PMOとして、検証対象、観点、手順、結果、問題�
 1. 入力ファイルと既存成果物を棚卸しする
 2. 課題分類、明示成果物、制約、リスクを整理する
 3. MVPとスケール時の拡張範囲を分ける
-4. 担当ロール、成果物、依存関係、専門Reviewer、品質ゲートを決める
-5. 作業工程を分解し、caller Runtimeを維持したまま必要能力と非拘束effortを提案する（`ai_team/model_selection_policy.md`）
-6. 繰り返し作業に該当するか判定し、該当する場合は代表例先行確認フローを起動する（`ai_team/iteration_confirmation_policy.md`）
+4. 作業工程を分解し、caller Runtimeと現在Modelを変えずに必要Capabilityと非拘束effortを提案する（`ai_team/model_selection_policy.md`）
+5. 繰り返し作業に該当するか判定し、該当する場合は代表例先行確認フローを起動する（`ai_team/iteration_confirmation_policy.md`）
+6. 担当ロール、成果物、依存関係、専門Reviewer、品質ゲートを決める
 7. `risk_based_quality_gates.yaml`でIndependent Reviewがrequired、またはCanonical candidateの場合だけquality_review_request.mdと証跡をQuality Reviewerへ引き渡す
 8. 最終判定を改変せず、結論、重要指摘、判断依頼、残存リスクをセレスへ報告する
 9. 作業完了後に task_retrospective を作成する（`ai_team/retrospective_policy.md`）

@@ -47,7 +47,7 @@ AI Capability Architectとして、view3本と正本・実体の整合を検証�
 
 ### 共有層のview更新（正本環境の場合のみ）
 3. 正本（`capability_registry.yaml`・governance登録簿・`skills/index.yaml`）を読み込む
-4. view3本と1件ずつ突合し、差分を検出して原因を確認する
+4. `agent_registry.md` / `capability_matrix.md` / `role_skill_map.md` と1件ずつ突合し、差分（追加・更新・削除・乖離）を検出して原因を確認する
 5. viewを更新し、更新履歴に日付・内容・根拠を追記する
 6. 正本側の変更が必要な乖離はCapability Architect本体の判断へ引き継ぐ
 
@@ -84,13 +84,13 @@ AI Capability Architectとして、view3本と正本・実体の整合を検証�
 
 **共有層のview更新を行う場合（正本環境）:**
 
-- `ai_team/agent_registry.md`（共有層のview）
-- `ai_team/capability_matrix.md`（共有層のview）
-- `ai_team/role_skill_map.md`（共有層のview）
+- 共有層のview更新を行う場合（正本環境）: `ai_team/agent_registry.md`（共有層のview）
+- 共有層のview更新を行う場合（正本環境）: `ai_team/capability_matrix.md`（共有層のview）
+- 共有層のview更新を行う場合（正本環境）: `ai_team/role_skill_map.md`（共有層のview）
 
 **ローカル層の突合を行う場合（派生環境、またはローカル層が存在する場合）:**
 
-- `.local/capability/local_capability_registry.yaml`（共有層のviewとは分離して維持する）
+- ローカル層の突合を行う場合（派生環境、またはローカル層が存在する場合）: `.local/capability/local_capability_registry.yaml`（共有層のviewとは分離して維持する）
 
 **共通:**
 

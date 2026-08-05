@@ -53,7 +53,7 @@ AI Engineering Knowledge Curatorとして、検証対象、観点、手順、結
 3. 案件名、目的、状態、主要成果物、出典パスをProject Noteへ整理する
 4. 意思決定、前提、未解決事項、リスク、次アクションを分離して記録する
 5. 再利用できる内容だけをKnowledge、Pattern、ADR、Troubleshootingへ抽出する
-6. `_internal/feedback_analysis.md` / `_internal/team_improvement_proposal.md` があれば、PersonalizationとUniversal candidateを分離して扱う（`ai_team/feedback_optimization_policy.md`）
+6. `_internal/feedback_analysis.md`と`_internal/team_improvement_proposal.md`があれば、PersonalizationとUniversal candidateを分離して扱う（`ai_team/feedback_optimization_policy.md`）
 7. `output/.../_internal/task_retrospective.md` があれば、改善候補・成功パターンを保存する（`ai_team/retrospective_policy.md`）
 8. frontmatter、タグ、内部リンク、MOC、source_mapを更新する
 9. リンク切れ、出典、重複、機密情報、未検証主張を確認する

@@ -47,6 +47,12 @@ description: 現場フィードバックを分類し、改善Backlogへ変換す
 - 対応しない項目を無言で破棄する
 - 修正方針の技術判断を単独で確定する
 
+## 完了条件
+- feedback_log.md / feedback_analysis.md / improvement_backlog.md が作成されている。
+- 全件が出典付き・7分類済み・優先順位初版付きである。
+- `ai_team/fde/fde_quality_gate.md` のFeedback Loop品質チェックに合格している。
+- `risk_based_quality_gates.yaml`でIndependent Reviewがrequiredの場合だけAI Deliverable Quality Reviewerへ引き渡している。
+
 ## 参照
 - `ai_team/fde/fde_feedback_loop.md`
 - `ai_team/workflows/customer_feedback_to_engineering_workflow.md`

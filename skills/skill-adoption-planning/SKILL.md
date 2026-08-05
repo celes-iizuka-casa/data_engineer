@@ -48,6 +48,12 @@ description: 導入・定着・教育・運用を整理し、作って終わり�
 - 教育を操作手順の羅列だけで済ませる
 - 監視・Runbookの技術設計に踏み込む（SREの領分）
 
+## 完了条件
+- adoption_plan.md / rollout_plan.md / training_notes.md / operation_notes.md が作成されている。
+- 定着責任者と旧手順廃止条件が合意されている。
+- `ai_team/fde/fde_quality_gate.md` のAdoption Plan品質チェックに合格している。
+- `risk_based_quality_gates.yaml`でIndependent Reviewがrequiredの場合だけAI Deliverable Quality Reviewerへ引き渡している。
+
 ## 参照
 - `ai_team/fde/fde_adoption_success_guide.md`
 - `templates/adoption_plan_template.md`

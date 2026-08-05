@@ -47,6 +47,12 @@ description: 現状業務フローとTo-Be業務フローを整理し、どこ�
 - 統制上必要な承認まで一律に廃止提案する
 - システム仕様の詳細設計に踏み込む（handoff先の領分）
 
+## 完了条件
+- current/target_business_flow.md と business_flow_gap.md が作成されている。
+- `ai_team/fde/fde_quality_gate.md` のBusiness Flow品質チェックに合格している。
+- ギャップが要件区分付きで skill-mvp-scoping へ渡っている。
+- `risk_based_quality_gates.yaml`でIndependent Reviewがrequiredの場合だけAI Deliverable Quality Reviewerへ引き渡している。
+
 ## 参照
 - `ai_team/fde/fde_business_flow_mapping_guide.md`
 - `templates/fde/business_flow_template.md`

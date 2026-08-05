@@ -47,6 +47,12 @@ description: 表面的な要望と本質的な課題を分け、解くべき課�
 - 課題を複数のまま優先を付けずに次工程へ渡す
 - 技術原因の調査に踏み込み実装領域を侵食する
 
+## 完了条件
+- pain_point_analysis.md / root_cause_hypothesis.md / problem_statement.md が作成されている。
+- 表面要望と本質課題が分離され、裏づけ事実がある。
+- `ai_team/fde/fde_quality_gate.md` のDiscovery品質チェック（本質課題）に合格している。
+- `risk_based_quality_gates.yaml`でIndependent Reviewがrequiredの場合だけAI Deliverable Quality Reviewerへ引き渡している。
+
 ## 参照
 - `ai_team/fde/fde_discovery_checklist.md`
 - `templates/fde/pain_point_analysis_template.md`

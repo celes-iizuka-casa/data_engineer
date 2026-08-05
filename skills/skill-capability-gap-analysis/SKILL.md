@@ -46,8 +46,8 @@ AI Capability Architectとして、Gap判定と対応案の妥当性を検証す
 1. 依頼から必要能力・専門領域・成果物を抽出する
 2. `ai_team/capability_registry.yaml` と `agent_registry.md` / `capability_matrix.md` / `role_skill_map.md` を確認する
 3. 候補Role / Skillの定義本文を実読して対応可否を判定する
-4. Gap分類を決める
-5. 優先順位ラダー（割当 → Skill更新 → Skill追加 → Role明確化 → Workflow / Template / Gate追加 → 新Role）で最小の対応案を選ぶ
+4. Gap分類（No / Skill / Role Scope / Workflow / Template / Quality Gate / Agent）を決める
+5. 優先順位ラダーに従い最小の対応案を選ぶ（割当 → Skill更新 → Skill追加 → Role明確化 → Workflow / Template / Gate追加 → 新Role）
 6. **追加が発生する場合、追加先レイヤ（共有層 / ローカル層）を判定する**（`local_capability_layer_policy.md`）。origin URLの正規化値と `architecture_contract.yaml` の `canonical_repository` の一致、およびcanonicalへのpush権限を実測する。いずれか1つでも満たさない、または確認できない場合は派生環境とし、追加先はローカル層 `.local/capability/` のみとする
 7. capability_gap_analysis.md（「追加先レイヤ」節を含む）と（追加候補がある場合）agent_need_assessment.md を作成する
 8. 確定したGapを skill-agent-creation / skill-skill-creation / skill-agent-registry-management へ、追加先レイヤの判定結果とともに引き継ぐ
@@ -103,8 +103,8 @@ AI Capability Architectとして、Gap判定と対応案の妥当性を検証す
 ## 完了条件
 - 要求、仮定、未決事項が区別されている。
 - Gap分類と対応案が既存定義の実読に基づいて記録されている。
+- 追加候補がある場合、次工程（agent-creation / skill-creation / registry-management）への引き継ぎ内容が明確になっている。
 - 追加が発生する場合、追加先レイヤ（共有層 / ローカル層）と判定根拠（正本環境か派生環境か、何を実測したか）が capability_gap_analysis.md に記録されている。
-- 追加候補がある場合、次工程への引き継ぎ内容が明確になっている。
 - risk_based_quality_gates.yamlでIndependent Reviewがrequiredの場合だけquality_review_request.mdを用意し、AI Deliverable Quality Reviewerへ引き渡している。
 - 最終判定がREWORK_REQUIREDまたはBLOCKEDの場合は完了扱いにしない。
 - Professional Modeに応じた成果物、判断理由、リスク、未確認事項、次アクションが明記されている。

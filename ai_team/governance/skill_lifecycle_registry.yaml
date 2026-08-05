@@ -41,8 +41,8 @@ candidate:
   # "no candidate" steady state -- unlike the Role registry, validate_repository.py
   # requires candidate_state to be one of lifecycle_states, so null is invalid).
   # changed_skills therefore counts the Skills this batch actually changed.
-  source: "Celes-instructed SKILL.md surface alignment (request of 2026-08-05)"
-  purpose: "Bring SKILL.md (the face read at runtime) back in line with the already-approved skill.yaml (the contract face) across 16 skills, so declared steps/outputs/prohibited_actions/done_definition are actually visible at execution time"
+  source: "Celes-instructed SKILL.md surface alignment follow-up, remediating the 2026-08-05 independent review's 5 open items (request of 2026-08-05)"
+  purpose: "Close P2-1 (10 FDE sub-Skills lacked ## 完了条件), P2-2 (count-only check missed reordering; replaced with a containment rule and the SKILL_MD_YAML_LIST_DRIFT_EXCEPTIONS bypass removed), P2-3 (SKILL.md required headings now enforced), P2-4 (direct unit tests added), P3-1 (parser hardened) across 16 skills"
   human_gate_status: promoted
   changed_skills: 16
   effectiveness: not_evaluated
@@ -140,37 +140,56 @@ promotion_history:
       - "tools/validate_repository.py"
       - "celes-instruction:20260805-skill-surface-alignment"
     notes: "SKILL.md (a revision_strategy.canonical_input) had drifted from the already-approved skill.yaml in 16 skills: declared steps/outputs/prohibited_actions/done_definition existed in the contract face but were missing from the face read at runtime. A new validator check (SKILL_MD_YAML_LIST_PAIRS) detected 31 such divergences; all were closed by editing SKILL.md only -- skill.yaml was not touched, so no contract semantics changed. Because SKILL.md feeds the content hash, each of the 16 revisions changed and required this gate. skill-agent-creation and skill-skill-creation were deliberately excluded (their Celes-HG-20260804 hashes would break); the exclusion is pinned in SKILL_MD_YAML_LIST_DRIFT_EXCEPTIONS. Independent review (Opus 5) verified all 16 edits semantically and recomputed 33/33 registry hashes independently; its P1-1 finding was the absence of this record. Open items not covered here: P2-1 (10 FDE sub-Skills still lack ## 完了条件), P2-2 (check compares counts, not order), P2-3 (SKILL.md headings not enforced), P2-4 (no direct unit test for the new parser). Covered skills (16, the exact set the subject_revision is computed over): skill-backend-engineer, skill-cloud-infrastructure-engineer, skill-data-engineer, skill-data-platform-engineer, skill-deliverable-quality-reviewer, skill-engineering-pmo, skill-field-discovery, skill-forward-deployed-engineer, skill-frontend-engineer, skill-fullstack-engineer, skill-integration-engineer, skill-llm-application-engineer, skill-ml-engineer, skill-product-manager, skill-security-governance-engineer, skill-sre-platform-engineer."
+  - schema_version: "1.1"
+    gate_id: "Celes-HG-20260805-SKILL-SURFACE-ALIGNMENT-2"
+    decision_type: canonical_promotion
+    subject_id: skill-surface-alignment-20260805-2
+    from_revision: "sha256:665d0e0425f3de574a54b5ba1a6be39b93379b2cd2d659032984c7a21112d561"
+    subject_revision: "sha256:2654b610e810ee3c196c94a9c7ff57a4a814c5a57fd7614306ae6b7122a1b5d1"
+    target_state: ACTIVE
+    disposition: UPDATE
+    decision: PROMOTE
+    decided_by: Celes
+    timestamp: "2026-08-05T16:11:47+09:00"
+    before_after_eval_ref: "local-evidence:skill-surface-alignment-20260805-2/validator_drift_check"
+    independent_review_ref: "local-review:skill-surface-alignment-20260805-2/quality_review_report"
+    evidence_refs:
+      - "tools/validate_repository.py"
+      - "ai_team/tests/test_ai_team_foundation.py"
+      - "celes-instruction:20260805-skill-surface-alignment-2"
+    notes: "Remediates the 5 open items the prior gate (Celes-HG-20260805-SKILL-SURFACE-ALIGNMENT) left unclosed. P2-1: all 10 FDE sub-Skills gained ## 完了条件 matching done_definition exactly. P2-2: an independent sweep found the prior review's own estimate wrong (it predicted 1 new failure under stricter comparison; the actual count was 20 skills / 31 items under strict text+order, 19/27 after normalization). A similarity-threshold approach was rejected as undecidable (real drift scored 0.079-0.39, benign decoration 0.39-0.99, overlapping); a containment rule (skill_item_matches, exact substring in either direction after normalization) was implemented instead and wired into validate_skills(), and SKILL_MD_YAML_LIST_DRIFT_EXCEPTIONS was deleted entirely -- all 4 previously-exempted Capability Architect skills now pass on their own merits. P2-3: SKILL_MD_REQUIRED_HEADINGS enforces 7 headings with a line-anchored match. P2-4: SkillSurfaceParityTests (8 cases) added. P3-1: parser hardened for */+ bullets, fenced blocks, and nesting (measured zero behavioral change across all 33 skills, so no risk). Only SKILL.md was edited in all 16 skills; skill.yaml is byte-identical to before (git diff confirms zero skill.yaml changes). Independent review (Opus 5, REWORK_REQUIRED 2.9/4.0) verified all of the above against real files and commands, not against the report's claims, and found one P1: after the hash resync the 16 entries' transition.human_gate_status had been left at 'promoted' from the prior gate while content was still unapproved, making the registry misrepresent unapproved content as already independently-reviewed and PROMOTEd. Fixed before this gate: active_revision was reset to the committed (HEAD) hash and candidate_state/human_gate_status were set to HUMAN_GATE/pending until this PROMOTE. Covered skills (16, the exact set subject_revision is computed over): skill-adoption-planning, skill-agent-creation, skill-agent-registry-management, skill-business-flow-mapping, skill-capability-gap-analysis, skill-engineering-handoff, skill-engineering-knowledge-curator, skill-engineering-pmo, skill-feedback-to-backlog, skill-field-discovery, skill-mvp-scoping, skill-pain-point-analysis, skill-skill-creation, skill-solution-framing, skill-stakeholder-mapping, skill-success-metrics-design. Open items not covered here (next cycle, per independent review P2/P3): no direct unit test for SKILL_MD_REQUIRED_HEADINGS / the skill_item_matches wiring itself; skill-agent-registry-management's 必須出力 bullets duplicate their bold subsection header verbatim, which is faithful but hurts SKILL.md readability."
 last_promotion_decision:
   schema_version: "1.1"
-  gate_id: "Celes-HG-20260805-SKILL-SURFACE-ALIGNMENT"
+  gate_id: "Celes-HG-20260805-SKILL-SURFACE-ALIGNMENT-2"
   decision_type: canonical_promotion
-  subject_id: skill-surface-alignment-20260805
-  from_revision: "sha256:8253da1c523e0441ddc471499fe4d70cb0131771b74488eeb9d3fdf590aa557f"
-  subject_revision: "sha256:665d0e0425f3de574a54b5ba1a6be39b93379b2cd2d659032984c7a21112d561"
+  subject_id: skill-surface-alignment-20260805-2
+  from_revision: "sha256:665d0e0425f3de574a54b5ba1a6be39b93379b2cd2d659032984c7a21112d561"
+  subject_revision: "sha256:2654b610e810ee3c196c94a9c7ff57a4a814c5a57fd7614306ae6b7122a1b5d1"
   target_state: ACTIVE
   disposition: UPDATE
   decision: PROMOTE
   decided_by: Celes
-  timestamp: "2026-08-05T14:32:00+09:00"
-  before_after_eval_ref: "local-evidence:skill-surface-alignment-20260805/validator_drift_check"
-  independent_review_ref: "local-review:skill-surface-alignment-20260805/quality_review_report"
+  timestamp: "2026-08-05T16:11:47+09:00"
+  before_after_eval_ref: "local-evidence:skill-surface-alignment-20260805-2/validator_drift_check"
+  independent_review_ref: "local-review:skill-surface-alignment-20260805-2/quality_review_report"
   evidence_refs:
     - "tools/validate_repository.py"
-    - "celes-instruction:20260805-skill-surface-alignment"
-  notes: "SKILL.md (a revision_strategy.canonical_input) had drifted from the already-approved skill.yaml in 16 skills: declared steps/outputs/prohibited_actions/done_definition existed in the contract face but were missing from the face read at runtime. A new validator check (SKILL_MD_YAML_LIST_PAIRS) detected 31 such divergences; all were closed by editing SKILL.md only -- skill.yaml was not touched, so no contract semantics changed. Because SKILL.md feeds the content hash, each of the 16 revisions changed and required this gate. skill-agent-creation and skill-skill-creation were deliberately excluded (their Celes-HG-20260804 hashes would break); the exclusion is pinned in SKILL_MD_YAML_LIST_DRIFT_EXCEPTIONS. Independent review (Opus 5) verified all 16 edits semantically and recomputed 33/33 registry hashes independently; its P1-1 finding was the absence of this record. Open items not covered here: P2-1 (10 FDE sub-Skills still lack ## 完了条件), P2-2 (check compares counts, not order), P2-3 (SKILL.md headings not enforced), P2-4 (no direct unit test for the new parser). Covered skills (16, the exact set the subject_revision is computed over): skill-backend-engineer, skill-cloud-infrastructure-engineer, skill-data-engineer, skill-data-platform-engineer, skill-deliverable-quality-reviewer, skill-engineering-pmo, skill-field-discovery, skill-forward-deployed-engineer, skill-frontend-engineer, skill-fullstack-engineer, skill-integration-engineer, skill-llm-application-engineer, skill-ml-engineer, skill-product-manager, skill-security-governance-engineer, skill-sre-platform-engineer."
+    - "ai_team/tests/test_ai_team_foundation.py"
+    - "celes-instruction:20260805-skill-surface-alignment-2"
+  notes: "Remediates the 5 open items the prior gate (Celes-HG-20260805-SKILL-SURFACE-ALIGNMENT) left unclosed. P2-1: all 10 FDE sub-Skills gained ## 完了条件 matching done_definition exactly. P2-2: an independent sweep found the prior review's own estimate wrong (it predicted 1 new failure under stricter comparison; the actual count was 20 skills / 31 items under strict text+order, 19/27 after normalization). A similarity-threshold approach was rejected as undecidable (real drift scored 0.079-0.39, benign decoration 0.39-0.99, overlapping); a containment rule (skill_item_matches, exact substring in either direction after normalization) was implemented instead and wired into validate_skills(), and SKILL_MD_YAML_LIST_DRIFT_EXCEPTIONS was deleted entirely -- all 4 previously-exempted Capability Architect skills now pass on their own merits. P2-3: SKILL_MD_REQUIRED_HEADINGS enforces 7 headings with a line-anchored match. P2-4: SkillSurfaceParityTests (8 cases) added. P3-1: parser hardened for */+ bullets, fenced blocks, and nesting (measured zero behavioral change across all 33 skills, so no risk). Only SKILL.md was edited in all 16 skills; skill.yaml is byte-identical to before (git diff confirms zero skill.yaml changes). Independent review (Opus 5, REWORK_REQUIRED 2.9/4.0) verified all of the above against real files and commands, not against the report's claims, and found one P1: after the hash resync the 16 entries' transition.human_gate_status had been left at 'promoted' from the prior gate while content was still unapproved, making the registry misrepresent unapproved content as already independently-reviewed and PROMOTEd. Fixed before this gate: active_revision was reset to the committed (HEAD) hash and candidate_state/human_gate_status were set to HUMAN_GATE/pending until this PROMOTE. Covered skills (16, the exact set subject_revision is computed over): skill-adoption-planning, skill-agent-creation, skill-agent-registry-management, skill-business-flow-mapping, skill-capability-gap-analysis, skill-engineering-handoff, skill-engineering-knowledge-curator, skill-engineering-pmo, skill-feedback-to-backlog, skill-field-discovery, skill-mvp-scoping, skill-pain-point-analysis, skill-skill-creation, skill-solution-framing, skill-stakeholder-mapping, skill-success-metrics-design. Open items not covered here (next cycle, per independent review P2/P3): no direct unit test for SKILL_MD_REQUIRED_HEADINGS / the skill_item_matches wiring itself; skill-agent-registry-management's 必須出力 bullets duplicate their bold subsection header verbatim, which is faithful but hurts SKILL.md readability."
 skills:
   - id: skill-engineering-pmo
-    active_revision: "sha256:551f751e8862c1ce40fa8669db0e881478f3ed21954712d04497897ee34006e9"
-    candidate_revision: "sha256:551f751e8862c1ce40fa8669db0e881478f3ed21954712d04497897ee34006e9"
+    active_revision: "sha256:bed03e0203110221816b17183c28916bc1255035dc3546d40e09c2d4e810c8fd"
+    candidate_revision: "sha256:bed03e0203110221816b17183c28916bc1255035dc3546d40e09c2d4e810c8fd"
     state: ACTIVE
     candidate_state: ACTIVE
     disposition: UPDATE
     transition:
       from_state: ACTIVE
       to_state: ACTIVE
-      candidate_revision: "sha256:551f751e8862c1ce40fa8669db0e881478f3ed21954712d04497897ee34006e9"
+      candidate_revision: "sha256:bed03e0203110221816b17183c28916bc1255035dc3546d40e09c2d4e810c8fd"
       evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
-      independent_review_ref: "local-review:skill-surface-alignment-20260805/quality_review_report"
+      independent_review_ref: "local-review:skill-surface-alignment-20260805-2/quality_review_report"
       human_gate_status: promoted
     disposition_confidence: structural_only
     effectiveness: not_evaluated
@@ -217,17 +236,17 @@ skills:
       - type: structural
         value: "listed in skills/index.yaml and passed baseline repository validation"
   - id: skill-engineering-knowledge-curator
-    active_revision: "sha256:007d1a9463de5ccb0860c1ebc0f952b87e372f17b7a7cb8ba2f2c6640e4e578d"
-    candidate_revision: "sha256:007d1a9463de5ccb0860c1ebc0f952b87e372f17b7a7cb8ba2f2c6640e4e578d"
+    active_revision: "sha256:f1e077854284f4368c86271fa3e7963e736aae7fd7a267355b279e087ddb6383"
+    candidate_revision: "sha256:f1e077854284f4368c86271fa3e7963e736aae7fd7a267355b279e087ddb6383"
     state: ACTIVE
     candidate_state: ACTIVE
     disposition: UPDATE
     transition:
       from_state: ACTIVE
       to_state: ACTIVE
-      candidate_revision: "sha256:007d1a9463de5ccb0860c1ebc0f952b87e372f17b7a7cb8ba2f2c6640e4e578d"
+      candidate_revision: "sha256:f1e077854284f4368c86271fa3e7963e736aae7fd7a267355b279e087ddb6383"
       evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
-      independent_review_ref: "local-review:ai-capability-growth-evolution/quality_review_report"
+      independent_review_ref: "local-review:skill-surface-alignment-20260805-2/quality_review_report"
       human_gate_status: promoted
     disposition_confidence: structural_only
     effectiveness: not_evaluated
@@ -521,17 +540,17 @@ skills:
       - type: structural
         value: "listed in skills/index.yaml and passed baseline repository validation"
   - id: skill-field-discovery
-    active_revision: "sha256:8e64bba4531a5a103b60f86ef2b4a00e54cf1be7e1a1a8f36cf3854c9cc7dd6b"
-    candidate_revision: "sha256:8e64bba4531a5a103b60f86ef2b4a00e54cf1be7e1a1a8f36cf3854c9cc7dd6b"
+    active_revision: "sha256:45859b5088bdeaf97a6ce9f211e632d828d8ac6814594c277a8321637c3e8235"
+    candidate_revision: "sha256:45859b5088bdeaf97a6ce9f211e632d828d8ac6814594c277a8321637c3e8235"
     state: ACTIVE
     candidate_state: ACTIVE
     disposition: UPDATE
     transition:
       from_state: ACTIVE
       to_state: ACTIVE
-      candidate_revision: "sha256:8e64bba4531a5a103b60f86ef2b4a00e54cf1be7e1a1a8f36cf3854c9cc7dd6b"
+      candidate_revision: "sha256:45859b5088bdeaf97a6ce9f211e632d828d8ac6814594c277a8321637c3e8235"
       evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
-      independent_review_ref: "local-review:skill-surface-alignment-20260805/quality_review_report"
+      independent_review_ref: "local-review:skill-surface-alignment-20260805-2/quality_review_report"
       human_gate_status: promoted
     disposition_confidence: structural_only
     effectiveness: not_evaluated
@@ -541,17 +560,17 @@ skills:
         value: "listed in skills/index.yaml and passed baseline repository validation"
     parent_skill: skill-forward-deployed-engineer
   - id: skill-business-flow-mapping
-    active_revision: "sha256:fef8024a8c622210bec377ede23fb7c1a6b723d2ee263dcb1ff08127bee37d47"
-    candidate_revision: "sha256:fef8024a8c622210bec377ede23fb7c1a6b723d2ee263dcb1ff08127bee37d47"
+    active_revision: "sha256:259179c58413a92fe0b3bb2276a098f20662b1d6115c9613b27275586e0e97b2"
+    candidate_revision: "sha256:259179c58413a92fe0b3bb2276a098f20662b1d6115c9613b27275586e0e97b2"
     state: ACTIVE
     candidate_state: ACTIVE
     disposition: UPDATE
     transition:
       from_state: ACTIVE
       to_state: ACTIVE
-      candidate_revision: "sha256:fef8024a8c622210bec377ede23fb7c1a6b723d2ee263dcb1ff08127bee37d47"
+      candidate_revision: "sha256:259179c58413a92fe0b3bb2276a098f20662b1d6115c9613b27275586e0e97b2"
       evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
-      independent_review_ref: "local-review:architecture-security-capability-20260714-v1"
+      independent_review_ref: "local-review:skill-surface-alignment-20260805-2/quality_review_report"
       human_gate_status: promoted
     disposition_confidence: structural_only
     effectiveness: not_evaluated
@@ -561,17 +580,17 @@ skills:
         value: "listed in skills/index.yaml and passed baseline repository validation"
     parent_skill: skill-forward-deployed-engineer
   - id: skill-stakeholder-mapping
-    active_revision: "sha256:324f65f99a4dec3b9ba27f3fe4cc69df02729207f0061b4da16e78614d5fb844"
-    candidate_revision: "sha256:324f65f99a4dec3b9ba27f3fe4cc69df02729207f0061b4da16e78614d5fb844"
+    active_revision: "sha256:a838db7b49325c213cec9f60de672346528fd7f77061b6b386918ab3a68438ba"
+    candidate_revision: "sha256:a838db7b49325c213cec9f60de672346528fd7f77061b6b386918ab3a68438ba"
     state: ACTIVE
     candidate_state: ACTIVE
     disposition: UPDATE
     transition:
       from_state: ACTIVE
       to_state: ACTIVE
-      candidate_revision: "sha256:324f65f99a4dec3b9ba27f3fe4cc69df02729207f0061b4da16e78614d5fb844"
+      candidate_revision: "sha256:a838db7b49325c213cec9f60de672346528fd7f77061b6b386918ab3a68438ba"
       evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
-      independent_review_ref: "local-review:architecture-security-capability-20260714-v1"
+      independent_review_ref: "local-review:skill-surface-alignment-20260805-2/quality_review_report"
       human_gate_status: promoted
     disposition_confidence: structural_only
     effectiveness: not_evaluated
@@ -581,17 +600,17 @@ skills:
         value: "listed in skills/index.yaml and passed baseline repository validation"
     parent_skill: skill-forward-deployed-engineer
   - id: skill-pain-point-analysis
-    active_revision: "sha256:06859c77f5e677687eda3e8b54bd90a7abe6f014c021e42c5bfe71fc0c69bdc9"
-    candidate_revision: "sha256:06859c77f5e677687eda3e8b54bd90a7abe6f014c021e42c5bfe71fc0c69bdc9"
+    active_revision: "sha256:76944909454324e4420dc56532e6d99cd66b66ae688bedf0c81a1565d42943d8"
+    candidate_revision: "sha256:76944909454324e4420dc56532e6d99cd66b66ae688bedf0c81a1565d42943d8"
     state: ACTIVE
     candidate_state: ACTIVE
     disposition: UPDATE
     transition:
       from_state: ACTIVE
       to_state: ACTIVE
-      candidate_revision: "sha256:06859c77f5e677687eda3e8b54bd90a7abe6f014c021e42c5bfe71fc0c69bdc9"
+      candidate_revision: "sha256:76944909454324e4420dc56532e6d99cd66b66ae688bedf0c81a1565d42943d8"
       evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
-      independent_review_ref: "local-review:architecture-security-capability-20260714-v1"
+      independent_review_ref: "local-review:skill-surface-alignment-20260805-2/quality_review_report"
       human_gate_status: promoted
     disposition_confidence: structural_only
     effectiveness: not_evaluated
@@ -601,17 +620,17 @@ skills:
         value: "listed in skills/index.yaml and passed baseline repository validation"
     parent_skill: skill-forward-deployed-engineer
   - id: skill-mvp-scoping
-    active_revision: "sha256:0790bdc37196088464de1cc2c37db1b446df572b05d8122b85ae7bf0028b953b"
-    candidate_revision: "sha256:0790bdc37196088464de1cc2c37db1b446df572b05d8122b85ae7bf0028b953b"
+    active_revision: "sha256:cf9da05f7d3e5b150158af56cc8469c1082809cf999f0726cb87638006852d76"
+    candidate_revision: "sha256:cf9da05f7d3e5b150158af56cc8469c1082809cf999f0726cb87638006852d76"
     state: ACTIVE
     candidate_state: ACTIVE
     disposition: UPDATE
     transition:
       from_state: ACTIVE
       to_state: ACTIVE
-      candidate_revision: "sha256:0790bdc37196088464de1cc2c37db1b446df572b05d8122b85ae7bf0028b953b"
+      candidate_revision: "sha256:cf9da05f7d3e5b150158af56cc8469c1082809cf999f0726cb87638006852d76"
       evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
-      independent_review_ref: "local-review:architecture-security-capability-20260714-v1"
+      independent_review_ref: "local-review:skill-surface-alignment-20260805-2/quality_review_report"
       human_gate_status: promoted
     disposition_confidence: structural_only
     effectiveness: not_evaluated
@@ -621,17 +640,17 @@ skills:
         value: "listed in skills/index.yaml and passed baseline repository validation"
     parent_skill: skill-forward-deployed-engineer
   - id: skill-solution-framing
-    active_revision: "sha256:8685cd0c8303751ade8120181372424dff4ea1bfa165b586b746d1a140c7488d"
-    candidate_revision: "sha256:8685cd0c8303751ade8120181372424dff4ea1bfa165b586b746d1a140c7488d"
+    active_revision: "sha256:80c9521ffbd1e44b7d084abc690a33d374ff1508fb2f8002ecba13280914583d"
+    candidate_revision: "sha256:80c9521ffbd1e44b7d084abc690a33d374ff1508fb2f8002ecba13280914583d"
     state: ACTIVE
     candidate_state: ACTIVE
     disposition: UPDATE
     transition:
       from_state: ACTIVE
       to_state: ACTIVE
-      candidate_revision: "sha256:8685cd0c8303751ade8120181372424dff4ea1bfa165b586b746d1a140c7488d"
+      candidate_revision: "sha256:80c9521ffbd1e44b7d084abc690a33d374ff1508fb2f8002ecba13280914583d"
       evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
-      independent_review_ref: "local-review:architecture-security-capability-20260714-v1"
+      independent_review_ref: "local-review:skill-surface-alignment-20260805-2/quality_review_report"
       human_gate_status: promoted
     disposition_confidence: structural_only
     effectiveness: not_evaluated
@@ -641,17 +660,17 @@ skills:
         value: "listed in skills/index.yaml and passed baseline repository validation"
     parent_skill: skill-forward-deployed-engineer
   - id: skill-engineering-handoff
-    active_revision: "sha256:16e223f7e0fc6a1bb312e43fecc86748a21ecafc51c09f32061b90a5b1010f80"
-    candidate_revision: "sha256:16e223f7e0fc6a1bb312e43fecc86748a21ecafc51c09f32061b90a5b1010f80"
+    active_revision: "sha256:7191156a40408facfa37ca76f15f2a8d18bb15d4d46ef526ca159d25bfd1cd1b"
+    candidate_revision: "sha256:7191156a40408facfa37ca76f15f2a8d18bb15d4d46ef526ca159d25bfd1cd1b"
     state: ACTIVE
     candidate_state: ACTIVE
     disposition: UPDATE
     transition:
       from_state: ACTIVE
       to_state: ACTIVE
-      candidate_revision: "sha256:16e223f7e0fc6a1bb312e43fecc86748a21ecafc51c09f32061b90a5b1010f80"
+      candidate_revision: "sha256:7191156a40408facfa37ca76f15f2a8d18bb15d4d46ef526ca159d25bfd1cd1b"
       evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
-      independent_review_ref: "local-review:architecture-security-capability-20260714-v1"
+      independent_review_ref: "local-review:skill-surface-alignment-20260805-2/quality_review_report"
       human_gate_status: promoted
     disposition_confidence: structural_only
     effectiveness: not_evaluated
@@ -661,17 +680,17 @@ skills:
         value: "listed in skills/index.yaml and passed baseline repository validation"
     parent_skill: skill-forward-deployed-engineer
   - id: skill-adoption-planning
-    active_revision: "sha256:4c579f9a75e0202413ed81f0b964154378a5a9a4a5204796ff4ff5b91682992b"
-    candidate_revision: "sha256:4c579f9a75e0202413ed81f0b964154378a5a9a4a5204796ff4ff5b91682992b"
+    active_revision: "sha256:d2f4ce8630151e51f65e2b5340ef191c944d793ebc84bd5a28fc24d95f50741f"
+    candidate_revision: "sha256:d2f4ce8630151e51f65e2b5340ef191c944d793ebc84bd5a28fc24d95f50741f"
     state: ACTIVE
     candidate_state: ACTIVE
     disposition: UPDATE
     transition:
       from_state: ACTIVE
       to_state: ACTIVE
-      candidate_revision: "sha256:4c579f9a75e0202413ed81f0b964154378a5a9a4a5204796ff4ff5b91682992b"
+      candidate_revision: "sha256:d2f4ce8630151e51f65e2b5340ef191c944d793ebc84bd5a28fc24d95f50741f"
       evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
-      independent_review_ref: "local-review:architecture-security-capability-20260714-v1"
+      independent_review_ref: "local-review:skill-surface-alignment-20260805-2/quality_review_report"
       human_gate_status: promoted
     disposition_confidence: structural_only
     effectiveness: not_evaluated
@@ -681,17 +700,17 @@ skills:
         value: "listed in skills/index.yaml and passed baseline repository validation"
     parent_skill: skill-forward-deployed-engineer
   - id: skill-success-metrics-design
-    active_revision: "sha256:e0fb8172e1ede57d80d31d844251d7e503080a783c751433930e16214aa42161"
-    candidate_revision: "sha256:e0fb8172e1ede57d80d31d844251d7e503080a783c751433930e16214aa42161"
+    active_revision: "sha256:a51e55d0d3ebc03f5e65efa89adf02f0b45c608e4b8c353726871a18e7b0b665"
+    candidate_revision: "sha256:a51e55d0d3ebc03f5e65efa89adf02f0b45c608e4b8c353726871a18e7b0b665"
     state: ACTIVE
     candidate_state: ACTIVE
     disposition: UPDATE
     transition:
       from_state: ACTIVE
       to_state: ACTIVE
-      candidate_revision: "sha256:e0fb8172e1ede57d80d31d844251d7e503080a783c751433930e16214aa42161"
+      candidate_revision: "sha256:a51e55d0d3ebc03f5e65efa89adf02f0b45c608e4b8c353726871a18e7b0b665"
       evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
-      independent_review_ref: "local-review:architecture-security-capability-20260714-v1"
+      independent_review_ref: "local-review:skill-surface-alignment-20260805-2/quality_review_report"
       human_gate_status: promoted
     disposition_confidence: structural_only
     effectiveness: not_evaluated
@@ -701,17 +720,17 @@ skills:
         value: "listed in skills/index.yaml and passed baseline repository validation"
     parent_skill: skill-forward-deployed-engineer
   - id: skill-feedback-to-backlog
-    active_revision: "sha256:3536958f29b42e6beb725b74b3f70b84533215c58d3a23aac755540185399a79"
-    candidate_revision: "sha256:3536958f29b42e6beb725b74b3f70b84533215c58d3a23aac755540185399a79"
+    active_revision: "sha256:7f2f5c56cae193a987685e53eb9e6bc90e7d494b593feba707c042f6ae2db8eb"
+    candidate_revision: "sha256:7f2f5c56cae193a987685e53eb9e6bc90e7d494b593feba707c042f6ae2db8eb"
     state: ACTIVE
     candidate_state: ACTIVE
     disposition: UPDATE
     transition:
       from_state: ACTIVE
       to_state: ACTIVE
-      candidate_revision: "sha256:3536958f29b42e6beb725b74b3f70b84533215c58d3a23aac755540185399a79"
+      candidate_revision: "sha256:7f2f5c56cae193a987685e53eb9e6bc90e7d494b593feba707c042f6ae2db8eb"
       evidence_refs: ["ai_team/governance/architecture_contract.yaml", "ai_team/review/risk_based_quality_gates.yaml"]
-      independent_review_ref: "local-review:architecture-security-capability-20260714-v1"
+      independent_review_ref: "local-review:skill-surface-alignment-20260805-2/quality_review_report"
       human_gate_status: promoted
     disposition_confidence: structural_only
     effectiveness: not_evaluated
@@ -721,17 +740,17 @@ skills:
         value: "listed in skills/index.yaml and passed baseline repository validation"
     parent_skill: skill-forward-deployed-engineer
   - id: skill-capability-gap-analysis
-    active_revision: "sha256:76db4712e1c7fdbdfec102ceb51bfcea9aca768be285a6f3118d855c512e3360"
-    candidate_revision: "sha256:76db4712e1c7fdbdfec102ceb51bfcea9aca768be285a6f3118d855c512e3360"
+    active_revision: "sha256:f57f5bdf3bcb262752812a2439972397e4a6d2ab368821fc69ba01db80c9724f"
+    candidate_revision: "sha256:f57f5bdf3bcb262752812a2439972397e4a6d2ab368821fc69ba01db80c9724f"
     state: ACTIVE
     candidate_state: ACTIVE
     disposition: UPDATE
     transition:
       from_state: ACTIVE
       to_state: ACTIVE
-      candidate_revision: "sha256:76db4712e1c7fdbdfec102ceb51bfcea9aca768be285a6f3118d855c512e3360"
+      candidate_revision: "sha256:f57f5bdf3bcb262752812a2439972397e4a6d2ab368821fc69ba01db80c9724f"
       evidence_refs: ["local-evidence:capability-gap-agent-creation-20260802/capability_gap_analysis", "ai_team/capability_gap_policy.md", "ai_team/local_capability_layer_policy.md"]
-      independent_review_ref: "local-review:local-capability-layer-20260804/quality_review_report"
+      independent_review_ref: "local-review:skill-surface-alignment-20260805-2/quality_review_report"
       human_gate_status: promoted
     disposition_confidence: structural_only
     effectiveness: not_evaluated
@@ -742,17 +761,17 @@ skills:
       - type: structural
         value: "listed in skills/index.yaml and passed repository validation"
   - id: skill-agent-creation
-    active_revision: "sha256:5a5d8279e4a60148082610c47f0e7093865352604adcf227290719117121a67c"
-    candidate_revision: "sha256:5a5d8279e4a60148082610c47f0e7093865352604adcf227290719117121a67c"
+    active_revision: "sha256:a6ee2f0130957a8198a75c0dc3f2cb8586f17a2d568b0e7c1f98f33a058b6f13"
+    candidate_revision: "sha256:a6ee2f0130957a8198a75c0dc3f2cb8586f17a2d568b0e7c1f98f33a058b6f13"
     state: ACTIVE
     candidate_state: ACTIVE
     disposition: UPDATE
     transition:
       from_state: ACTIVE
       to_state: ACTIVE
-      candidate_revision: "sha256:5a5d8279e4a60148082610c47f0e7093865352604adcf227290719117121a67c"
+      candidate_revision: "sha256:a6ee2f0130957a8198a75c0dc3f2cb8586f17a2d568b0e7c1f98f33a058b6f13"
       evidence_refs: ["local-evidence:capability-gap-agent-creation-20260802/agent_need_assessment", "ai_team/agent_creation_policy.md", "ai_team/local_capability_layer_policy.md"]
-      independent_review_ref: "local-review:local-capability-layer-20260804/quality_review_report"
+      independent_review_ref: "local-review:skill-surface-alignment-20260805-2/quality_review_report"
       human_gate_status: promoted
     disposition_confidence: structural_only
     effectiveness: not_evaluated
@@ -763,17 +782,17 @@ skills:
       - type: structural
         value: "listed in skills/index.yaml and passed repository validation"
   - id: skill-skill-creation
-    active_revision: "sha256:983e5dc10613da43e97da6aa74b509aa01f52c7fba77f567f89019bb020a39bf"
-    candidate_revision: "sha256:983e5dc10613da43e97da6aa74b509aa01f52c7fba77f567f89019bb020a39bf"
+    active_revision: "sha256:5c59056a9e112ae54b65cb6c2fda02e43ad18f38f8c55a3367695a26b3f43a02"
+    candidate_revision: "sha256:5c59056a9e112ae54b65cb6c2fda02e43ad18f38f8c55a3367695a26b3f43a02"
     state: ACTIVE
     candidate_state: ACTIVE
     disposition: UPDATE
     transition:
       from_state: ACTIVE
       to_state: ACTIVE
-      candidate_revision: "sha256:983e5dc10613da43e97da6aa74b509aa01f52c7fba77f567f89019bb020a39bf"
+      candidate_revision: "sha256:5c59056a9e112ae54b65cb6c2fda02e43ad18f38f8c55a3367695a26b3f43a02"
       evidence_refs: ["local-evidence:capability-gap-agent-creation-20260802/new_skill_creation_report", "ai_team/skill_creation_policy.md", "ai_team/local_capability_layer_policy.md"]
-      independent_review_ref: "local-review:local-capability-layer-20260804/quality_review_report"
+      independent_review_ref: "local-review:skill-surface-alignment-20260805-2/quality_review_report"
       human_gate_status: promoted
     disposition_confidence: structural_only
     effectiveness: not_evaluated
@@ -784,17 +803,17 @@ skills:
       - type: structural
         value: "listed in skills/index.yaml and passed repository validation"
   - id: skill-agent-registry-management
-    active_revision: "sha256:1d065f1afdc2cbd5eafe87e6bf26e61df1577673eaa48edb4ed2f178dc25917e"
-    candidate_revision: "sha256:1d065f1afdc2cbd5eafe87e6bf26e61df1577673eaa48edb4ed2f178dc25917e"
+    active_revision: "sha256:1b32411c9de43aed007d4b7b700594cb05ea667172d9a5dd62bd681bcbcd474f"
+    candidate_revision: "sha256:1b32411c9de43aed007d4b7b700594cb05ea667172d9a5dd62bd681bcbcd474f"
     state: ACTIVE
     candidate_state: ACTIVE
     disposition: UPDATE
     transition:
       from_state: ACTIVE
       to_state: ACTIVE
-      candidate_revision: "sha256:1d065f1afdc2cbd5eafe87e6bf26e61df1577673eaa48edb4ed2f178dc25917e"
+      candidate_revision: "sha256:1b32411c9de43aed007d4b7b700594cb05ea667172d9a5dd62bd681bcbcd474f"
       evidence_refs: ["local-evidence:capability-gap-agent-creation-20260802/new_agent_creation_report", "ai_team/agent_registry.md", "ai_team/local_capability_layer_policy.md"]
-      independent_review_ref: "local-review:local-capability-layer-20260804/quality_review_report"
+      independent_review_ref: "local-review:skill-surface-alignment-20260805-2/quality_review_report"
       human_gate_status: promoted
     disposition_confidence: structural_only
     effectiveness: not_evaluated

@@ -1736,14 +1736,13 @@ def skill_item_matches(md_item: str, yaml_item: str) -> bool:
 # heading is skipped rather than failed (extract_markdown_list_section returns
 # None); only a present-but-mismatched count fails.
 #
-# KNOWN GAP (2026-08-05 independent review, P2-1): the 10 lightweight FDE
-# sub-Skills have no `## 完了条件`, and their `## 品質基準` carries only 1 item
-# (a pointer to fde_quality_gate.md) against 4 in `done_definition`. The other
-# three -- template conformance, unconfirmed-item tracking, and handoff to the
-# Quality Reviewer when risk_based_quality_gates requires it -- appear nowhere
-# in those SKILL.md files. This is the same "declared but not read at runtime"
-# risk this check was added to close, still open for those 10. Tracked in
-# ai_team/review/review_metrics.md; do not read the skip above as "handled."
+# Both the item count AND each item's wording (via skill_item_matches) must
+# agree; a matching count alone let a real reordering in skill-engineering-pmo
+# ship undetected in the 2026-08-05 cycle. All 33 Skills were brought into
+# containment-rule compliance in the 2026-08-05 Phase E follow-up, so no
+# per-skill exceptions remain -- editing a canonical Skill file to fix a
+# violation is expected to go through the same PROMOTE/Human-Gate cycle as
+# any other canonical-input change (see ai_team/agent_lifecycle_policy.md).
 SKILL_MD_YAML_LIST_PAIRS = [
     ("Workflow", "steps"),
     ("必須出力", "outputs"),
@@ -1751,17 +1750,21 @@ SKILL_MD_YAML_LIST_PAIRS = [
     ("完了条件", "done_definition"),
 ]
 
-# (skill_id, yaml_key) pairs exempt from the drift check above: these
-# `outputs` lists were already Human-Gate-approved and PROMOTEd in the Local
-# Capability Layer governance cycle (2026-08-04), and intentionally
-# consolidate SKILL.md's per-layer bullets into fewer prefixed entries.
-# Editing them now would change skill_content_revision() and invalidate the
-# promoted registry's recorded content hash (see decision_history in
-# ai_team/governance/skill_lifecycle_registry.yaml) -- out of scope here.
-SKILL_MD_YAML_LIST_DRIFT_EXCEPTIONS = {
-    ("skill-agent-creation", "outputs"),
-    ("skill-skill-creation", "outputs"),
-}
+# H2 headings every SKILL.md must carry verbatim (line-anchored, unlike
+# validate_headings()'s substring check). Established from the 33/33 headings
+# actually present as of 2026-08-05: the 6 shared by all Skills, plus 完了条件
+# once the 10 FDE sub-Skills gained it in the same cycle. Headings present in
+# only some Skills (参照, 品質基準, 実行モード, ...) are intentionally excluded --
+# they are not universal enough to enforce here.
+SKILL_MD_REQUIRED_HEADINGS = [
+    "実行原則",
+    "守備範囲",
+    "責任外",
+    "Workflow",
+    "必須出力",
+    "禁止事項",
+    "完了条件",
+]
 
 
 def validate_skills(validation: Validation) -> None:
@@ -1917,10 +1920,13 @@ def validate_skills(validation: Validation) -> None:
                 validation.fail(f"TODO placeholder remains: {base}/SKILL.md")
             if len(content.splitlines()) > 500:
                 validation.fail(f"SKILL.md exceeds 500 lines: {base}/SKILL.md")
+            for heading in SKILL_MD_REQUIRED_HEADINGS:
+                if f"## {heading}" not in content.splitlines():
+                    validation.fail(
+                        f"Missing required heading in {base}/SKILL.md: ## {heading}"
+                    )
             if data is not None:
                 for heading, yaml_key in SKILL_MD_YAML_LIST_PAIRS:
-                    if (skill, yaml_key) in SKILL_MD_YAML_LIST_DRIFT_EXCEPTIONS:
-                        continue
                     md_items = extract_markdown_list_section(content, heading)
                     if md_items is None:
                         continue
@@ -1940,6 +1946,17 @@ def validate_skills(validation: Validation) -> None:
                             f"## {heading} has {len(md_items)} item(s) but "
                             f"skill.yaml {yaml_key} has {len(yaml_items)} item(s)"
                         )
+                        continue
+                    for index, (md_item, yaml_item) in enumerate(
+                        zip(md_items, yaml_items)
+                    ):
+                        if not skill_item_matches(md_item, str(yaml_item)):
+                            validation.fail(
+                                f"SKILL.md/skill.yaml drift in {base}: "
+                                f"## {heading} item {index} does not match "
+                                f"skill.yaml {yaml_key}[{index}] -- "
+                                f"MD: {md_item!r} / yaml: {yaml_item!r}"
+                            )
 
         if SKILL_VALIDATOR.is_file():
             result = subprocess.run(

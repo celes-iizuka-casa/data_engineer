@@ -48,6 +48,12 @@ description: 最小で価値が出るMVPスコープを切り出し、やるこ�
 - 非スコープを口頭合意のまま文書化しない
 - 技術的実現可能性を単独で断定する
 
+## 完了条件
+- mvp_scope.md / non_scope.md / release_scope.md / future_extension.md が作成されている。
+- `ai_team/fde/fde_quality_gate.md` のMVP Scope品質チェックに合格している。
+- Tech Leadの実現性確認が依頼済みである。
+- `risk_based_quality_gates.yaml`でIndependent Reviewがrequiredの場合だけAI Deliverable Quality Reviewerへ引き渡している。
+
 ## 参照
 - `ai_team/fde/fde_mvp_scoping_guide.md`
 - `ai_team/workflows/mvp_scoping_workflow.md`

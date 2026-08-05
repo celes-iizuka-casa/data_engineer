@@ -45,6 +45,12 @@ description: 利用者、意思決定者、運用者、情シス、開発者な�
 - 定着責任者を未定のまま導入計画工程へ進める
 - 顧客組織内の調整をFDEが代行・断定する
 
+## 完了条件
+- stakeholder_map.md / user_roles.md / decision_structure.md が作成されている。
+- 利用者・意思決定者・運用者が分離されている。
+- `ai_team/fde/fde_quality_gate.md` のDiscovery品質チェック（関係者分離）に合格している。
+- `risk_based_quality_gates.yaml`でIndependent Reviewがrequiredの場合だけAI Deliverable Quality Reviewerへ引き渡している。
+
 ## 参照
 - `ai_team/fde/fde_discovery_checklist.md`
 - `templates/stakeholder_map_template.md`
