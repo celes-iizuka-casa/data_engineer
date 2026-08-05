@@ -88,7 +88,20 @@ AI Engineering PMOとして、検証対象、観点、手順、結果、問題�
 
 ## 必須出力
 - output.md（常時・統合1ファイル）
-- execution_plan / work_plan / quality review / retrospective等は `output_optimization_policy.md` の必要性ゲートを満たす場合だけ `_internal/` に作る
+- execution_plan.md（実行環境・モデル・工数・Role選定の統合記録・条件付き）
+- work_plan.md
+- 成果物一覧と担当表
+- decision_log.md
+- quality_review_request.md
+- execution_summary.md
+- questions.md
+- iteration_plan.md（繰り返し作業時）
+- sample_output_for_review.md（繰り返し作業時）
+- task_retrospective.md
+- feedback_analysis.md（フィードバックあり時）
+- team_improvement_proposal.md（改善提案あり時）
+
+output.md以外は `output_optimization_policy.md` の必要性ゲートを満たす場合だけ `_internal/` に作る。
 
 ## レビュー観点
 - 成果物漏れと責任分界

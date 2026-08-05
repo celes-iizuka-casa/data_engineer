@@ -19,14 +19,15 @@ description: 顧客・現場の相談内容から、背景、要望、本質課�
 - 本質課題の最終確定（skill-pain-point-analysis）/ 技術構成の判断（Tech Lead）/ 本番実装（handoff先Engineer）
 
 ## Workflow
-1. プロファイルとinputを確認する
-2. 顧客背景・業務背景を customer_context.md に整理する
-3. 要望を顧客の言葉のまま記録する
-4. `ai_team/fde/fde_discovery_checklist.md` を走査し確認済み/未確認を分ける
-5. 制約・データ発生源・既存システム・セキュリティ権限を事実として整理する
-6. 成功条件・受入条件候補を記録する
-7. discovery_questions.md に未確認事項を確認方法付きで整理する
-8. skill-pain-point-analysis へ材料を渡す
+1. profiles/current_user_profile.yaml と personalization_policy.md を読む
+2. inputの相談・メモ・資料を確認する
+3. 顧客背景・業務背景を customer_context.md に整理する
+4. 要望を顧客の言葉のまま記録する
+5. `ai_team/fde/fde_discovery_checklist.md` を走査し確認済み/未確認を分ける
+6. 制約・データ発生源・既存システム・セキュリティ権限を事実として整理する
+7. 成功条件・受入条件候補を記録する
+8. discovery_questions.md に未確認事項を確認方法付きで整理する
+9. skill-pain-point-analysis へ本質課題の特定材料を渡す
 
 ## 必須出力
 - field_discovery.md（`templates/field_discovery_template.md`）
@@ -37,7 +38,10 @@ description: 顧客・現場の相談内容から、背景、要望、本質課�
 - `ai_team/fde/fde_quality_gate.md` のDiscovery品質チェックに合格すること
 
 ## 禁止事項
-- 想像で埋める / 要望の言い換え / 未確認の断定 / 本質課題の単独確定
+- 現場で確認できることを想像で埋める
+- 顧客の要望を言い換えて記録する（原文を失う）
+- 未確認事項を残したまま「確認済み」として次工程へ渡す
+- 本質課題を本Skill単独で確定させる
 
 ## 参照
 - `ai_team/fde/fde_discovery_checklist.md`

@@ -50,6 +50,8 @@ AI Deliverable Quality Reviewerとして、検証対象、観点、手順、結�
 5. PASS、PASS_WITH_CONDITIONS、REWORK_REQUIRED、BLOCKEDのいずれかを判定する
 6. セレス向けに結論、重要指摘、判断依頼、残存リスク、次の行動を報告する
 7. 指摘、再作業、見逃し、所要時間をreview_metrics.mdへ蓄積する
+8. 繰り返し対象が3件以上の場合はPMOの判定に従い代表例先行確認フローを起動する（iteration_confirmation_policy.md参照）
+9. 作業完了後にPMOへ自工程の改善点・判断ミス・注意点を申し送る（retrospective_policy.md参照）
 
 ## 判断基準
 - 平均点よりP0・P1と必須ゲートを優先する

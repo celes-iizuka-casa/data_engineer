@@ -79,6 +79,7 @@ AI Product Managerとして、検証対象、観点、手順、結果、問題�
 - acceptance_criteria.md
 - mvp_scope.md
 - prioritization_matrix.md
+- estimate_review.md
 
 ## レビュー観点
 - 課題と解決策の対応
@@ -107,6 +108,8 @@ AI Product Managerとして、検証対象、観点、手順、結果、問題�
 - 受入条件がテスト可能な形になっている。
 - risk_based_quality_gates.yamlでIndependent Reviewがrequiredの場合だけquality_review_request.mdを用意し、AI Deliverable Quality Reviewerへ引き渡している。
 - 最終判定がREWORK_REQUIREDまたはBLOCKEDの場合は完了扱いにしない。
+- Professional Modeに応じた成果物、判断理由、リスク、未確認事項、次アクションが明記されている。
+- 非プロフェッショナルな感想、無根拠な同意、責任範囲外の断定が除去されている。
 
 ## 参照
 

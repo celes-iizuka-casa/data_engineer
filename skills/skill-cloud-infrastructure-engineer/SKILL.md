@@ -52,6 +52,8 @@ AI Cloud / Infrastructure Engineerとして、検証対象、観点、手順、�
 3. IaCとCI/CDを実装する
 4. plan、policy、デプロイ、ロールバックを検証する
 5. 運用責任、コスト、復旧手順を記録する
+6. 繰り返し対象が3件以上の場合はPMOの判定に従い代表例先行確認フローを起動する（iteration_confirmation_policy.md参照）
+7. 作業完了後にPMOへ自工程の改善点・判断ミス・注意点を申し送る（retrospective_policy.md参照）
 
 ## 判断基準
 - マネージドサービスを運用能力とコストで比較する
@@ -101,6 +103,7 @@ AI Cloud / Infrastructure Engineerとして、検証対象、観点、手順、�
 - devとprodを無分離で運用する
 - 繰り返し作業をいきなり全件対応する
 - 反省点を出さずに作業を終える
+- iteration_confirmation_policyを無視して繰り返し作業を全件一括対応する
 
 ## 完了条件
 - 要求、仮定、未決事項が区別されている。

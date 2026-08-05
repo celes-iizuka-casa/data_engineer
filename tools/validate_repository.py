@@ -1651,6 +1651,66 @@ def validate_headings(
     validation.ok(f"Required headings present: {relative_path}")
 
 
+def extract_markdown_list_section(content: str, heading: str) -> list[str] | None:
+    """Return bullet/numbered items directly under an H2 `heading`.
+
+    Returns None (not an empty list) when the heading is absent, so callers
+    can distinguish "section intentionally omitted" from "section present
+    but empty."
+    """
+    lines = content.splitlines()
+    start = None
+    for index, line in enumerate(lines):
+        if line.strip() == f"## {heading}":
+            start = index + 1
+            break
+    if start is None:
+        return None
+    items: list[str] = []
+    for line in lines[start:]:
+        if line.startswith("## "):
+            break
+        stripped = line.strip()
+        if not stripped:
+            continue
+        match = re.match(r"^(?:\d+\.|-)\s+(.*)", stripped)
+        if match:
+            items.append(match.group(1).strip())
+    return items
+
+
+# SKILL.md heading -> skill.yaml list key that must stay in sync. A missing
+# heading is skipped rather than failed (extract_markdown_list_section returns
+# None); only a present-but-mismatched count fails.
+#
+# KNOWN GAP (2026-08-05 independent review, P2-1): the 10 lightweight FDE
+# sub-Skills have no `## 完了条件`, and their `## 品質基準` carries only 1 item
+# (a pointer to fde_quality_gate.md) against 4 in `done_definition`. The other
+# three -- template conformance, unconfirmed-item tracking, and handoff to the
+# Quality Reviewer when risk_based_quality_gates requires it -- appear nowhere
+# in those SKILL.md files. This is the same "declared but not read at runtime"
+# risk this check was added to close, still open for those 10. Tracked in
+# ai_team/review/review_metrics.md; do not read the skip above as "handled."
+SKILL_MD_YAML_LIST_PAIRS = [
+    ("Workflow", "steps"),
+    ("必須出力", "outputs"),
+    ("禁止事項", "prohibited_actions"),
+    ("完了条件", "done_definition"),
+]
+
+# (skill_id, yaml_key) pairs exempt from the drift check above: these
+# `outputs` lists were already Human-Gate-approved and PROMOTEd in the Local
+# Capability Layer governance cycle (2026-08-04), and intentionally
+# consolidate SKILL.md's per-layer bullets into fewer prefixed entries.
+# Editing them now would change skill_content_revision() and invalidate the
+# promoted registry's recorded content hash (see decision_history in
+# ai_team/governance/skill_lifecycle_registry.yaml) -- out of scope here.
+SKILL_MD_YAML_LIST_DRIFT_EXCEPTIONS = {
+    ("skill-agent-creation", "outputs"),
+    ("skill-skill-creation", "outputs"),
+}
+
+
 def validate_skills(validation: Validation) -> None:
     if not SKILL_VALIDATOR.is_file():
         # Optional local dependency: skip (do not fail) so the validator
@@ -1804,6 +1864,20 @@ def validate_skills(validation: Validation) -> None:
                 validation.fail(f"TODO placeholder remains: {base}/SKILL.md")
             if len(content.splitlines()) > 500:
                 validation.fail(f"SKILL.md exceeds 500 lines: {base}/SKILL.md")
+            if data is not None:
+                for heading, yaml_key in SKILL_MD_YAML_LIST_PAIRS:
+                    if (skill, yaml_key) in SKILL_MD_YAML_LIST_DRIFT_EXCEPTIONS:
+                        continue
+                    md_items = extract_markdown_list_section(content, heading)
+                    if md_items is None:
+                        continue
+                    yaml_items = data.get(yaml_key, [])
+                    if len(md_items) != len(yaml_items):
+                        validation.fail(
+                            f"SKILL.md/skill.yaml drift in {base}: "
+                            f"## {heading} has {len(md_items)} item(s) but "
+                            f"skill.yaml {yaml_key} has {len(yaml_items)} item(s)"
+                        )
 
         if SKILL_VALIDATOR.is_file():
             result = subprocess.run(
