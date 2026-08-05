@@ -15,7 +15,7 @@
 8. **（条件付き）execution_plan**: 高リスク・セキュリティ・大規模改修・複数工程/複数ファイルの場合のみ `output/.../_internal/execution_plan.md` にRole、caller runtime、Evidence type、推奨effort、理由を記録する。取得不能値は`unavailable`とする。軽量依頼ではoutput.md制御ブロックで足りる。
 9. **（条件付き）繰り返し作業**: `iteration_confirmation_policy.md` に該当する場合のみ代表例を先に作り、`_internal/iteration_plan.md` と `_internal/sample_output_for_review.md` を作る。ステータス `Waiting for Celes Review`。承認後 `Expanding` で全件展開。
 10. **実装・設計・検証**: 担当RoleがProfessional Modeに応じた本成果物を作る。`professional_only_policy.md` と `output_optimization_policy.md` のセクション間引き（関連セクションのみ＋必須核＋条件付き必須）に従う。責任外は `handoff_policy.md` で渡す。
-11. **（Risk-based）品質レビュー**: `review/risk_based_quality_gates.yaml` を正本とし、Medium以上はIndependent Quality Review、High/Criticalは必要なSpecialist Reviewを実施する。顧客提出物・再利用物はRiskがLowでも追加レビュー対象にできる。必須Gateがない場合だけ「レビュー対象外」とし、自己レビューを独立レビュー扱いにしない。
+11. **（Risk-based）品質レビュー**: `ai_team/review/risk_based_quality_gates.yaml` を正本とし、Medium以上はIndependent Quality Review、High/Criticalは必要なSpecialist Reviewを実施する。顧客提出物・再利用物はRiskがLowでも追加レビュー対象にできる。必須Gateがない場合だけ「レビュー対象外」とし、自己レビューを独立レビュー扱いにしない。
 12. **output.md作成（常時）**: `templates/output_template.md` で `output/.../output.md` を作る。複数Roleが関与した場合はDeliverable Optimizer（PMO）が各Role成果物を統合・編集する。制御ブロック（依頼の理解・担当Role/モード・出力モード・ステータス・品質判定・要対応）を先頭に置き、§1〜§5の構成で仕上げる。必須GateがPASSし作業が完了した時だけ`Completed`、レビュー待ちは`Waiting for Celes Review`、`REWORK_REQUIRED`は`Rework Required`、`BLOCKED`は`Blocked`とする。`Accepted`はCelesだけが決める。
 13. **（条件付き）task_retrospective**: `Completed/Accepted` かつ軽量依頼でない場合のみ `_internal/task_retrospective.md` を作る（`retrospective_policy.md`）。
 14. **（条件付き）feedback_analysis**: セレスのフィードバックがある場合のみ `_internal/feedback_analysis.md` を作る（`feedback_optimization_policy.md`）。

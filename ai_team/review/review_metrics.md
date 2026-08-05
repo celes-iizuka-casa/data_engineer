@@ -26,6 +26,7 @@
 ## 進行中の点検
 
 - **Capability Architect / Gap判定精度**（2026-08-04 セレス追認）: `capability_architect` によるGap判定・Skill選定の実効性は `not_evaluated`。初回実運用3件（新規領域の依頼で `input_to_output_workflow.md` 手順4のCapability Gap判定を実施したタスク）を本ページの記録単位で蓄積し、上記「改善ループ」に投入して精度を点検する。3件到達まではeffectivenessを`not_evaluated`のまま維持し、根拠のない数値化は行わない。
+- **派生環境での正本環境判定の実測**（2026-08-05・**未実測**）: `local_capability_layer_policy.md`「正本環境の判定」の2条件（origin URL正規化値の一致 + canonicalへのpush権限）が、実際の派生環境で**一度も実測されていない**。初回レビューから4サイクル連続で `UNKNOWN — insufficient evidence` として記録されたままpush済み。本機構の中核fail-safe判定であり、誤判定すると (a) 派生環境が共有層へ書き込む、(b) 正本環境が書き込めなくなる、のいずれかが起きる。**実運用投入前**に、他利用者のcloneまたは別remoteを向けた検証用cloneで、派生環境と正しく判定されること・共有層への追加が拒否されることを実測する。担当: AI Capability Architect + AI DevEx / Agent Workflow Engineer。実測できるまでこの項目を解消しない。
 - **セレス環境における実験的追加のゲート迂回点検**（2026-08-05）: `local_capability_layer_policy.md` の副作用2（セレス環境は`.local/`を使わず、実験的な追加も常に共有層のCREATE基準7項目・Before/After Eval・独立レビュー・Celes Human Gateを通す）が、儀式コストの圧力でゲートの形骸化（証跡の水増し・簡略化）を招いていないかを定期点検する。四半期ごと、または5件以上のRole / Skill追加が発生した時点で、`decision_history` / `promotion_history` の該当PROMOTE記録を読み、証跡refが具体的か（`local-evidence:` / `local-review:` が実在ファイルを指しているか）を確認する。
 
 ## 禁止

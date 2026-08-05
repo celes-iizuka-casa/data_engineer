@@ -25,6 +25,7 @@
 | SRE / Operations | 監視・運用・インシデント | AI SRE / Platform Engineer | skill-sre-platform-engineer | runbook・SLO | Skill更新 |
 | Security / Governance | 認証認可・秘密管理・PII | AI Security / Governance Engineer | skill-security-governance-engineer | 脅威分析・権限設計 | Skill更新 |
 | QA / Testing | テスト設計・自動化 | AI QA / Test Automation Engineer | skill-qa-test-automation-engineer | test_plan・テスト | Skill更新 |
+| Quality Review | 独立品質レビュー・重大度判定 | AI Deliverable Quality Reviewer | skill-deliverable-quality-reviewer | quality_review_report.md | Skill更新 |
 | LLM / RAG / AI Agent | RAG・エージェント・LLM評価 | AI / LLM Application Engineer / AI ML Engineer | skill-llm-application-engineer / skill-ml-engineer | RAG設計・eval | Skill更新 |
 | Integration | 外部API・SaaS連携 | AI Integration Engineer | skill-integration-engineer | 連携設計・契約 | Skill更新 |
 | DevEx / Agent Workflow | Skills設計・validator・実行設計 | AI DevEx / Agent Workflow Engineer | skill-devex-agent-workflow-engineer | workflow・validator | Skill更新 |
@@ -79,3 +80,4 @@
 | 日付 | 内容 | 根拠 |
 |---|---|---|
 | 2026-08-02 | 初版作成。24分類 + Capability Governance を登録 | セレス指示（Capability Gap / Agent Creation機構の追加依頼） |
+| 2026-08-05 | Quality Review を追加（計26分類）。独立品質レビューはMedium以上で必須ゲートだが、本viewから逆引きできず `skill-deliverable-quality-reviewer` がどこにも現れていなかった | リポジトリ全体監査の指摘（`output/Celestian/20260804/local-capability-layer/_internal/quality_review_report.md` の後続監査） |

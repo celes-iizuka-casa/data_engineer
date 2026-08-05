@@ -9,7 +9,7 @@
 - Current Explicit Request
 - Current Evidence
 - `capability_registry.yaml`
-- `review/risk_based_quality_gates.yaml`
+- `ai_team/review/risk_based_quality_gates.yaml`
 - Role / Skillの守備範囲とhandoff条件
 
 ## 手順

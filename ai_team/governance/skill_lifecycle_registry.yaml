@@ -36,8 +36,13 @@ baseline:
   observed_on: "2026-07-14"
   usage_evidence: unavailable
 candidate:
-  source: "Celes-instructed capability gap / agent creation mechanism (request of 2026-08-02)"
-  purpose: "Add the 4 Capability Architect skills (gap analysis, agent creation, skill creation, registry management)"
+  # Describes the most recent governed change batch, not the total entry count.
+  # Every Skill entry always carries a candidate_state (the Skill schema has no
+  # "no candidate" steady state -- unlike the Role registry, validate_repository.py
+  # requires candidate_state to be one of lifecycle_states, so null is invalid).
+  # changed_skills therefore counts the Skills this batch actually changed.
+  source: "Celes-instructed local capability layer separation (request of 2026-08-04)"
+  purpose: "Layer-gate the 4 Capability Architect skills (gap analysis, agent creation, skill creation, registry management) so derived environments never write to the shared core"
   human_gate_status: promoted
   changed_skills: 4
   effectiveness: not_evaluated

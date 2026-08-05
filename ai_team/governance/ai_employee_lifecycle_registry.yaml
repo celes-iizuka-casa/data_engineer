@@ -301,29 +301,15 @@ roles:
   - id: capability_architect
     active_revision: "sha256:3c832efa81944e42d4464ce248958cad471beee7a443fd7c565b4215a7cc396f"
     state: ACTIVE
-    # PROMOTE decision recorded 2026-08-05 (decision_history, gate_id
-    # Celes-HG-20260804-LOCAL-CAPABILITY-LAYER). Kept as a final promoted
-    # candidate -- NOT yet released to null -- until this is committed: with no
-    # candidate registered, validate_repository.py's expected_active falls back
-    # to head_revision, which still reflects the pre-commit HEAD content and
-    # would mismatch active_revision (agent_lifecycle_policy.md「PROMOTEとcommitの順序」).
-    # Release candidate_revision/candidate_state to null and drop this transition
-    # key only AFTER commit lands and HEAD matches active_revision.
-    candidate_revision: "sha256:3c832efa81944e42d4464ce248958cad471beee7a443fd7c565b4215a7cc396f"
-    candidate_state: ACTIVE
-    disposition: UPDATE
-    transition:
-      from_state: ACTIVE
-      from_revision: "sha256:aec16f5719a2fd8612dd6d00952750695edf455ee8b0d899bdce91086b2aad66"
-      to_state: ACTIVE
-      candidate_revision: "sha256:3c832efa81944e42d4464ce248958cad471beee7a443fd7c565b4215a7cc396f"
-      evidence_refs:
-        - "celes-instruction:20260804-local-capability-layer"
-        - "ai_team/local_capability_layer_policy.md"
-      before_after_eval_ref: "local-evidence:local-capability-layer-20260804/before_after_evaluation_phase_e"
-      independent_review_ref: "local-review:local-capability-layer-20260804/quality_review_report"
-      human_gate_status: promoted
-      celes_human_gate_ref: "Celes-HG-20260804-LOCAL-CAPABILITY-LAYER"
+    # UPDATE promoted under Celes-HG-20260804-LOCAL-CAPABILITY-LAYER and committed
+    # in 1366764; HEAD now matches active_revision, so the candidate fields are
+    # released and the entry sits in its settled steady state per
+    # agent_lifecycle_policy.md「PROMOTE完了後の定常状態（必須）」. Both PROMOTE
+    # records (CREATE 2026-08-02, UPDATE 2026-08-05) remain in decision_history,
+    # which is append-only.
+    candidate_revision: null
+    candidate_state: null
+    disposition: KEEP
     effectiveness: not_evaluated
     usage_evidence: unavailable
     disposition_confidence: structural_only

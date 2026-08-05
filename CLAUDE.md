@@ -60,7 +60,9 @@ python3 ai_team/evals/run_foundation_evals.py
 │   ├── professional_response_templates.md  # Required sections per mode
 │   └── obsidian_write_policy.md   # When to sync deliverables to second brain
 │
-├── skills/                        # 33 Skill definitions (20 Role Skills + 10 FDE sub-Skills + 4 Capability Architect Skills)
+├── skills/                        # 33 Skill definitions (19 Role Skills + 10 FDE sub-Skills + 4 Capability Architect Skills)
+│                                  # Capability Architect has no single skill-capability-architect;
+│                                  # its 4 Creation Skills serve that role, so 19 + 10 + 4 = 33.
 │   ├── skill-<role-name>/         # Each skill guides how that role operates
 │   └── README.md                  # Skill index & activation rules
 │
