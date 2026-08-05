@@ -173,6 +173,16 @@ FOUNDATION_FILES = [
     "ai_team/tests/test_ai_team_foundation.py",
 ]
 
+# Shared Core roots as declared in architecture_contract.yaml. Pinned here so a
+# silent edit to the contract (e.g. dropping tools/validate_repository.py) fails
+# instead of shipping a contract that disagrees with the policy documents.
+SHARED_CORE_ROOTS = [
+    "ai_team/**",
+    "skills/**",
+    "templates/**",
+    "tools/validate_repository.py",
+]
+
 PRIVATE_TOP_LEVEL = {
     "output",
     ".local",
@@ -1034,6 +1044,22 @@ def role_candidate_registration_failures(
     return sorted(set(failures))
 
 
+def role_allowed_dispositions(established_revision: str | None) -> set[str]:
+    """Allow CREATE only until a Role has an established governed revision.
+
+    ``established_revision`` is the Role's last governed revision: the frozen
+    baseline for Roles present at ``ROLE_LIFECYCLE_BASELINE_HEAD``, otherwise
+    the ``active_revision`` of its committed lifecycle entry. Keying this on
+    ``ROLE_LIFECYCLE_BASELINE_REVISIONS`` alone would lock every Role created
+    after the baseline into CREATE forever, which no ``from_revision`` value
+    can satisfy: CREATE requires ``from_revision: null`` while the historical
+    continuity check requires the prior ``active_revision``.
+    """
+    if established_revision is None:
+        return {"CREATE", "UNKNOWN"}
+    return {"UPDATE", "MERGE", "SPLIT", "DEPRECATE", "UNKNOWN"}
+
+
 def role_create_criteria_failures(entry: dict) -> list[str]:
     """Require evidence for every strict CREATE criterion and nowhere else."""
     criteria = entry.get("create_criteria")
@@ -1550,7 +1576,13 @@ def validate_git_privacy(validation: Validation, root: Path = ROOT) -> None:
                 if mode & 0o077:
                     permission_violations.append(f"mode={mode:04o}:{relative}")
         for item in permission_violations:
-            validation.fail(f"Local private state permission is too broad: {item}")
+            validation.fail(
+                f"Local private state permission is too broad: {item} "
+                f"(fix: chmod 700 for directories / 600 for files under "
+                f"input/ and output/, e.g. "
+                f"`find input output -type d -exec chmod 700 {{}} +; "
+                f"find input output -type f -exec chmod 600 {{}} +`)"
+            )
         if not permission_violations:
             validation.ok("Local input/output private state has owner-only permissions")
 
@@ -2099,7 +2131,29 @@ def validate_capability_foundation(validation: Validation) -> None:
             validation.fail("Canonical environment push permission check must not be overridable")
         if detection.get("push_permission_is_sufficient_for_shared_core_write") is not False:
             validation.fail("Push permission must not be sufficient for shared core writes")
+        # A declared override that widened beyond the origin-URL check would silently
+        # reopen the self-declaration bypass these two checks above close.
+        if detection.get("explicit_user_declaration_override") != "origin_url_check_only":
+            validation.fail(
+                "Explicit user declaration must override only the origin URL check"
+            )
+        if detection.get("shared_core_write_additionally_requires") != "celes_explicit_instruction":
+            validation.fail(
+                "Shared core writes must additionally require an explicit Celes instruction"
+            )
+        if (
+            detection.get("url_comparison")
+            != "strip_scheme_userinfo_and_git_suffix_lowercase_host"
+        ):
+            validation.fail("Canonical repository URL comparison rule is not declared")
+        canonical_repository = architecture.get("growth_authority", {}).get(
+            "canonical_repository"
+        )
+        if not isinstance(canonical_repository, str) or not canonical_repository.strip():
+            validation.fail("Canonical repository identifier is not declared")
         layers = architecture.get("capability_layers", {})
+        if layers.get("shared_core", {}).get("roots") != SHARED_CORE_ROOTS:
+            validation.fail("Shared core roots do not match the declared contract")
         user_local = layers.get("user_local", {})
         if user_local.get("root") != ".local/capability/**":
             validation.fail("User-local capability layer root is not declared")
@@ -2121,6 +2175,12 @@ def validate_capability_foundation(validation: Validation) -> None:
         for required_private in ("output/**", "**/_internal/**", ".local/**", "second_brain/**", "evidence/**"):
             if required_private not in private_state:
                 validation.fail(f"Architecture privacy boundary missing: {required_private}")
+        # privacy.shared_state duplicates the shared-core roots for a different
+        # purpose (marking them non-private); it must not drift from
+        # SHARED_CORE_ROOTS the way shared_core.roots is pinned above.
+        shared_state = set(architecture.get("privacy", {}).get("shared_state", []))
+        if not set(SHARED_CORE_ROOTS) <= shared_state:
+            validation.fail("Architecture privacy shared_state does not match the shared-core roots")
         local_permissions = architecture.get("privacy", {}).get(
             "local_filesystem_permissions", {}
         )
@@ -2468,6 +2528,11 @@ def validate_capability_foundation(validation: Validation) -> None:
                     "disposition": "KEEP",
                     "active_revision": baseline_revision,
                 }
+            established_revision = (
+                previous_entry.get("active_revision")
+                if isinstance(previous_entry, dict)
+                else None
+            )
             for failure in role_registry_state_failures(entry, previous_entry):
                 validation.fail(
                     f"AI Employee registry state {failure}: {role_id}"
@@ -2505,7 +2570,7 @@ def validate_capability_foundation(validation: Validation) -> None:
                 )
             if is_final_candidate:
                 expected_active = current_revision
-            elif baseline_revision is None:
+            elif established_revision is None:
                 expected_active = (
                     head_revision
                     if candidate_revision is None
@@ -2543,10 +2608,8 @@ def validate_capability_foundation(validation: Validation) -> None:
                 if candidate_revision != role_content_revision(role_id, ROOT):
                     validation.fail(f"AI Employee candidate revision drift: {role_id}")
                 disposition = entry.get("disposition")
-                allowed_dispositions = (
-                    {"CREATE", "UNKNOWN"}
-                    if baseline_revision is None
-                    else {"UPDATE", "MERGE", "SPLIT", "DEPRECATE", "UNKNOWN"}
+                allowed_dispositions = role_allowed_dispositions(
+                    established_revision
                 )
                 if disposition not in allowed_dispositions:
                     validation.fail(

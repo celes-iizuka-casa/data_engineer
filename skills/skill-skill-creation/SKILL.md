@@ -86,8 +86,20 @@ AI Capability Architectとして、新Skill一式が契約・重複回避・ゲ�
 - 誰が何を検証すべきか不明な結論
 
 ## 必須出力
-- `skills/skill-<capability>/` 一式
-- new_skill_creation_report.md
+
+**共有層へ追加する場合（正本環境）:**
+
+- `skills/skill-<capability>/` 一式（README / skill.yaml / SKILL.md / agents/openai.yaml）
+- `SKILLS` 定数・`skills/index.yaml`・`skill_lifecycle_registry.yaml`・`skill_eval_bindings.yaml` への登録内容
+
+**ローカル層へ追加する場合（派生環境、または個人的・実験的な追加）:**
+
+- `.local/capability/skills/skill-local-<capability>/` 一式
+- `.local/capability/local_capability_registry.yaml` と `.local/capability/local_decision_log.md` への記録
+
+**共通:**
+
+- new_skill_creation_report.md（追加先レイヤと判定根拠を含む）
 
 ## レビュー観点
 - 既存Skill更新で足りない理由
@@ -107,6 +119,7 @@ AI Capability Architectとして、新Skill一式が契約・重複回避・ゲ�
 - 一度しか使わないSkillを作る
 - 成果物がないSkillを作る
 - 判断基準が定義できないSkillを作る
+- 既存Skillと競合する守備範囲を、競合の説明なしに作る
 - 追加先レイヤを判定せずに書き込みを始める
 - 派生環境で共有層（`skills/**`・`ai_team/**`・`templates/**`・`tools/validate_repository.py`）へ書き込む
 - 共有層へ追加する場合に、登録簿・eval bindingsを更新せずに追加を完了扱いにする
@@ -120,22 +133,31 @@ AI Capability Architectとして、新Skill一式が契約・重複回避・ゲ�
 **共有層へ追加した場合:**
 
 - 新Skill一式と登録内容がvalidator契約を満たしている。
+- role_skill_map等の反映が skill-agent-registry-management へ引き継がれている。
 
 **ローカル層へ追加した場合:**
 
 - 共有層のファイルに差分が出ていない（`git status` で確認済み）。
 - `local_capability_registry.yaml` と `local_decision_log.md` の両方に記録がある。
 - 成果物の実行記録に、ローカル層のSkillを使った事実が書かれている。
+
+**共通（層を問わず適用する）:**
+
 - risk_based_quality_gates.yamlでIndependent Reviewがrequiredの場合だけquality_review_request.mdを用意し、AI Deliverable Quality Reviewerへ引き渡している。
 - 最終判定がREWORK_REQUIREDまたはBLOCKEDの場合は完了扱いにしない。
+- Professional Modeに応じた成果物、判断理由、リスク、未確認事項、次アクションが明記されている。
 - 非プロフェッショナルな感想、無根拠な同意、責任範囲外の断定が除去されている。
 
 ## 参照
 
 - `ai_team/skill_creation_policy.md`
 - `ai_team/capability_gap_policy.md`
+- `ai_team/local_capability_layer_policy.md`
 - `ai_team/governance/skill_lifecycle_registry.yaml`
 - `templates/agent_creation/new_skill_definition_template.md`
+- `templates/agent_creation/local_capability_registry_template.yaml`
+- `templates/agent_creation/local_decision_log_template.md`
+- `skills/README.md`
 
 ## 実務プレイブック
 

@@ -1,4 +1,4 @@
 interface:
   display_name: "Agent Creation"
   short_description: "Create governed new AI employee roles when gaps demand"
-  default_prompt: "Use $skill-agent-creation to draft a governed proposal, definition set, and registration for a new AI employee role after an agent gap is confirmed, and record the creation report in output/."
+  default_prompt: "Use $skill-agent-creation to draft a governed proposal, definition set, and registration for a new AI employee role after an agent gap is confirmed, and record the creation report in output/. 先に追加先レイヤ（共有層 / ローカル層）を判定すること: 派生環境では ai_team/**・skills/**・templates/**・tools/validate_repository.py へ書き込まず、.local/capability/ 配下にのみ追加する（ai_team/local_capability_layer_policy.md）。"

@@ -87,9 +87,22 @@ AI Capability Architectとして、新Role一式が契約・境界・ゲート�
 - 誰が何を検証すべきか不明な結論
 
 ## 必須出力
-- new_agent_proposal.md
+
+**共通:**
+
+- new_agent_proposal.md（追加先レイヤの判定結果を手順3で記録する。層に関わらず作成する）
+- new_agent_creation_report.md（追加先レイヤと判定根拠を含む）
+
+**共有層へ追加する場合（正本環境 + セレスの明示指示がある場合のみ）:**
+
+- new_agent_proposal.md をCeles Human Gateの判断材料として完成させる（手順5）
 - `ai_team/roles/<new_role>.md` と `skills/skill-<new-role>/` 一式（承認後）
-- new_agent_creation_report.md
+- ライフサイクル登録簿・正本3ビューへの登録内容
+
+**ローカル層へ追加する場合（派生環境、または個人的・実験的な追加）:**
+
+- `.local/capability/roles/local_<name>.md`（必要なら `.local/capability/skills/skill-local-<name>/` 一式）
+- `.local/capability/local_capability_registry.yaml` と `.local/capability/local_decision_log.md` への記録
 
 ## レビュー観点
 - CREATE基準7項目の証跡
@@ -110,6 +123,7 @@ AI Capability Architectとして、新Role一式が契約・境界・ゲート�
 - Skill追加で済むものを新Agentにする
 - 一度きりの作業専用Agentを作る
 - 既存Roleと責任が重複するAgentを、重複の説明なしに作る
+- Quality Gate・完了条件なしでAgentを追加する
 - 追加先レイヤを判定せずに書き込みを始める
 - 派生環境で共有層（`ai_team/**`・`skills/**`・`templates/**`・`tools/validate_repository.py`）へ書き込む
 - 共有層へ追加する場合に、Registry / Matrix / Map・ライフサイクル登録簿を更新せずに追加を完了扱いにする
@@ -131,8 +145,12 @@ AI Capability Architectとして、新Role一式が契約・境界・ゲート�
 - 共有層のファイルに差分が出ていない（`git status` で確認済み）。
 - `local_capability_registry.yaml` と `local_decision_log.md` の両方に記録がある。
 - 成果物の実行記録に、ローカル層のRole / Skillを使った事実が書かれている。
+
+**共通（層を問わず適用する）:**
+
 - risk_based_quality_gates.yamlでIndependent Reviewがrequiredの場合だけquality_review_request.mdを用意し、AI Deliverable Quality Reviewerへ引き渡している。
 - 最終判定がREWORK_REQUIREDまたはBLOCKEDの場合は完了扱いにしない。
+- Professional Modeに応じた成果物、判断理由、リスク、未確認事項、次アクションが明記されている。
 - 非プロフェッショナルな感想、無根拠な同意、責任範囲外の断定が除去されている。
 
 ## 参照
@@ -140,9 +158,12 @@ AI Capability Architectとして、新Role一式が契約・境界・ゲート�
 - `ai_team/agent_creation_policy.md`
 - `ai_team/agent_lifecycle_policy.md`
 - `ai_team/agent_quality_gate.md`
+- `ai_team/local_capability_layer_policy.md`
 - `ai_team/governance/ai_employee_lifecycle_registry.yaml`
 - `templates/agent_creation/new_agent_proposal_template.md`
 - `templates/agent_creation/new_agent_definition_template.md`
+- `templates/agent_creation/local_capability_registry_template.yaml`
+- `templates/agent_creation/local_decision_log_template.md`
 
 ## 実務プレイブック
 

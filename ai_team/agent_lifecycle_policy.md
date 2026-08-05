@@ -58,6 +58,29 @@ P1差分に限定した再レビュー（全体を再レビューせず、指摘
 
 - Role定義・capability entry・共通契約のいずれかを変更するとrevisionが変わるため、候補（candidate_revision + transition）として登録し、同じゲート（eval・独立レビュー・Human Gate）を通す（disposition: UPDATE / MERGE / SPLIT）。
 - 登録なしの canonical変更はvalidatorが検出して失敗させる。
+- **CREATEを使えるのは、そのRoleに確定revisionがまだ無い間だけ**である。確定revision（baseline importのrevision、またはコミット済み登録簿エントリの `active_revision`）を持つRoleの変更は、baseline以降に作られたRoleであってもUPDATE / MERGE / SPLIT / DEPRECATEで登録する。判定は `tools/validate_repository.py` の `role_allowed_dispositions()` が担う。
+  - 経緯: 当初は `ROLE_LIFECYCLE_BASELINE_REVISIONS`（`437bfe2` 時点の凍結スナップショット）への在否だけで可否を決めていたため、baseline以降に作られたRole（例: `capability_architect`）が永久にCREATE専用となり、定義を1行変えてもvalidatorを通せなかった。CREATEは `from_revision: null` を要求する一方、履歴継続検査は直前の `active_revision` を要求するため、両立する値が存在しなかった。2026-08-04にセレスの指示で是正した。
+  - CREATEからUPDATEへ移る際、`create_criteria` はエントリから外す（`criteria_on_non_create` 検査）。`decision_history` のPROMOTE記録に恒久保存されるのは `disposition`・`before_after_eval_ref`・`independent_review_ref`・`evidence_refs` であり、`create_criteria` の**7項目それぞれの証跡refは含まれない**。7項目の粒度で追えるのはgit履歴のみになる点を承知したうえで外す。
+
+### PROMOTE完了後の定常状態（必須）
+
+PROMOTE済みの変更をコミットしたら、次の作業に入る前にそのエントリを定常状態へ戻す。
+
+| フィールド | 定常状態の値 |
+|---|---|
+| `candidate_revision` / `candidate_state` | `null` |
+| `transition` | キーごと削除（`null` を残すとFoundationテストの `assertNotIn("transition", item)` で落ちる） |
+| `disposition` | `KEEP`（DEPRECATED済みなら `DEPRECATE`） |
+| `create_criteria` | 削除 |
+| `active_revision` / `state` / `evidence_refs` | 据え置き |
+
+**戻さないと次の登録簿編集が必ず失敗する。** 候補フィールドを立てたまま `disposition: CREATE` で放置すると、そのRoleと無関係な登録簿操作（別Roleの候補登録、`decision_history` への追記など）を始めた瞬間に `AI Employee candidate lacks change disposition` で停止する。ワークツリーがHEADと食い違った時点で `previous_entry` がHEAD側へ切り替わり、`established_revision` が非nullになってCREATEが不正になるためである。`decision_history` の既存PROMOTE記録は `disposition: CREATE` で確定していてappend-only契約により変更できないため、その場で `disposition` だけ `UPDATE` に書き換えても `decision_disposition_mismatch` で落ちる。原因が分からないまま契約を緩める方向へ流れないよう、CREATE完了時に必ず解除する。
+
+`capability_architect` はこの解除を怠っていたため、2026-08-04に定常状態へ戻した。
+
+**Skill登録簿（`skill_lifecycle_registry.yaml`）にも同じ規律を適用する**（2026-08-05 Phase E是正）。Skillの場合は候補フィールドを`null`にせず、PROMOTE完了時に`active_revision`を`candidate_revision`と一致させ、`disposition`を実態（初回追加ならCREATE、以降の変更はUPDATE）に保ち、`transition.human_gate_status`を`promoted`にする。複数Skillを1件のCeles Human Gateでまとめて承認する場合は、`last_promotion_decision`と`promotion_history`（append-only）の両方を更新し、対象Skillの数だけ個別の`transition`ブロックも整合させる。バッチ単位の`subject_revision`算出規則は`skill_lifecycle_registry.yaml`の`revision_strategy.batch_subject_revision`に明記する。
+
+**PROMOTEとcommitの順序（必須）**: レビュー待ち（`candidate_state: HUMAN_GATE` / `human_gate_status: pending`）の状態でRole/Skillの内容ファイル（`ai_team/roles/*.md`・`skills/skill-*/`一式）を編集した場合、`active_revision`は**意図的に**コミット済み（HEAD）の値のまま据え置く（`tools/validate_repository.py`が非promoted候補の`active_revision`にHEAD内容ハッシュを要求するため）。この状態のままコミットすると、コミット後は「HEAD」自体が新しい内容へ変わるため`active_revision`が実体と食い違い、validatorが`active revision drift`で失敗する。したがって**PROMOTE（`active_revision`を`candidate_revision`へ更新し定常状態へ戻す）を先に行い、そのPROMOTE後の状態でコミットする**。PROMOTEを飛ばして候補状態のままコミットしない。
 
 ## 非推奨化
 

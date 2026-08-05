@@ -1193,6 +1193,258 @@ class FoundationContractTests(unittest.TestCase):
             validator.role_create_criteria_failures(entry),
         )
 
+    def test_ai_employee_post_baseline_role_can_be_updated(self) -> None:
+        """A Role created after the baseline must not be locked into CREATE.
+
+        ``ROLE_LIFECYCLE_BASELINE_REVISIONS`` is a frozen snapshot, so a Role
+        added later has no baseline entry. Keying the disposition allowlist on
+        that map alone made every such Role permanently CREATE-only, and CREATE
+        demands ``from_revision: null`` while the historical continuity check
+        demands the prior ``active_revision`` — an unsatisfiable pair.
+        """
+        established = "sha256:" + "c" * 64
+        candidate = "sha256:" + "d" * 64
+        self.assertEqual(
+            {"CREATE", "UNKNOWN"}, validator.role_allowed_dispositions(None)
+        )
+        self.assertIn("UPDATE", validator.role_allowed_dispositions(established))
+        self.assertNotIn(
+            "CREATE", validator.role_allowed_dispositions(established)
+        )
+        for role_id in validator.ROLE_LIFECYCLE_BASELINE_REVISIONS:
+            self.assertIn(
+                "UPDATE",
+                validator.role_allowed_dispositions(
+                    validator.ROLE_LIFECYCLE_BASELINE_REVISIONS[role_id]
+                ),
+            )
+        update = {
+            "id": "capability_architect",
+            "state": "ACTIVE",
+            "active_revision": candidate,
+            "disposition": "UPDATE",
+            "candidate_revision": candidate,
+            "candidate_state": "ACTIVE",
+            "transition": {
+                "from_state": "ACTIVE",
+                "from_revision": established,
+                "to_state": "ACTIVE",
+                "candidate_revision": candidate,
+                "evidence_refs": ["local-evidence:post-baseline-update"],
+                "before_after_eval_ref": "local-eval:post-baseline-update",
+                "independent_review_ref": "local-review:post-baseline-update",
+                "human_gate_status": "promoted",
+                "celes_human_gate_ref": "Celes-HG-POST-BASELINE-UPDATE",
+            },
+        }
+        history = [
+            {
+                "gate_id": "Celes-HG-POST-BASELINE-UPDATE",
+                "subject_id": "capability_architect",
+                "from_revision": established,
+                "subject_revision": candidate,
+                "target_state": "ACTIVE",
+                "disposition": "UPDATE",
+                "decision": "PROMOTE",
+                "before_after_eval_ref": "local-eval:post-baseline-update",
+                "independent_review_ref": "local-review:post-baseline-update",
+                "evidence_refs": ["local-evidence:post-baseline-update"],
+            }
+        ]
+        self.assertEqual(
+            [], validator.ai_employee_transition_failures(update, history)
+        )
+        self.assertEqual([], validator.role_create_criteria_failures(update))
+        self.assertEqual(
+            [],
+            validator.role_registry_state_failures(
+                update, {"state": "ACTIVE", "active_revision": established}
+            ),
+        )
+
+    def test_disposition_eligibility_is_wired_into_full_validation(self) -> None:
+        """The disposition allowlist must be load-bearing in the real validator run.
+
+        ``test_ai_employee_post_baseline_role_can_be_updated`` only exercises
+        ``role_allowed_dispositions`` in isolation, so reverting its call site
+        leaves the whole suite green. This drives the full script end to end
+        against a clone whose worktree differs from HEAD -- the only state in
+        which ``role_lifecycle_previous_entries`` yields a non-null
+        ``established_revision`` for a post-baseline Role.
+        """
+        role_id = "capability_architect"
+        registry_relative = "ai_team/governance/ai_employee_lifecycle_registry.yaml"
+        failure = f"AI Employee candidate lacks change disposition: {role_id}"
+
+        def run_validator(root: Path) -> str:
+            completed = subprocess.run(
+                ["python3", "tools/validate_repository.py"],
+                cwd=root,
+                capture_output=True,
+                text=True,
+            )
+            return completed.stdout + completed.stderr
+
+        def load_entry(registry: Path) -> tuple[dict, dict]:
+            data = yaml.safe_load(registry.read_text(encoding="utf-8"))
+            for candidate in data["roles"]:
+                if candidate.get("id") == role_id:
+                    return data, candidate
+            raise AssertionError(f"{role_id} is absent from the lifecycle registry")
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "clone"
+            subprocess.run(
+                ["git", "clone", "--quiet", "--local", str(ROOT), str(root)],
+                check=True,
+                capture_output=True,
+            )
+            # The clone carries committed history (which supplies the previous
+            # registry snapshot) but committed *code*. Overwrite the script with
+            # the working tree's copy so the run exercises the validator under
+            # test rather than whatever is on HEAD.
+            script_relative = "tools/validate_repository.py"
+            (root / script_relative).write_bytes(
+                (ROOT / script_relative).read_bytes()
+            )
+            registry = root / registry_relative
+            data, entry = load_entry(registry)
+            established = entry["active_revision"]
+            self.assertIsNotNone(
+                established,
+                "fixture requires a committed active_revision for the Role",
+            )
+
+            # (a) CREATE on a Role that already has an established revision.
+            entry["disposition"] = "CREATE"
+            entry["candidate_revision"] = established
+            entry["candidate_state"] = "ACTIVE"
+            entry["create_criteria"] = {
+                requirement: f"local-evidence:phase-d-fixture#{requirement}"
+                for requirement in validator.ROLE_CREATE_REQUIREMENTS
+            }
+            entry["transition"] = {
+                "from_state": "PROPOSED",
+                "from_revision": None,
+                "to_state": "ACTIVE",
+                "candidate_revision": established,
+                "evidence_refs": ["local-evidence:phase-d-fixture#create"],
+                "before_after_eval_ref": "local-evidence:phase-d-fixture#eval",
+                "independent_review_ref": "local-review:phase-d-fixture#review",
+                "human_gate_status": "promoted",
+                "celes_human_gate_ref": "Celes-HG-PHASE-D-FIXTURE",
+            }
+            registry.write_text(yaml.safe_dump(data, allow_unicode=True), encoding="utf-8")
+            self.assertIn(failure, run_validator(root))
+
+            # (b) UPDATE on the same Role, continuing from the established revision.
+            data, entry = load_entry(registry)
+            entry["disposition"] = "UPDATE"
+            entry.pop("create_criteria", None)
+            entry["transition"]["from_state"] = "ACTIVE"
+            entry["transition"]["from_revision"] = established
+            registry.write_text(yaml.safe_dump(data, allow_unicode=True), encoding="utf-8")
+            self.assertNotIn(failure, run_validator(root))
+
+    def test_active_revision_expected_branch_is_wired_into_full_validation(self) -> None:
+        """The ``expected_active`` branch keyed on ``established_revision`` must be
+        load-bearing in the real validator run, not just in the disposition check.
+
+        The Phase B fix touches two call sites: the disposition allowlist
+        (``role_allowed_dispositions(established_revision)``, covered by
+        ``test_disposition_eligibility_is_wired_into_full_validation``) and the
+        ``expected_active`` branch (``elif established_revision is None:``). A
+        post-baseline Role with an established revision and a *pending*
+        (non-final) candidate is the only state where the two conditions
+        (``established_revision is None`` vs. the pre-fix ``baseline_revision is
+        None``) disagree: reverting the branch back to ``baseline_revision``
+        makes it treat the candidate as if no prior revision existed, so
+        ``expected_active`` collapses to ``None`` while ``active_revision`` still
+        holds the real committed revision, producing an
+        ``AI Employee active revision drift`` failure the fixed code does not
+        raise.
+        """
+        role_id = "capability_architect"
+        registry_relative = "ai_team/governance/ai_employee_lifecycle_registry.yaml"
+        role_relative = f"ai_team/roles/{role_id}.md"
+        drift_marker = f"AI Employee active revision drift: {role_id}"
+
+        def run_validator(root: Path) -> str:
+            completed = subprocess.run(
+                ["python3", "tools/validate_repository.py"],
+                cwd=root,
+                capture_output=True,
+                text=True,
+            )
+            return completed.stdout + completed.stderr
+
+        def load_entry(registry: Path) -> tuple[dict, dict]:
+            data = yaml.safe_load(registry.read_text(encoding="utf-8"))
+            for candidate in data["roles"]:
+                if candidate.get("id") == role_id:
+                    return data, candidate
+            raise AssertionError(f"{role_id} is absent from the lifecycle registry")
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "clone"
+            subprocess.run(
+                ["git", "clone", "--quiet", "--local", str(ROOT), str(root)],
+                check=True,
+                capture_output=True,
+            )
+            script_relative = "tools/validate_repository.py"
+            (root / script_relative).write_bytes(
+                (ROOT / script_relative).read_bytes()
+            )
+            registry = root / registry_relative
+            data, entry = load_entry(registry)
+            established = entry["active_revision"]
+            self.assertIsNotNone(
+                established,
+                "fixture requires a committed active_revision for the Role",
+            )
+            self.assertIsNone(
+                validator.ROLE_LIFECYCLE_BASELINE_REVISIONS.get(role_id),
+                "fixture requires a post-baseline Role (no frozen baseline revision)",
+            )
+
+            # Change the canonical Role document so its content revision
+            # diverges from the established (committed) revision -- this is
+            # what a genuine in-progress candidate edit looks like.
+            role_path = root / role_relative
+            role_path.write_text(
+                role_path.read_text(encoding="utf-8")
+                + "\n<!-- phase-e-fixture: pending candidate edit -->\n",
+                encoding="utf-8",
+            )
+            candidate_revision = validator.role_content_revision(role_id, root)
+            self.assertIsNotNone(candidate_revision)
+            self.assertNotEqual(candidate_revision, established)
+
+            entry["disposition"] = "UPDATE"
+            entry.pop("create_criteria", None)
+            entry["candidate_revision"] = candidate_revision
+            entry["candidate_state"] = "HUMAN_GATE"
+            entry["transition"] = {
+                "from_state": "ACTIVE",
+                "from_revision": established,
+                "to_state": "HUMAN_GATE",
+                "candidate_revision": candidate_revision,
+                "evidence_refs": ["local-evidence:phase-e-fixture#update"],
+                "before_after_eval_ref": "local-evidence:phase-e-fixture#eval",
+                "independent_review_ref": "local-review:phase-e-fixture#review",
+                "human_gate_status": "pending",
+                "celes_human_gate_ref": "pending",
+            }
+            registry.write_text(yaml.safe_dump(data, allow_unicode=True), encoding="utf-8")
+            output = run_validator(root)
+            self.assertNotIn(
+                drift_marker,
+                output,
+                "a pending candidate on a post-baseline Role must not be "
+                "flagged as an active revision drift",
+            )
+
     def test_ai_employee_decision_timestamp_must_be_real_and_zoned(self) -> None:
         self.assertTrue(
             validator.valid_decision_timestamp("2026-07-14T12:00:00+09:00")

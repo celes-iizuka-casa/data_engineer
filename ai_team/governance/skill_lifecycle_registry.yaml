@@ -5,6 +5,18 @@ revision_strategy:
   canonical_inputs: [skill.yaml, SKILL.md, agents/openai.yaml]
   value_format: "sha256:<hex>"
   capture: "Each Skill entry stores baseline active_revision and current candidate_revision."
+  batch_subject_revision:
+    # Rule for last_promotion_decision.subject_revision / promotion_history[].subject_revision
+    # when a single Human Gate decision covers multiple Skill entries at once.
+    # Established 2026-08-05 (Phase E, local-capability-layer). The 2026-08-02
+    # batch's subject_revision ("sha256:6cb23226c5...") predates this rule and
+    # could not be reproduced from any ordering of the 4 skills' historical
+    # content revisions during the Phase D re-review -- it is left as-is
+    # (append-only) rather than retrofitted. This rule applies to batch
+    # decisions recorded from 2026-08-05 onward.
+    algorithm: sha256
+    input: "For each covered Skill id sorted ascending: id (utf-8) + NUL + its candidate_revision string (utf-8) + NUL, concatenated in that order."
+    value_format: "sha256:<hex>"
 lifecycle_states: [DISCOVERED, PROPOSED, CANDIDATE, EVALUATED, INDEPENDENTLY_REVIEWED, HUMAN_GATE, ACTIVE, DEPRECATED]
 dispositions: [CREATE, KEEP, UPDATE, MERGE, SPLIT, DEPRECATE, UNKNOWN]
 transition_record_contract:
@@ -89,26 +101,41 @@ promotion_history:
       - "tools/validate_repository.py"
       - "ai_team/evals/skill_eval_bindings.yaml"
     notes: "Recorded from Celes's written instruction of 2026-08-02 ordering the four Capability Architect skills. subject_revision is the sha256 over the four new skill content revisions. Structural contract promotion only; live effectiveness remains not_evaluated. Commit and push are not part of this decision."
+  - schema_version: "1.1"
+    gate_id: "Celes-HG-20260804-LOCAL-CAPABILITY-LAYER"
+    decision_type: canonical_promotion
+    subject_id: local-capability-layer-20260804
+    from_revision: "sha256:6cb23226c5856f52269e9ac82f853da188b71dba5b74427e4df4fbca678114cc"
+    subject_revision: "sha256:8253da1c523e0441ddc471499fe4d70cb0131771b74488eeb9d3fdf590aa557f"
+    target_state: ACTIVE
+    disposition: UPDATE
+    decision: PROMOTE
+    decided_by: Celes
+    timestamp: "2026-08-05T10:06:56+09:00"
+    before_after_eval_ref: "local-evidence:local-capability-layer-20260804/before_after_evaluation_phase_e"
+    independent_review_ref: "local-review:local-capability-layer-20260804/quality_review_report"
+    evidence_refs:
+      - "ai_team/local_capability_layer_policy.md"
+      - "celes-instruction:20260804-local-capability-layer"
+    notes: "Recorded from Celes's written instruction of 2026-08-04 (input/Celes/依頼/20260804_local_capability_layer.md) ordering the layer-separation UPDATE of the four Capability Architect skills. subject_revision follows revision_strategy.batch_subject_revision (established 2026-08-05, this is its first use): sha256 over each covered skill id (sorted) concatenated with its candidate_revision. The instruction underwent 3 rounds of independent review (Phase C REWORK_REQUIRED 2.1/4.0, Phase D re-review REWORK_REQUIRED 2.6/4.0, Phase E full re-review PASS_WITH_CONDITIONS 3.0/4.0) before this PROMOTE. Structural contract promotion only; live effectiveness remains not_evaluated. Commit and push are not part of this decision."
 last_promotion_decision:
   schema_version: "1.1"
-  gate_id: "Celes-HG-20260802-CAPABILITY-SKILLS-CREATE"
+  gate_id: "Celes-HG-20260804-LOCAL-CAPABILITY-LAYER"
   decision_type: canonical_promotion
-  subject_id: capability-architect-skill-creation-20260802
-  from_revision: "sha256:b40e3c161959d2efb0248ca41eef0ca838136f5f7944ba115f3661b6227fb2f3"
-  subject_revision: "sha256:6cb23226c5856f52269e9ac82f853da188b71dba5b74427e4df4fbca678114cc"
+  subject_id: local-capability-layer-20260804
+  from_revision: "sha256:6cb23226c5856f52269e9ac82f853da188b71dba5b74427e4df4fbca678114cc"
+  subject_revision: "sha256:8253da1c523e0441ddc471499fe4d70cb0131771b74488eeb9d3fdf590aa557f"
   target_state: ACTIVE
-  disposition: CREATE
+  disposition: UPDATE
   decision: PROMOTE
   decided_by: Celes
-  timestamp: "2026-08-03T06:37:02+09:00"
-  before_after_eval_ref: "local-evidence:capability-gap-agent-creation-20260802/before_after_evaluation"
-  independent_review_ref: "local-review:capability-gap-agent-creation-20260802/quality_review_report"
+  timestamp: "2026-08-05T10:06:56+09:00"
+  before_after_eval_ref: "local-evidence:local-capability-layer-20260804/before_after_evaluation_phase_e"
+  independent_review_ref: "local-review:local-capability-layer-20260804/quality_review_report"
   evidence_refs:
-    - "ai_team/evals/run_foundation_evals.py"
-    - "ai_team/tests/test_ai_team_foundation.py"
-    - "tools/validate_repository.py"
-    - "ai_team/evals/skill_eval_bindings.yaml"
-  notes: "Recorded from Celes's written instruction of 2026-08-02 ordering the four Capability Architect skills. subject_revision is the sha256 over the four new skill content revisions. Structural contract promotion only; live effectiveness remains not_evaluated. Commit and push are not part of this decision."
+    - "ai_team/local_capability_layer_policy.md"
+    - "celes-instruction:20260804-local-capability-layer"
+  notes: "Recorded from Celes's written instruction of 2026-08-04 (input/Celes/依頼/20260804_local_capability_layer.md) ordering the layer-separation UPDATE of the four Capability Architect skills. subject_revision follows revision_strategy.batch_subject_revision (established 2026-08-05, this is its first use): sha256 over each covered skill id (sorted) concatenated with its candidate_revision. The instruction underwent 3 rounds of independent review (Phase C REWORK_REQUIRED 2.1/4.0, Phase D re-review REWORK_REQUIRED 2.6/4.0, Phase E full re-review PASS_WITH_CONDITIONS 3.0/4.0) before this PROMOTE. Structural contract promotion only; live effectiveness remains not_evaluated. Commit and push are not part of this decision."
 skills:
   - id: skill-engineering-pmo
     active_revision: "sha256:ab716c943bfb6a2b97e4331a45dfe612f50cec9234bfbfb9d62e242b82841ea9"
@@ -672,17 +699,17 @@ skills:
         value: "listed in skills/index.yaml and passed baseline repository validation"
     parent_skill: skill-forward-deployed-engineer
   - id: skill-capability-gap-analysis
-    active_revision: "sha256:7cf73ab8f1d9c9044d16cc41776150db8f74b5ef348963dd1b307e9350252827"
-    candidate_revision: "sha256:7cf73ab8f1d9c9044d16cc41776150db8f74b5ef348963dd1b307e9350252827"
+    active_revision: "sha256:76db4712e1c7fdbdfec102ceb51bfcea9aca768be285a6f3118d855c512e3360"
+    candidate_revision: "sha256:76db4712e1c7fdbdfec102ceb51bfcea9aca768be285a6f3118d855c512e3360"
     state: ACTIVE
     candidate_state: ACTIVE
-    disposition: CREATE
+    disposition: UPDATE
     transition:
       from_state: ACTIVE
       to_state: ACTIVE
-      candidate_revision: "sha256:7cf73ab8f1d9c9044d16cc41776150db8f74b5ef348963dd1b307e9350252827"
-      evidence_refs: ["local-evidence:capability-gap-agent-creation-20260802/capability_gap_analysis", "ai_team/capability_gap_policy.md"]
-      independent_review_ref: "local-review:capability-gap-agent-creation-20260802/quality_review_report"
+      candidate_revision: "sha256:76db4712e1c7fdbdfec102ceb51bfcea9aca768be285a6f3118d855c512e3360"
+      evidence_refs: ["local-evidence:capability-gap-agent-creation-20260802/capability_gap_analysis", "ai_team/capability_gap_policy.md", "ai_team/local_capability_layer_policy.md"]
+      independent_review_ref: "local-review:local-capability-layer-20260804/quality_review_report"
       human_gate_status: promoted
     disposition_confidence: structural_only
     effectiveness: not_evaluated
@@ -693,17 +720,17 @@ skills:
       - type: structural
         value: "listed in skills/index.yaml and passed repository validation"
   - id: skill-agent-creation
-    active_revision: "sha256:9680542e763e3383257f9de4686fecb916ab2ba044783637467f7cde80f9bc69"
-    candidate_revision: "sha256:9680542e763e3383257f9de4686fecb916ab2ba044783637467f7cde80f9bc69"
+    active_revision: "sha256:5a5d8279e4a60148082610c47f0e7093865352604adcf227290719117121a67c"
+    candidate_revision: "sha256:5a5d8279e4a60148082610c47f0e7093865352604adcf227290719117121a67c"
     state: ACTIVE
     candidate_state: ACTIVE
-    disposition: CREATE
+    disposition: UPDATE
     transition:
       from_state: ACTIVE
       to_state: ACTIVE
-      candidate_revision: "sha256:9680542e763e3383257f9de4686fecb916ab2ba044783637467f7cde80f9bc69"
-      evidence_refs: ["local-evidence:capability-gap-agent-creation-20260802/agent_need_assessment", "ai_team/agent_creation_policy.md"]
-      independent_review_ref: "local-review:capability-gap-agent-creation-20260802/quality_review_report"
+      candidate_revision: "sha256:5a5d8279e4a60148082610c47f0e7093865352604adcf227290719117121a67c"
+      evidence_refs: ["local-evidence:capability-gap-agent-creation-20260802/agent_need_assessment", "ai_team/agent_creation_policy.md", "ai_team/local_capability_layer_policy.md"]
+      independent_review_ref: "local-review:local-capability-layer-20260804/quality_review_report"
       human_gate_status: promoted
     disposition_confidence: structural_only
     effectiveness: not_evaluated
@@ -714,17 +741,17 @@ skills:
       - type: structural
         value: "listed in skills/index.yaml and passed repository validation"
   - id: skill-skill-creation
-    active_revision: "sha256:9cfce5d2046fce9cce2801ac2232f62e26db43694a30b89b2cd44098eb6ffc1a"
-    candidate_revision: "sha256:9cfce5d2046fce9cce2801ac2232f62e26db43694a30b89b2cd44098eb6ffc1a"
+    active_revision: "sha256:983e5dc10613da43e97da6aa74b509aa01f52c7fba77f567f89019bb020a39bf"
+    candidate_revision: "sha256:983e5dc10613da43e97da6aa74b509aa01f52c7fba77f567f89019bb020a39bf"
     state: ACTIVE
     candidate_state: ACTIVE
-    disposition: CREATE
+    disposition: UPDATE
     transition:
       from_state: ACTIVE
       to_state: ACTIVE
-      candidate_revision: "sha256:9cfce5d2046fce9cce2801ac2232f62e26db43694a30b89b2cd44098eb6ffc1a"
-      evidence_refs: ["local-evidence:capability-gap-agent-creation-20260802/new_skill_creation_report", "ai_team/skill_creation_policy.md"]
-      independent_review_ref: "local-review:capability-gap-agent-creation-20260802/quality_review_report"
+      candidate_revision: "sha256:983e5dc10613da43e97da6aa74b509aa01f52c7fba77f567f89019bb020a39bf"
+      evidence_refs: ["local-evidence:capability-gap-agent-creation-20260802/new_skill_creation_report", "ai_team/skill_creation_policy.md", "ai_team/local_capability_layer_policy.md"]
+      independent_review_ref: "local-review:local-capability-layer-20260804/quality_review_report"
       human_gate_status: promoted
     disposition_confidence: structural_only
     effectiveness: not_evaluated
@@ -735,17 +762,17 @@ skills:
       - type: structural
         value: "listed in skills/index.yaml and passed repository validation"
   - id: skill-agent-registry-management
-    active_revision: "sha256:cf8c8e27460d11d682c0d5f879015a1bbad2e2e05b57e78fe10741407d25521f"
-    candidate_revision: "sha256:cf8c8e27460d11d682c0d5f879015a1bbad2e2e05b57e78fe10741407d25521f"
+    active_revision: "sha256:1d065f1afdc2cbd5eafe87e6bf26e61df1577673eaa48edb4ed2f178dc25917e"
+    candidate_revision: "sha256:1d065f1afdc2cbd5eafe87e6bf26e61df1577673eaa48edb4ed2f178dc25917e"
     state: ACTIVE
     candidate_state: ACTIVE
-    disposition: CREATE
+    disposition: UPDATE
     transition:
       from_state: ACTIVE
       to_state: ACTIVE
-      candidate_revision: "sha256:cf8c8e27460d11d682c0d5f879015a1bbad2e2e05b57e78fe10741407d25521f"
-      evidence_refs: ["local-evidence:capability-gap-agent-creation-20260802/new_agent_creation_report", "ai_team/agent_registry.md"]
-      independent_review_ref: "local-review:capability-gap-agent-creation-20260802/quality_review_report"
+      candidate_revision: "sha256:1d065f1afdc2cbd5eafe87e6bf26e61df1577673eaa48edb4ed2f178dc25917e"
+      evidence_refs: ["local-evidence:capability-gap-agent-creation-20260802/new_agent_creation_report", "ai_team/agent_registry.md", "ai_team/local_capability_layer_policy.md"]
+      independent_review_ref: "local-review:local-capability-layer-20260804/quality_review_report"
       human_gate_status: promoted
     disposition_confidence: structural_only
     effectiveness: not_evaluated

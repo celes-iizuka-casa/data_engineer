@@ -4,7 +4,7 @@
 `input/` の課題を読み、実装・設計・テスト・運用に使える成果物を `output/` に作成する。分析者ロールは作らず、必要に応じて分析チーム向けデータ契約と引き継ぎを作る。
 
 ## Required Start
-1. `input/` と既存 `output/` を確認する。
+1. `input/` と既存 `output/` を確認する。`architecture_contract.yaml` の `privacy.local_filesystem_permissions`（ディレクトリ0700・ファイル0600）に反する権限（例: 新規追加された `input/` 配下のサブディレクトリ・ファイルが既定パーミッションのまま）を見つけたら、`python3 tools/validate_repository.py` を実行する前に是正する（`find input output -type d -exec chmod 700 {} +; find input output -type f -exec chmod 600 {} +`）。validatorはこの違反を検出するがその場では直さない。
 2. 明示成果物、課題分類、MVP、制約、リスク、`@role`/`@mode`/`@light`/`@full` タグを整理する。
 3. `output_optimization_policy.md` の軽量依頼判定を行う。軽量でなく3工程以上なら `_internal/work_plan.md` を作る（軽量なら作らない）。
 4. `runtime_selection_policy.md` と `model_effort_selection_policy.md` に従い、呼び出し元Runtimeを変更せず、確認できたruntime/model Evidenceと推奨effortを記録する。高リスク / 大規模なら `_internal/execution_plan.md` を作る。取得不能なmodel/token/costは推測せず`unavailable`とする。

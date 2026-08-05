@@ -11,7 +11,7 @@
 | 層 | 置き場 | 追加権限 | 配布 |
 |---|---|---|---|
 | Shared Core（正本） | `ai_team/**`、`skills/**`、`templates/**`、`tools/validate_repository.py` | セレスのみ（Celes Human Gate） | `git clone / pull` で全利用者へ |
-| User-local Capability Layer | `.local/capability/**` | 現在の利用者自身 | 禁止（非配布） |
+| User-local Capability Layer | `.local/capability/**` | 現在の利用者自身（派生環境のみ。正本環境はローカル層を使わない） | 禁止（非配布） |
 
 `.local/` は `.gitignore`、`tools/validate_repository.py` のprivate path契約、`ai_team/governance/architecture_contract.yaml` の `privacy.private_state` の3つで非配布が保証されている。ローカル層はこの既存の保護をそのまま使う。
 
@@ -69,10 +69,24 @@ Capability Gap判定で分類と最小対応を決めたあと、**書き込む�
 | 条件 | 追加先 |
 |---|---|
 | 派生環境 | ローカル層のみ。`ai_team/**`、`skills/**`、`templates/**`、`tools/validate_repository.py` へは書かない |
-| 正本環境 + セレスの明示指示で正本へ追加 | 共有層（`agent_creation_policy.md` / `skill_creation_policy.md` の共有層向け手順） |
-| 正本環境 + 個人的・実験的な追加 | ローカル層（セレス自身のパーソナライゼーションも同じ機構で扱う） |
+| 正本環境（セレス環境） | 個人的・実験的な追加を含め、常に共有層（`agent_creation_policy.md` / `skill_creation_policy.md` の共有層向け手順） |
 
 No Gapと、既存Roleへ割り当てるだけのRole Scope Gapは、何も追加しないため層の判断が不要。
+
+**セレス環境が `.local/capability/` を使わない理由**: 本ポリシー策定時にセレス環境でのローカル層運用を検討したが、使わない判断とした（2026-08-04）。セレス環境は正本そのものであり、個人的・実験的な追加であっても共有層に直接書かれる。
+
+この判断には次の2つの副作用がある。どちらも受容したうえで採用している。
+
+1. **他利用者からは実験と確立が区別できない**。セレスの実験的な追加も、他利用者からは「正本に既に存在する＝確立された能力」として見える。
+2. **セレスにとって低儀式な実験経路が無くなる**。セレスの実験的なRole / Skill追加であっても、CREATE基準7項目・Before/After Eval・独立レビュー・Celes Human Gate記録をすべて通す必要がある。Role定義を1行変えるだけでもUPDATE候補登録とHuman Gate記録が要る。
+
+副作用1への対策として、セレス環境で実験的に追加したRole / Skillは、実運用での有効性が確認できるまで次の状態に留める。これにより既存機構だけで成熟度を表現できる。ただし判別できるのはライフサイクル登録簿（`ai_team/governance/ai_employee_lifecycle_registry.yaml` / `skill_lifecycle_registry.yaml`）を直接読んだ場合のみである。`agent_registry.md` / `capability_matrix.md` / `role_skill_map.md` の3ビューには成熟度を示す列がないため、view3本だけを読んでも試行中かどうかは判別できない。
+
+- ライフサイクル登録簿の `effectiveness: not_evaluated` を維持する（根拠のない数値スコアを付けない既存ルールと同じ）
+- `usage_evidence: unavailable` と `disposition_confidence: structural_only` を維持する
+- 実運用Evidenceが `capability_growth_policy.yaml` の `candidate_rules.repeated_pattern_min_occurrences` を満たした時点で `effectiveness` の更新候補として扱う
+
+副作用2は、儀式コストが実験を抑止するか、逆にゲートを形骸化させる圧力になりうる。現時点では受容し、`review_metrics.md` の定期点検で「セレスの実験的追加がゲートを迂回していないか」を確認事項とする。ローカル層への隔離が必要な実験は、派生環境（他利用者の環境）で行う想定とする。
 
 ## 承認
 

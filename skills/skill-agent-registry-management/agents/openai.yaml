@@ -1,4 +1,4 @@
 interface:
   display_name: "Agent Registry Management"
   short_description: "Maintain agent registry and capability matrix views"
-  default_prompt: "Use $skill-agent-registry-management to reconcile agent_registry, capability_matrix, and role_skill_map with the canonical capability registry and lifecycle registries, then record the update history."
+  default_prompt: "Use $skill-agent-registry-management to reconcile agent_registry, capability_matrix, and role_skill_map with the canonical capability registry and lifecycle registries, then record the update history. 先に追加先レイヤ（共有層 / ローカル層）を判定すること: 派生環境では共有層のview3本へ書き込まず、.local/capability/local_capability_registry.yaml の突合のみ行う（ai_team/local_capability_layer_policy.md）。"

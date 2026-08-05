@@ -1,4 +1,4 @@
 interface:
   display_name: "Skill Creation"
   short_description: "Add reusable skills to existing roles under governance"
-  default_prompt: "Use $skill-skill-creation to design and create a governed new skill for an existing role after a skill gap is confirmed, register it, and record the creation report in output/."
+  default_prompt: "Use $skill-skill-creation to design and create a governed new skill for an existing role after a skill gap is confirmed, register it, and record the creation report in output/. 先に追加先レイヤ（共有層 / ローカル層）を判定すること: 派生環境では skills/**・ai_team/**・templates/**・tools/validate_repository.py へ書き込まず、.local/capability/skills/ 配下にのみ追加する（ai_team/local_capability_layer_policy.md）。"

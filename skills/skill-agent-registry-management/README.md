@@ -39,9 +39,11 @@ AI社員Role、Skills、Capabilities、使用条件、実行環境・工数方�
 - `ai_team/model_effort_selection_policy.md`（推奨・非拘束）
 
 ## 出力
-- `ai_team/agent_registry.md`
-- `ai_team/capability_matrix.md`
-- `ai_team/role_skill_map.md`
+- 共有層のview更新を行う場合（正本環境）: `ai_team/agent_registry.md`
+- 共有層のview更新を行う場合（正本環境）: `ai_team/capability_matrix.md`
+- 共有層のview更新を行う場合（正本環境）: `ai_team/role_skill_map.md`
+- ローカル層の突合を行う場合（派生環境、またはローカル層が存在する場合）: `.local/capability/local_capability_registry.yaml`
+- 共通: 追加先レイヤの判定結果と根拠（正本環境か派生環境か、何を実測したか）
 
 ## Professional Opinion Mode
 
@@ -84,10 +86,12 @@ AI Capability Architectとして、registry / matrix / mapの構成・更新ル�
 AI Capability Architectとして、registry / matrix / mapを正本と整合する形で更新する。
 
 ### 出力
-- `ai_team/agent_registry.md` の更新
-- `ai_team/capability_matrix.md` の更新
-- `ai_team/role_skill_map.md` の更新
-- 更新履歴の追記
+- 追加先レイヤの判定結果と根拠
+- 共有層: `ai_team/agent_registry.md` の更新
+- 共有層: `ai_team/capability_matrix.md` の更新
+- 共有層: `ai_team/role_skill_map.md` の更新
+- 共有層: 更新履歴の追記
+- ローカル層: `.local/capability/local_capability_registry.yaml` の突合・更新
 
 ### レビュー観点
 - 動くだけでなく保守・再実行・エラー処理まで見ているか
@@ -116,11 +120,22 @@ AI Capability Architectとして、view3本と正本・実体の整合を検証�
 - Role数・Skill数・対応関係が実体と一致しているか
 
 ## 実行手順
-1. 正本（`capability_registry.yaml`・governance登録簿・`skills/index.yaml`）を読み込む
-2. `agent_registry.md` / `capability_matrix.md` / `role_skill_map.md` と1件ずつ突合する
-3. 差分（追加・更新・削除・乖離）を検出し、原因を確認する
-4. viewを更新し、更新履歴に日付・内容・根拠を追記する
-5. 正本側の変更が必要な乖離はCapability Architect本体の判断へ引き継ぐ
+1. **追加先レイヤを判定する**（`local_capability_layer_policy.md`）。origin URLの正規化値と `architecture_contract.yaml` の `canonical_repository` の一致、およびcanonicalへのpush権限を実測する。いずれか1つでも満たさない、または確認できない場合は派生環境とし、共有層のview3本へは**書き込まない**
+2. 判定結果と根拠（何を実測したか）を反映報告へ記録する
+
+### 共有層のview更新（正本環境の場合のみ）
+3. 正本（`capability_registry.yaml`・governance登録簿・`skills/index.yaml`）を読み込む
+4. `agent_registry.md` / `capability_matrix.md` / `role_skill_map.md` と1件ずつ突合し、差分（追加・更新・削除・乖離）を検出して原因を確認する
+5. viewを更新し、更新履歴に日付・内容・根拠を追記する
+6. 正本側の変更が必要な乖離はCapability Architect本体の判断へ引き継ぐ
+
+### ローカル層の突合（派生環境、またはローカル層が存在する場合）
+3. `.local/capability/local_capability_registry.yaml` が実体（`.local/capability/roles/` と `.local/capability/skills/`）と一致しているか突合し、必要なら更新する
+4. ローカル層の内容を共有層のview3本へ書き戻さない
+5. 共有層（`ai_team/**`・`skills/**`・`templates/**`・`tools/validate_repository.py`）に差分が出ていないことを `git status` で確認する
+6. 成果物の実行記録に、参照したローカル層のRole / Skillを明記する
+
+派生環境では、共有層のview3本と更新履歴の更新は**いずれも不要**であり、行ってはならない。
 
 ## 判断基準
 - 正本は`capability_registry.yaml`とgovernance登録簿。viewが食い違ったら正本に合わせる
@@ -176,13 +191,28 @@ AI Capability Architectとして、view3本と正本・実体の整合を検証�
 - 正本を経由せずviewだけを書き換えて実体と乖離させる
 - 根拠のない能力評価・数値スコアを記載する
 - 顧客名・個人情報・秘匿情報を一覧へ記載する
-- 更新履歴を残さずに一覧を変更する
-- Role / Skill追加時にRegistry / Matrix / Mapの反映を省略する
+- 追加先レイヤを判定せずにviewを書き換え始める
+- 派生環境で共有層のview3本（`ai_team/agent_registry.md`・`ai_team/capability_matrix.md`・`ai_team/role_skill_map.md`）へ書き込む
+- ローカル層のRole / Skillを共有層のview3本へ書き戻す
+- 共有層のview更新を行う場合に、更新履歴を残さずに一覧を変更する
 
 ## 完了条件
 - 要求、仮定、未決事項が区別されている。
+- 追加先レイヤと判定根拠（正本環境か派生環境か、何を実測したか）が記録されている。
+
+**共有層のview更新を行った場合:**
+
 - view3本が正本と1件ずつ突合され、差分ゼロまたは差分の扱いが記録されている。
 - 更新履歴に日付・内容・根拠が追記されている。
+
+**ローカル層の突合を行った場合:**
+
+- 共有層のファイルに差分が出ていない（`git status` で確認済み）。
+- `local_capability_registry.yaml` が `.local/capability/` の実体と一致している。
+- 成果物の実行記録に、参照したローカル層のRole / Skillが書かれている。
+
+**共通（層を問わず適用する）:**
+
 - risk_based_quality_gates.yamlでIndependent Reviewがrequiredの場合だけquality_review_request.mdを用意し、AI Deliverable Quality Reviewerへ引き渡している。
 - 最終判定がREWORK_REQUIREDまたはBLOCKEDの場合は完了扱いにしない。
 - Professional Modeに応じた成果物、判断理由、リスク、未確認事項、次アクションが明記されている。
@@ -194,8 +224,11 @@ AI Capability Architectとして、view3本と正本・実体の整合を検証�
 - `ai_team/governance/ai_employee_lifecycle_registry.yaml`
 - `ai_team/governance/skill_lifecycle_registry.yaml`
 - `ai_team/agent_lifecycle_policy.md`
+- `ai_team/local_capability_layer_policy.md`
 - `templates/agent_creation/agent_registry_entry_template.md`
 - `templates/agent_creation/capability_matrix_entry_template.md`
+- `templates/agent_creation/local_capability_registry_template.yaml`
+- `templates/agent_creation/local_decision_log_template.md`
 
 ## 実務プレイブック
 

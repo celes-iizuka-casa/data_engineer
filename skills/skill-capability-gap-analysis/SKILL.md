@@ -107,6 +107,7 @@ AI Capability Architectとして、Gap判定と対応案の妥当性を検証す
 - 追加候補がある場合、次工程への引き継ぎ内容が明確になっている。
 - risk_based_quality_gates.yamlでIndependent Reviewがrequiredの場合だけquality_review_request.mdを用意し、AI Deliverable Quality Reviewerへ引き渡している。
 - 最終判定がREWORK_REQUIREDまたはBLOCKEDの場合は完了扱いにしない。
+- Professional Modeに応じた成果物、判断理由、リスク、未確認事項、次アクションが明記されている。
 - 非プロフェッショナルな感想、無根拠な同意、責任範囲外の断定が除去されている。
 
 ## 参照
@@ -114,8 +115,11 @@ AI Capability Architectとして、Gap判定と対応案の妥当性を検証す
 - `ai_team/capability_gap_policy.md`
 - `ai_team/agent_creation_policy.md`
 - `ai_team/skill_creation_policy.md`
+- `ai_team/local_capability_layer_policy.md`
 - `ai_team/capability_registry.yaml`
 - `templates/agent_creation/capability_gap_analysis_template.md`
+- `templates/agent_creation/local_capability_registry_template.yaml`
+- `templates/agent_creation/local_decision_log_template.md`
 
 ## 実務プレイブック
 

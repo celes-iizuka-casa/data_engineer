@@ -189,6 +189,7 @@ AIエンジニアチームの能力設計・拡張判断・Role乱立防止を�
 - `ai_team/skill_creation_policy.md`
 - `ai_team/agent_lifecycle_policy.md`
 - `ai_team/agent_quality_gate.md`
+- `ai_team/local_capability_layer_policy.md`
 - `ai_team/capability_registry.yaml`
 - `ai_team/governance/ai_employee_lifecycle_registry.yaml`
 - `ai_team/governance/skill_lifecycle_registry.yaml`

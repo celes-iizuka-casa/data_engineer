@@ -1,4 +1,4 @@
 interface:
   display_name: "Capability Gap Analysis"
   short_description: "Detect capability gaps and plan minimal team extensions"
-  default_prompt: "Use $skill-capability-gap-analysis to analyze the request in input/, judge whether existing roles and skills can handle it, classify the capability gap, and record the analysis in output/."
+  default_prompt: "Use $skill-capability-gap-analysis to analyze the request in input/, judge whether existing roles and skills can handle it, classify the capability gap, and record the analysis in output/. 追加が発生する場合は追加先レイヤ（共有層 / ローカル層）も判定し、判定根拠とともに次工程へ引き継ぐこと。派生環境では追加先を .local/capability/ のみとする（ai_team/local_capability_layer_policy.md）。"
