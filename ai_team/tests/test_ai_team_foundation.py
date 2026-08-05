@@ -1852,5 +1852,115 @@ class FoundationContractTests(unittest.TestCase):
         )
 
 
+class SkillSurfaceParityTests(unittest.TestCase):
+    """Direct tests for the SKILL.md <-> skill.yaml comparison primitives.
+
+    These ran only through live repository data before, so a regression that
+    happened to leave every current Skill passing would have gone unnoticed.
+    """
+
+    FENCE = "```"
+
+    def test_absent_heading_is_distinguished_from_empty_section(self) -> None:
+        content = "## Workflow\n- one\n"
+        self.assertIsNone(
+            validator.extract_markdown_list_section(content, "完了条件")
+        )
+        self.assertEqual(
+            [],
+            validator.extract_markdown_list_section("## 完了条件\n\n", "完了条件"),
+        )
+
+    def test_every_bullet_marker_is_recognized(self) -> None:
+        for marker in ("-", "*", "+"):
+            with self.subTest(marker=marker):
+                content = f"## 必須出力\n{marker} alpha\n{marker} beta\n"
+                self.assertEqual(
+                    ["alpha", "beta"],
+                    validator.extract_markdown_list_section(content, "必須出力"),
+                )
+        content = "## Workflow\n1. alpha\n2. beta\n"
+        self.assertEqual(
+            ["alpha", "beta"],
+            validator.extract_markdown_list_section(content, "Workflow"),
+        )
+
+    def test_nested_child_bullets_do_not_count_as_items(self) -> None:
+        content = "## Workflow\n- parent\n  - child\n    - grandchild\n- second\n"
+        self.assertEqual(
+            ["parent", "second"],
+            validator.extract_markdown_list_section(content, "Workflow"),
+        )
+
+    def test_fenced_block_contents_are_ignored(self) -> None:
+        content = "\n".join(
+            [
+                "## Workflow",
+                "- real",
+                self.FENCE,
+                "- sample only",
+                "## 参照",
+                self.FENCE,
+                "- also real",
+                "",
+            ]
+        )
+        self.assertEqual(
+            ["real", "also real"],
+            validator.extract_markdown_list_section(content, "Workflow"),
+        )
+
+    def test_section_ends_at_next_h2_but_not_at_h3(self) -> None:
+        content = "## Workflow\n- one\n### sub\n- two\n## 参照\n- excluded\n"
+        self.assertEqual(
+            ["one", "two"],
+            validator.extract_markdown_list_section(content, "Workflow"),
+        )
+
+    def test_normalization_drops_presentation_only_differences(self) -> None:
+        cases = [
+            ("`alpha`", "alpha"),
+            ("**alpha**", "alpha"),
+            ("`ai_team/fde/fde_quality_gate.md`", "fde_quality_gatemd"),
+            ("alpha（beta参照）", "alphabeta"),
+            ("alpha、beta。", "alphabeta"),
+            ("alpha  beta", "alphabeta"),
+        ]
+        for raw, expected in cases:
+            with self.subTest(raw=raw):
+                self.assertEqual(expected, validator.normalize_skill_item(raw))
+
+    def test_matching_accepts_extra_detail_on_either_side(self) -> None:
+        pairs = [
+            (
+                "future_extension.md（テンプレート: `templates/mvp_scope_template.md`）",
+                "future_extension.md",
+            ),
+            (
+                "PMOのモデル提案に助言する（`ai_team/model_selection_policy.md`）",
+                "PMOのモデル提案に助言する（model_selection_policy.md参照）",
+            ),
+            (
+                "登録簿を更新する",
+                "共有層へ追加する場合に、登録簿を更新する",
+            ),
+        ]
+        for md_item, yaml_item in pairs:
+            with self.subTest(md_item=md_item):
+                self.assertTrue(validator.skill_item_matches(md_item, yaml_item))
+
+    def test_matching_rejects_a_real_reordering(self) -> None:
+        # skill-engineering-pmo Workflow index 3 before the 2026-08-05 fix:
+        # SKILL.md listed role assignment where skill.yaml listed effort
+        # proposal. Identical item counts, so the count-only check passed.
+        self.assertFalse(
+            validator.skill_item_matches(
+                "担当ロール、成果物、依存関係、専門Reviewer、品質ゲートを決める",
+                "作業工程を分解し、caller Runtimeと現在Modelを変えずに"
+                "必要Capabilityと非拘束effortを提案する（model_selection_policy.md参照）",
+            )
+        )
+
+
 if __name__ == "__main__":
     unittest.main()

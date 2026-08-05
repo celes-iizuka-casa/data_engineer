@@ -9,6 +9,7 @@ import os
 import re
 import subprocess
 import tempfile
+import unicodedata
 from datetime import datetime
 from pathlib import Path, PurePosixPath
 from urllib.parse import unquote
@@ -1651,12 +1652,22 @@ def validate_headings(
     validation.ok(f"Required headings present: {relative_path}")
 
 
+MARKDOWN_LIST_ITEM = re.compile(r"^(?:\d+\.|[-*+])\s+(.*)")
+
+
 def extract_markdown_list_section(content: str, heading: str) -> list[str] | None:
-    """Return bullet/numbered items directly under an H2 `heading`.
+    """Return top-level bullet/numbered items directly under an H2 `heading`.
 
     Returns None (not an empty list) when the heading is absent, so callers
     can distinguish "section intentionally omitted" from "section present
     but empty."
+
+    Only top-level items count. Indented child bullets belong to their parent
+    item, and anything inside a fenced code block is sample text rather than a
+    real list item -- counting either would make the caller's item-by-item
+    comparison against skill.yaml wrong. The fence check also runs before the
+    `## ` terminator so a heading quoted inside a fence cannot cut the section
+    short.
     """
     lines = content.splitlines()
     start = None
@@ -1667,16 +1678,58 @@ def extract_markdown_list_section(content: str, heading: str) -> list[str] | Non
     if start is None:
         return None
     items: list[str] = []
+    in_fence = False
     for line in lines[start:]:
+        if line.strip().startswith("```"):
+            in_fence = not in_fence
+            continue
+        if in_fence:
+            continue
         if line.startswith("## "):
             break
-        stripped = line.strip()
-        if not stripped:
+        if line[:1].isspace():
             continue
-        match = re.match(r"^(?:\d+\.|-)\s+(.*)", stripped)
+        match = MARKDOWN_LIST_ITEM.match(line.strip())
         if match:
             items.append(match.group(1).strip())
     return items
+
+
+def normalize_skill_item(text: str) -> str:
+    """Reduce a SKILL.md / skill.yaml list item to its comparable core.
+
+    The two faces legitimately differ in presentation: SKILL.md decorates
+    paths with backticks and full `ai_team/` prefixes and bolds key phrases,
+    while skill.yaml writes bare filenames followed by `参照`. Neither
+    difference changes what the item means, so both are normalized away before
+    comparison. The wording itself survives, so a reordered or substituted
+    item still reads as different.
+    """
+    value = unicodedata.normalize("NFKC", text)
+    value = value.replace("`", "").replace("*", "")
+    value = re.sub(r"ai_team/(?:[\w\-]+/)*([\w\-]+\.(?:md|yaml))", r"\1", value)
+    value = re.sub(r"参照\)", ")", value)
+    value = re.sub(r"参照$", "", value)
+    value = re.sub(r"[（）()、,。\.:：/]", "", value)
+    return re.sub(r"\s+", "", value)
+
+
+def skill_item_matches(md_item: str, yaml_item: str) -> bool:
+    """Whether a SKILL.md item and a skill.yaml item state the same thing.
+
+    Containment, not equality: either face may carry detail the other omits
+    (SKILL.md adds a template path, skill.yaml adds a layer-condition prefix),
+    and that is additive rather than contradictory. But neither may say
+    something absent from the other -- which is what catches reordering.
+
+    Containment is used instead of a text-similarity threshold because no
+    threshold separates the two classes. Measured across all 33 Skills, real
+    drift scored 0.079-0.39 and benign decoration 0.39-0.99: they overlap, so
+    any cutoff would either miss real drift or fail correct Skills.
+    """
+    left = normalize_skill_item(md_item)
+    right = normalize_skill_item(yaml_item)
+    return left in right or right in left
 
 
 # SKILL.md heading -> skill.yaml list key that must stay in sync. A missing
@@ -1872,6 +1925,15 @@ def validate_skills(validation: Validation) -> None:
                     if md_items is None:
                         continue
                     yaml_items = data.get(yaml_key, [])
+                    if not isinstance(yaml_items, list):
+                        # len() on a bare string would silently count
+                        # characters and compare them against an item count.
+                        validation.fail(
+                            f"skill.yaml {yaml_key} must be a list: "
+                            f"{base}/skill.yaml has "
+                            f"{type(yaml_items).__name__}"
+                        )
+                        continue
                     if len(md_items) != len(yaml_items):
                         validation.fail(
                             f"SKILL.md/skill.yaml drift in {base}: "
