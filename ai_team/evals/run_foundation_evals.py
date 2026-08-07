@@ -13,10 +13,10 @@ import yaml
 
 
 EXPECTED_ROLES = 19
-EXPECTED_SKILLS = 33
-MINIMUM_GOLDEN_CASES = 22
+EXPECTED_SKILLS = 34
+MINIMUM_GOLDEN_CASES = 23
 EXPECTED_CASE_IDS = {
-    "GC-BACKEND-001", "GC-API-001", "GC-DBMIG-001", "GC-DATA-001",
+    "GC-BACKEND-001", "GC-API-001", "GC-DBMIG-001", "GC-DPMIG-001", "GC-DATA-001",
     "GC-SQL-001", "GC-INFRA-001", "GC-IAC-001", "GC-SEC-001",
     "GC-INC-001", "GC-ARCH-001", "GC-PERF-001", "GC-LEGACY-001",
     "GC-RAG-001", "GC-DIST-001", "GC-DOC-001", "GC-FRONTEND-001",
@@ -451,6 +451,29 @@ def skill_binding_failures(
     return sorted(failures)
 
 
+def skill_fixture_case_alignment_failures(
+    result: dict, golden_cases_by_id: dict[str, dict]
+) -> list[str]:
+    """Keep a Skill fixture traceable to its declared Golden Case."""
+    failures: list[str] = []
+    case_id = result.get("case_id")
+    if case_id not in golden_cases_by_id:
+        failures.append("unknown_case_id")
+        return failures
+    golden_case = golden_cases_by_id[case_id]
+    alignment = result.get("case_selection_alignment")
+    required_alignment = golden_case.get("skill_fixture_alignment")
+    if required_alignment is not None and alignment != required_alignment:
+        failures.append("required_case_selection_alignment")
+    if alignment not in {None, "exact_case"}:
+        failures.append("invalid_case_selection_alignment")
+    if alignment == "exact_case" and set(
+        result.get("expected", {}).get("selected_skills", [])
+    ) != set(golden_case.get("expected_skills", [])):
+        failures.append("case_selected_skills_mismatch")
+    return sorted(failures)
+
+
 def agent_skill_results(root: Path) -> None:
     data = load_yaml(root, "ai_team/evals/agent_skill_fixtures.yaml")
     agent_required = set(data.get("agent_contract", {}).get("required_dimensions", []))
@@ -471,6 +494,12 @@ def agent_skill_results(root: Path) -> None:
         failed = agent_result_failures(result)
         if failed:
             raise ValueError(f"{result.get('fixture_id')} Agent fixture failed: {failed}")
+    fixture_ids = [result.get("fixture_id") for result in skill_results]
+    if (
+        any(not isinstance(fixture_id, str) or not fixture_id for fixture_id in fixture_ids)
+        or len(fixture_ids) != len(set(fixture_ids))
+    ):
+        raise ValueError("Skill fixture IDs must be non-empty and unique")
     for result in skill_results:
         failed = skill_result_failures(result)
         if failed:
@@ -485,11 +514,24 @@ def agent_skill_results(root: Path) -> None:
     golden_cases = load_yaml(
         root, "ai_team/evals/golden_cases.yaml"
     ).get("cases", [])
-    selected_by_case = {
-        case.get("id"): set(case.get("expected_skills", []))
+    golden_cases_by_id = {
+        str(case.get("id")): case
         for case in golden_cases
-        if isinstance(case, dict)
+        if isinstance(case, dict) and case.get("id")
     }
+    golden_selected_by_case = {
+        case_id: set(case.get("expected_skills", []))
+        for case_id, case in golden_cases_by_id.items()
+    }
+    for result in skill_results:
+        failed = skill_fixture_case_alignment_failures(
+            result, golden_cases_by_id
+        )
+        if failed:
+            raise ValueError(
+                f"{result.get('fixture_id')} Skill case alignment failed: {failed}"
+            )
+    selected_by_case = dict(golden_selected_by_case)
     selected_by_case.update(
         {
             result.get("fixture_id"): set(

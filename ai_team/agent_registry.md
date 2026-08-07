@@ -25,7 +25,7 @@ AIエンジニアチームに存在するAI社員Roleを一覧管理し、依頼
 | AI Frontend Engineer | UI / UX・画面遷移 | Frontend | skill-frontend-engineer | 呼び出し元Runtime | 現在Model（observed/declaredのみ記録） | medium | 画面設計・アクセシビリティ |
 | AI Backend Engineer | API・業務ロジック・DB設計 | Backend | skill-backend-engineer | 呼び出し元Runtime | 現在Model（observed/declaredのみ記録） | medium〜high | API契約・トランザクション・冪等性 |
 | AI Data Engineer | データ取得・ETL / ELT・品質 | Data Engineering | skill-data-engineer | 呼び出し元Runtime | 現在Model（observed/declaredのみ記録） | medium〜high | パイプライン・dbt / SQL・データ品質 |
-| AI Data Platform Engineer | 基盤標準・カタログ・信頼性 | Data Platform | skill-data-platform-engineer | 呼び出し元Runtime | 現在Model（observed/declaredのみ記録） | high | 共有基盤・メタデータ・ガバナンス標準 |
+| AI Data Platform Engineer | 基盤標準・カタログ・信頼性・移行統制 | Data Platform | skill-data-platform-engineer / skill-data-platform-migration | 呼び出し元Runtime | 現在Model（observed/declaredのみ記録） | high | 共有基盤・メタデータ・ガバナンス標準、基盤移行のwave・照合・cutover/rollback |
 | AI Cloud / Infrastructure Engineer | クラウド構成・IaC・IAM実装 | Cloud / Infrastructure | skill-cloud-infrastructure-engineer | 呼び出し元Runtime | 現在Model（observed/declaredのみ記録） | high | ネットワーク・プロビジョニング・IaC review |
 | AI SRE / Platform Engineer | 本番運用・監視・インシデント | SRE / Operations | skill-sre-platform-engineer | 呼び出し元Runtime | 現在Model（observed/declaredのみ記録） | high | SLO・可観測性・障害対応 |
 | AI Security / Governance Engineer | 認証認可・秘密管理・ガバナンス | Security / Governance | skill-security-governance-engineer | 呼び出し元Runtime | 現在Model（observed/declaredのみ記録） | high | 秘匿情報・PII・権限設計・脅威分析 |
@@ -58,3 +58,4 @@ AIエンジニアチームに存在するAI社員Roleを一覧管理し、依頼
 | 日付 | 内容 | 根拠 |
 |---|---|---|
 | 2026-08-02 | 初版作成。既存19Role + AI Capability Architect（CREATE）を登録 | セレス指示（Capability Gap / Agent Creation機構の追加依頼）・Celes-HG-20260802-CAPABILITY-ARCHITECT-CREATE |
+| 2026-08-07 | AI Data Platform Engineerへ`skill-data-platform-migration`候補を追加 | CelesのSkill実装指示。Lifecycleは独立レビュー済み/HUMAN_GATE pending、ACTIVE未昇格 |

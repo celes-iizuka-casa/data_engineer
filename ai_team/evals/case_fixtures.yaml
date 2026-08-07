@@ -20,6 +20,15 @@ results:
     artifacts: [grain_and_keys, schema_evolution, recovery_runbook]
     actions: [reconcile_replayed_records]
 
+  - fixture_id: FIX-DPMIG-CRITICAL-001
+    case_id: GC-DPMIG-001
+    selected_roles: [data_platform_engineer, data_engineer, tech_lead, cloud_infrastructure_engineer, qa_test_automation_engineer, sre_platform_engineer, security_governance_engineer]
+    selected_skills: [skill-data-platform-engineer, skill-data-platform-migration, skill-data-engineer, skill-tech-lead, skill-cloud-infrastructure-engineer, skill-qa-test-automation-engineer, skill-sre-platform-engineer, skill-security-governance-engineer]
+    executed_gates: [stop_unsafe_execution, repository_validation, automated_tests, independent_specialist_review, independent_quality_review, celes_human_gate]
+    evidence: [source_target_contract, immutable_baseline, target_connectivity_capacity_iam_readiness, bulk_delta_rehearsal, reconciliation_result, full_coverage_value_reconciliation, post_write_rollback_or_forward_fix_proof, rollback_drill, access_control_parity_test, performance_cost_comparison]
+    artifacts: [source_target_inventory, migration_mapping, target_infrastructure_readiness, wave_and_dependency_plan, bulk_delta_strategy, reconciliation_acceptance, cutover_and_rollback_runbook, post_cutover_observability]
+    actions: [stage_phased_migration, reconcile_by_key_count_aggregate_and_delete, stop_before_production_cutover, require_celes_decision]
+
   - fixture_id: FIX-SEC-CRITICAL-001
     case_id: GC-SEC-001
     selected_roles: [security_governance_engineer, qa_test_automation_engineer, tech_lead]

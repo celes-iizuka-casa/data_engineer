@@ -19,6 +19,7 @@
 - `skill-backend-engineer`: AI Backend Engineer
 - `skill-data-engineer`: AI Data Engineer
 - `skill-data-platform-engineer`: AI Data Platform Engineer
+- `skill-data-platform-migration`: AI Data Platform Engineer（基盤移行、定量照合、cutover / rollback）
 - `skill-cloud-infrastructure-engineer`: AI Cloud / Infrastructure Engineer
 - `skill-sre-platform-engineer`: AI SRE / Platform Engineer
 - `skill-security-governance-engineer`: AI Security / Governance Engineer

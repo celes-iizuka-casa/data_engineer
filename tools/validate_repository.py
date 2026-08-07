@@ -39,6 +39,7 @@ SKILLS = [
     "skill-backend-engineer",
     "skill-data-engineer",
     "skill-data-platform-engineer",
+    "skill-data-platform-migration",
     "skill-cloud-infrastructure-engineer",
     "skill-sre-platform-engineer",
     "skill-security-governance-engineer",
@@ -851,6 +852,207 @@ def skill_head_revision(skill_id: str, root: Path = ROOT) -> str | None:
         digest.update(result.stdout)
         digest.update(b"\0")
     return f"sha256:{digest.hexdigest()}"
+
+
+def skill_lifecycle_document_at_git_ref(
+    revision: str = "HEAD", root: Path = ROOT
+) -> dict:
+    """Load the committed Skill lifecycle document, or an empty mapping."""
+    path = "ai_team/governance/skill_lifecycle_registry.yaml"
+    content = subprocess.run(
+        ["git", "-C", str(root), "show", f"{revision}:{path}"],
+        check=False,
+        capture_output=True,
+    )
+    if content.returncode:
+        return {}
+    try:
+        data = yaml.safe_load(content.stdout.decode("utf-8"))
+    except (UnicodeDecodeError, yaml.YAMLError):
+        return {}
+    return data if isinstance(data, dict) else {}
+
+
+def skill_lifecycle_entries_at_git_ref(
+    revision: str = "HEAD", root: Path = ROOT
+) -> dict[str, dict]:
+    """Load committed Skill lifecycle entries for CREATE continuity checks."""
+    data = skill_lifecycle_document_at_git_ref(revision, root)
+    entries = data.get("skills", []) if isinstance(data, dict) else []
+    return {
+        str(entry.get("id")): entry
+        for entry in entries
+        if isinstance(entry, dict) and entry.get("id")
+    }
+
+
+def skill_active_revision_failures(
+    entry: dict,
+    current_revision: str | None,
+    head_revision: str | None,
+    previous_entry: dict | None = None,
+) -> list[str]:
+    """Allow a new uncommitted Skill to wait for Human Gate without fake ACTIVE state."""
+    active_revision = entry.get("active_revision")
+    transition = entry.get("transition")
+    is_promoted = (
+        entry.get("candidate_state") == "ACTIVE"
+        and isinstance(transition, dict)
+        and transition.get("human_gate_status") == "promoted"
+    )
+    expected_active = current_revision if is_promoted else head_revision
+    failures: list[str] = []
+    if active_revision is not None and (
+        not isinstance(active_revision, str)
+        or not re.fullmatch(r"sha256:[0-9a-f]{64}", active_revision)
+    ):
+        failures.append("invalid_format")
+    if active_revision != expected_active:
+        failures.append("revision_drift")
+    if (
+        previous_entry is None
+        and head_revision is None
+        and entry.get("disposition") != "CREATE"
+    ):
+        failures.append("new_candidate_not_create")
+    if entry.get("disposition") == "CREATE" and (
+        previous_entry is None and head_revision is not None
+        or previous_entry is not None
+        and previous_entry.get("disposition") != "CREATE"
+        or previous_entry is not None
+        and previous_entry.get("disposition") == "CREATE"
+        and current_revision != head_revision
+    ):
+        failures.append("existing_skill_create")
+    if active_revision is None and (
+        entry.get("state") in {"ACTIVE", "DEPRECATED"}
+        or entry.get("candidate_state") in {"ACTIVE", "DEPRECATED"}
+        or not isinstance(transition, dict)
+        or transition.get("human_gate_status") != "pending"
+    ):
+        failures.append("null_active_outside_pending_create")
+    return sorted(set(failures))
+
+
+def skill_batch_subject_revision(
+    skill_ids: list[str], entries_by_id: dict[str, dict]
+) -> str | None:
+    """Hash the exact promoted Skill set using the lifecycle batch contract."""
+    if not skill_ids or len(skill_ids) != len(set(skill_ids)):
+        return None
+    digest = hashlib.sha256()
+    for skill_id in sorted(skill_ids):
+        entry = entries_by_id.get(skill_id)
+        revision = entry.get("candidate_revision") if isinstance(entry, dict) else None
+        if not isinstance(revision, str) or not re.fullmatch(
+            r"sha256:[0-9a-f]{64}", revision
+        ):
+            return None
+        digest.update(skill_id.encode("utf-8"))
+        digest.update(b"\0")
+        digest.update(revision.encode("utf-8"))
+        digest.update(b"\0")
+    return f"sha256:{digest.hexdigest()}"
+
+
+def skill_promotion_cross_link_failures(
+    decision: dict,
+    binding: dict,
+    entries_by_id: dict[str, dict],
+    previous_decision: dict | None,
+    candidate_contract: dict,
+    newly_promoted_ids: list[str] | None = None,
+) -> list[str]:
+    """Bind a promotion decision to an immutable promoted-revision snapshot."""
+    failures: list[str] = []
+    required_binding = {
+        "gate_id", "subject_id", "subject_revision", "covered_skills"
+    }
+    if not isinstance(binding, dict) or set(binding) != required_binding:
+        return ["invalid_binding"]
+    covered = binding.get("covered_skills")
+    required_covered_fields = {
+        "id", "promoted_revision", "disposition", "independent_review_ref"
+    }
+    if (
+        not isinstance(covered, list)
+        or not covered
+        or not all(
+            isinstance(record, dict)
+            and set(record) == required_covered_fields
+            and isinstance(record.get("id"), str)
+            and record.get("id")
+            and re.fullmatch(
+                r"sha256:[0-9a-f]{64}",
+                str(record.get("promoted_revision", "")),
+            )
+            and record.get("disposition")
+            in {"CREATE", "KEEP", "UPDATE", "MERGE", "SPLIT", "DEPRECATE"}
+            and non_pending_reference(record.get("independent_review_ref"))
+            for record in covered
+        )
+    ):
+        return ["invalid_covered_skills"]
+    covered_ids = [str(record["id"]) for record in covered]
+    if len(covered_ids) != len(set(covered_ids)):
+        return ["invalid_covered_skills"]
+    for field in ("gate_id", "subject_id", "subject_revision"):
+        if decision.get(field) != binding.get(field):
+            failures.append(f"decision_{field}_mismatch")
+    if decision.get("target_state") != "ACTIVE":
+        failures.append("decision_target_state_mismatch")
+    bound_entries = {
+        str(record["id"]): {"candidate_revision": record["promoted_revision"]}
+        for record in covered
+    }
+    expected_subject_revision = skill_batch_subject_revision(
+        covered_ids, bound_entries
+    )
+    if binding.get("subject_revision") != expected_subject_revision:
+        failures.append("batch_subject_revision_mismatch")
+    if (
+        isinstance(previous_decision, dict)
+        and decision.get("from_revision")
+        != previous_decision.get("subject_revision")
+    ):
+        failures.append("promotion_history_continuity_mismatch")
+    covered_dispositions = {str(record["disposition"]) for record in covered}
+    if any(
+        record["independent_review_ref"] != decision.get("independent_review_ref")
+        for record in covered
+    ):
+        failures.append("covered_skill_review_mismatch")
+    if len(covered_dispositions) == 1 and decision.get("disposition") not in covered_dispositions:
+        failures.append("decision_disposition_mismatch")
+    if newly_promoted_ids:
+        if set(newly_promoted_ids) != set(covered_ids):
+            failures.append("newly_promoted_set_mismatch")
+        if candidate_contract.get("human_gate_status") != "promoted":
+            failures.append("candidate_gate_not_promoted")
+        if candidate_contract.get("changed_skills") != len(covered):
+            failures.append("changed_skill_count_mismatch")
+        records_by_id = {str(record["id"]): record for record in covered}
+        for skill_id in newly_promoted_ids:
+            entry = entries_by_id.get(skill_id)
+            record = records_by_id.get(skill_id)
+            transition = entry.get("transition") if isinstance(entry, dict) else None
+            if (
+                not isinstance(entry, dict)
+                or not isinstance(record, dict)
+                or entry.get("state") != "ACTIVE"
+                or entry.get("candidate_state") != "ACTIVE"
+                or entry.get("active_revision") != record.get("promoted_revision")
+                or entry.get("candidate_revision") != record.get("promoted_revision")
+                or entry.get("disposition") != record.get("disposition")
+                or not isinstance(transition, dict)
+                or transition.get("human_gate_status") != "promoted"
+                or transition.get("candidate_revision")
+                != record.get("promoted_revision")
+                or transition.get("independent_review_ref")
+                != record.get("independent_review_ref")
+            ):
+                failures.append("newly_promoted_skill_mismatch")
+    return sorted(set(failures))
 
 
 def role_content_revision(role_id: str, root: Path = ROOT) -> str | None:
@@ -2861,6 +3063,13 @@ def validate_capability_foundation(validation: Validation) -> None:
             validation.fail("Skill lifecycle must allow UNKNOWN for insufficient evidence")
         if lifecycle.get("revision_strategy", {}).get("algorithm") != "sha256":
             validation.fail("Skill revision strategy must be content-addressed")
+        binding_contract = lifecycle.get("promotion_subject_binding_contract", {})
+        if set(binding_contract.get("required_fields", [])) != {
+            "gate_id", "subject_id", "subject_revision", "covered_skills"
+        } or set(binding_contract.get("covered_skill_required_fields", [])) != {
+            "id", "promoted_revision", "disposition", "independent_review_ref"
+        }:
+            validation.fail("Skill promotion subject binding contract is incomplete")
         expected_states = {
             "DISCOVERED", "PROPOSED", "CANDIDATE", "EVALUATED", "INDEPENDENTLY_REVIEWED",
             "HUMAN_GATE", "ACTIVE", "DEPRECATED",
@@ -2882,6 +3091,13 @@ def validate_capability_foundation(validation: Validation) -> None:
         if transition_fields != expected_transition_fields:
             validation.fail("Skill transition record contract is incomplete")
         promoted_entries: list[dict] = []
+        newly_promoted_ids: list[str] = []
+        committed_skill_document = skill_lifecycle_document_at_git_ref("HEAD", ROOT)
+        committed_skill_entries = {
+            str(entry.get("id")): entry
+            for entry in committed_skill_document.get("skills", [])
+            if isinstance(entry, dict) and entry.get("id")
+        }
         for entry in entries or []:
             if not isinstance(entry, dict):
                 validation.fail("Skill lifecycle entry is not a mapping")
@@ -2903,8 +3119,6 @@ def validate_capability_foundation(validation: Validation) -> None:
                 validation.fail(f"Invalid Skill effectiveness: {entry.get('id')}")
             active_revision = entry.get("active_revision")
             candidate_revision = entry.get("candidate_revision")
-            if not isinstance(active_revision, str) or not re.fullmatch(r"sha256:[0-9a-f]{64}", active_revision):
-                validation.fail(f"Skill active revision is invalid: {entry.get('id')}")
             transition = entry.get("transition")
             if (
                 not isinstance(transition, dict)
@@ -2942,18 +3156,62 @@ def validate_capability_foundation(validation: Validation) -> None:
                 and isinstance(transition, dict)
                 and transition.get("human_gate_status") == "promoted"
             )
-            expected_active = (
-                skill_content_revision(str(entry.get("id")), ROOT)
-                if is_promoted
-                else skill_head_revision(str(entry.get("id")), ROOT)
+            previous_entry = committed_skill_entries.get(str(entry.get("id")))
+            previous_transition = (
+                previous_entry.get("transition")
+                if isinstance(previous_entry, dict)
+                else None
             )
-            if active_revision != expected_active:
+            previously_promoted = (
+                isinstance(previous_entry, dict)
+                and previous_entry.get("candidate_state") == "ACTIVE"
+                and isinstance(previous_transition, dict)
+                and previous_transition.get("human_gate_status") == "promoted"
+                and previous_entry.get("active_revision")
+                == previous_entry.get("candidate_revision")
+            )
+            if is_promoted and (
+                not previously_promoted
+                or previous_entry.get("active_revision") != active_revision
+            ):
+                newly_promoted_ids.append(str(entry.get("id")))
+            head_revision = skill_head_revision(str(entry.get("id")), ROOT)
+            current_revision = skill_content_revision(str(entry.get("id")), ROOT)
+            expected_active = (
+                current_revision
+                if is_promoted
+                else head_revision
+            )
+            active_failures = skill_active_revision_failures(
+                entry,
+                current_revision,
+                head_revision,
+                committed_skill_entries.get(str(entry.get("id"))),
+            )
+            if "invalid_format" in active_failures:
+                validation.fail(f"Skill active revision is invalid: {entry.get('id')}")
+            if "revision_drift" in active_failures:
                 validation.fail(
                     f"Skill active revision drift from canonical source: "
                     f"{entry.get('id')} expected={expected_active} "
                     f"actual={active_revision}"
                 )
-            expected_candidate = skill_content_revision(str(entry.get("id")), ROOT)
+            if "new_candidate_not_create" in active_failures:
+                validation.fail(
+                    f"New Skill candidate must use CREATE disposition: "
+                    f"{entry.get('id')}"
+                )
+            if "existing_skill_create" in active_failures:
+                validation.fail(
+                    f"Committed Skill cannot remain a CREATE candidate: "
+                    f"{entry.get('id')}"
+                )
+            if "null_active_outside_pending_create" in active_failures:
+                validation.fail(
+                    f"Null Skill active revision is only valid for a pending "
+                    f"uncommitted CREATE: {entry.get('id')}"
+                )
+            expected_candidate = current_revision
             if candidate_revision != expected_candidate:
                 validation.fail(
                     f"Skill candidate revision drift: {entry.get('id')} "
@@ -3008,6 +3266,7 @@ def validate_capability_foundation(validation: Validation) -> None:
                 decision.get("schema_version") != "1.1"
                 or decision.get("decision") != "PROMOTE"
                 or decision.get("decision_type") != "canonical_promotion"
+                or decision.get("target_state") != "ACTIVE"
                 or decision.get("decided_by") != "Celes"
                 or not non_pending_reference(
                     decision.get("independent_review_ref")
@@ -3045,6 +3304,74 @@ def validate_capability_foundation(validation: Validation) -> None:
                 validation.fail("Skill promotion history contains duplicate gate IDs")
             else:
                 validation.ok("Skill promotion history retains the latest Celes decision")
+            bindings = lifecycle.get("promotion_subject_bindings")
+            matching_bindings = [
+                binding
+                for binding in bindings or []
+                if isinstance(binding, dict)
+                and binding.get("gate_id") == decision.get("gate_id")
+            ]
+            if (
+                not isinstance(bindings, list)
+                or len(matching_bindings) != 1
+            ):
+                validation.fail(
+                    "Latest Skill promotion lacks one subject binding"
+                )
+            else:
+                entries_by_id = {
+                    str(entry.get("id")): entry
+                    for entry in entries or []
+                    if isinstance(entry, dict) and entry.get("id")
+                }
+                previous_decision = (
+                    promotion_history[-2]
+                    if isinstance(promotion_history, list)
+                    and len(promotion_history) >= 2
+                    else None
+                )
+                cross_link_failures = skill_promotion_cross_link_failures(
+                    decision,
+                    matching_bindings[0],
+                    entries_by_id,
+                    previous_decision,
+                    lifecycle.get("candidate", {}),
+                    newly_promoted_ids,
+                )
+                if cross_link_failures:
+                    validation.fail(
+                        "Latest Skill promotion cross-link is invalid: "
+                        f"{cross_link_failures}"
+                    )
+                else:
+                    validation.ok(
+                        "Latest Skill promotion is content-linked to covered Skills"
+                    )
+                covered_skills = [
+                    record.get("id")
+                    for record in matching_bindings[0].get("covered_skills", [])
+                    if isinstance(record, dict)
+                ]
+                if newly_promoted_ids:
+                    committed_history = committed_skill_document.get(
+                        "promotion_history", []
+                    )
+                    appended_history = (
+                        isinstance(committed_history, list)
+                        and isinstance(promotion_history, list)
+                        and promotion_history[:-1] == committed_history
+                        and len(promotion_history) == len(committed_history) + 1
+                    )
+                    if (
+                        set(covered_skills) != set(newly_promoted_ids)
+                        or lifecycle.get("candidate", {}).get("human_gate_status")
+                        != "promoted"
+                        or not appended_history
+                    ):
+                        validation.fail(
+                            "Newly promoted Skills are not bound to a newly "
+                            "appended Celes decision"
+                        )
             candidate_contract = lifecycle.get("candidate", {})
             if (
                 candidate_contract.get("effectiveness") != "not_evaluated"
@@ -3211,8 +3538,8 @@ def validate_capability_foundation(validation: Validation) -> None:
         required_case_fields = set(
             golden.get("case_contract", {}).get("required_fields", [])
         )
-        if not isinstance(cases, list) or len(cases) < 22:
-            validation.fail("Engineering Golden Cases must contain at least 22 scenarios")
+        if not isinstance(cases, list) or len(cases) < 23:
+            validation.fail("Engineering Golden Cases must contain at least 23 scenarios")
         else:
             ids = [case.get("id") for case in cases if isinstance(case, dict)]
             if len(ids) != len(set(ids)):

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Data Platform Migration"
+  short_description: "Plan DWH/Lakehouse migrations, not application DB schemas"
+  default_prompt: "Use $skill-data-platform-migration for a DWH or Lakehouse platform migration with target-infrastructure readiness, reconciliation, cutover, rollback/forward-fix, and Human gates; do not use it for a single application database schema migration."

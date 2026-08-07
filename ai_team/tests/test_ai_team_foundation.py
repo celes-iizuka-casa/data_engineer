@@ -5,6 +5,7 @@ import copy
 import importlib.util
 import json
 import os
+import shutil
 import subprocess
 import tempfile
 import unittest
@@ -14,6 +15,35 @@ import yaml
 
 
 ROOT = Path(__file__).resolve().parents[2]
+
+
+def overlay_current_contract_surfaces(destination: Path) -> None:
+    """Keep clone history while reproducing current shared-surface changes exactly."""
+    for relative in ("ai_team", "skills", "templates", "tools"):
+        shutil.copytree(
+            ROOT / relative,
+            destination / relative,
+            dirs_exist_ok=True,
+            ignore=shutil.ignore_patterns("__pycache__", "*.pyc"),
+        )
+    deleted = subprocess.run(
+        [
+            "git", "-C", str(ROOT), "diff", "--name-only", "--diff-filter=D",
+            "-z", "HEAD", "--", "ai_team", "skills", "templates", "tools",
+        ],
+        check=True,
+        capture_output=True,
+    ).stdout
+    for raw_relative in deleted.split(b"\0"):
+        if not raw_relative:
+            continue
+        target = destination / raw_relative.decode(
+            "utf-8", errors="surrogateescape"
+        )
+        if target.is_symlink() or target.is_file():
+            target.unlink()
+        elif target.is_dir():
+            shutil.rmtree(target)
 
 
 def load_module(name: str, relative_path: str):
@@ -629,13 +659,13 @@ class FoundationContractTests(unittest.TestCase):
         )
         for item in lifecycle["skills"]:
             with self.subTest(skill=item["id"]):
-                self.assertEqual("ACTIVE", item["state"])
                 self.assertIn(item["disposition"], {"UPDATE", "CREATE"})
                 self.assertEqual(
                     validator.skill_content_revision(item["id"], ROOT),
                     item["candidate_revision"],
                 )
                 if item["candidate_state"] == "ACTIVE":
+                    self.assertEqual("ACTIVE", item["state"])
                     self.assertEqual(
                         validator.skill_content_revision(item["id"], ROOT),
                         item["active_revision"],
@@ -645,7 +675,12 @@ class FoundationContractTests(unittest.TestCase):
                     )
                 else:
                     self.assertIn(
-                        item["candidate_state"], {"CANDIDATE", "HUMAN_GATE"}
+                        item["state"],
+                        {"DISCOVERED", "PROPOSED", "CANDIDATE", "EVALUATED", "INDEPENDENTLY_REVIEWED", "HUMAN_GATE"},
+                    )
+                    self.assertIn(
+                        item["candidate_state"],
+                        {"CANDIDATE", "EVALUATED", "INDEPENDENTLY_REVIEWED", "HUMAN_GATE"},
                     )
                     self.assertEqual(
                         validator.skill_head_revision(item["id"], ROOT),
@@ -660,6 +695,258 @@ class FoundationContractTests(unittest.TestCase):
         self.assertEqual("PROMOTE", decision["decision"])
         self.assertGreaterEqual(len(lifecycle["promotion_history"]), 2)
         self.assertEqual(decision, lifecycle["promotion_history"][-1])
+
+    def test_pending_new_skill_active_revision_contract_is_fail_closed(self) -> None:
+        lifecycle = yaml.safe_load(
+            (ROOT / "ai_team/governance/skill_lifecycle_registry.yaml").read_text(
+                encoding="utf-8"
+            )
+        )
+        pending = copy.deepcopy(
+            next(
+                item
+                for item in lifecycle["skills"]
+                if item["id"] == "skill-data-platform-migration"
+            )
+        )
+        current = validator.skill_content_revision(pending["id"], ROOT)
+        self.assertIsNotNone(current)
+        self.assertIsNone(validator.skill_head_revision(pending["id"], ROOT))
+        self.assertEqual(
+            [], validator.skill_active_revision_failures(pending, current, None)
+        )
+
+        established = copy.deepcopy(
+            next(
+                item
+                for item in lifecycle["skills"]
+                if item["id"] == "skill-data-platform-engineer"
+            )
+        )
+        established_head = validator.skill_head_revision(established["id"], ROOT)
+        self.assertIsNotNone(established_head)
+        established["active_revision"] = None
+        self.assertIn(
+            "revision_drift",
+            validator.skill_active_revision_failures(
+                established, established_head, established_head
+            ),
+        )
+
+        update_without_head = copy.deepcopy(pending)
+        update_without_head["disposition"] = "UPDATE"
+        self.assertIn(
+            "new_candidate_not_create",
+            validator.skill_active_revision_failures(
+                update_without_head, current, None
+            ),
+        )
+
+        promoted_without_active = copy.deepcopy(pending)
+        promoted_without_active["state"] = "ACTIVE"
+        promoted_without_active["candidate_state"] = "ACTIVE"
+        promoted_without_active["transition"]["human_gate_status"] = "promoted"
+        promoted_without_active["transition"]["to_state"] = "ACTIVE"
+        failures = validator.skill_active_revision_failures(
+            promoted_without_active, current, None
+        )
+        self.assertIn("revision_drift", failures)
+        self.assertIn("null_active_outside_pending_create", failures)
+
+        promoted_update = copy.deepcopy(promoted_without_active)
+        promoted_update["active_revision"] = current
+        promoted_update["disposition"] = "UPDATE"
+        self.assertIn(
+            "new_candidate_not_create",
+            validator.skill_active_revision_failures(
+                promoted_update, current, None
+            ),
+        )
+
+        promoted_create = copy.deepcopy(promoted_without_active)
+        promoted_create["active_revision"] = current
+        self.assertEqual(
+            [],
+            validator.skill_active_revision_failures(
+                promoted_create, current, None, None
+            ),
+        )
+
+        create_with_existing_head = copy.deepcopy(pending)
+        create_with_existing_head["active_revision"] = established_head
+        self.assertIn(
+            "existing_skill_create",
+            validator.skill_active_revision_failures(
+                create_with_existing_head,
+                established_head,
+                established_head,
+                established,
+            ),
+        )
+
+        committed_create = copy.deepcopy(promoted_create)
+        committed_create["active_revision"] = current
+        self.assertEqual(
+            [],
+            validator.skill_active_revision_failures(
+                committed_create, current, current, committed_create
+            ),
+        )
+
+        later_create = copy.deepcopy(committed_create)
+        later_candidate = "sha256:" + "1" * 64
+        later_create["candidate_state"] = "HUMAN_GATE"
+        later_create["candidate_revision"] = later_candidate
+        later_create["transition"]["to_state"] = "HUMAN_GATE"
+        later_create["transition"]["candidate_revision"] = later_candidate
+        later_create["transition"]["human_gate_status"] = "pending"
+        self.assertIn(
+            "existing_skill_create",
+            validator.skill_active_revision_failures(
+                later_create, later_candidate, current, committed_create
+            ),
+        )
+
+        later_update = copy.deepcopy(later_create)
+        later_update["disposition"] = "UPDATE"
+        self.assertEqual(
+            [],
+            validator.skill_active_revision_failures(
+                later_update, later_candidate, current, committed_create
+            ),
+        )
+
+        validation = validator.Validation()
+        validator.validate_capability_foundation(validation)
+        self.assertEqual([], validation.errors, validation.errors)
+
+    def test_skill_promotion_decision_is_content_linked(self) -> None:
+        lifecycle = yaml.safe_load(
+            (ROOT / "ai_team/governance/skill_lifecycle_registry.yaml").read_text(
+                encoding="utf-8"
+            )
+        )
+        decision = lifecycle["last_promotion_decision"]
+        binding = next(
+            item
+            for item in lifecycle["promotion_subject_bindings"]
+            if item["gate_id"] == decision["gate_id"]
+        )
+        entries = {item["id"]: item for item in lifecycle["skills"]}
+        previous = lifecycle["promotion_history"][-2]
+        self.assertEqual(
+            [],
+            validator.skill_promotion_cross_link_failures(
+                decision, binding, entries, previous, lifecycle["candidate"]
+            ),
+        )
+
+        pending_update_entries = copy.deepcopy(entries)
+        pending_update = pending_update_entries["skill-agent-registry-management"]
+        pending_update["candidate_state"] = "HUMAN_GATE"
+        pending_update["candidate_revision"] = "sha256:" + "4" * 64
+        pending_update["transition"]["to_state"] = "HUMAN_GATE"
+        pending_update["transition"]["candidate_revision"] = (
+            pending_update["candidate_revision"]
+        )
+        pending_update["transition"]["human_gate_status"] = "pending"
+        self.assertEqual(
+            [],
+            validator.skill_promotion_cross_link_failures(
+                decision,
+                binding,
+                pending_update_entries,
+                previous,
+                lifecycle["candidate"],
+            ),
+            "historical bindings must survive a later pending UPDATE candidate",
+        )
+
+        renamed = copy.deepcopy(decision)
+        renamed["subject_id"] = "unbound-subject"
+        self.assertIn(
+            "decision_subject_id_mismatch",
+            validator.skill_promotion_cross_link_failures(
+                renamed, binding, entries, previous, lifecycle["candidate"]
+            ),
+        )
+
+        rehashed = copy.deepcopy(decision)
+        rehashed["subject_revision"] = "sha256:" + "2" * 64
+        self.assertIn(
+            "decision_subject_revision_mismatch",
+            validator.skill_promotion_cross_link_failures(
+                rehashed, binding, entries, previous, lifecycle["candidate"]
+            ),
+        )
+
+        rebound = copy.deepcopy(binding)
+        rebound["subject_revision"] = "sha256:" + "3" * 64
+        self.assertIn(
+            "batch_subject_revision_mismatch",
+            validator.skill_promotion_cross_link_failures(
+                decision, rebound, entries, previous, lifecycle["candidate"]
+            ),
+        )
+
+        wrong_target = copy.deepcopy(decision)
+        wrong_target["target_state"] = "HUMAN_GATE"
+        self.assertIn(
+            "decision_target_state_mismatch",
+            validator.skill_promotion_cross_link_failures(
+                wrong_target, binding, entries, previous, lifecycle["candidate"]
+            ),
+        )
+
+    def test_new_skill_cannot_reuse_the_previous_promotion_gate(self) -> None:
+        marker = (
+            "Newly promoted Skills are not bound to a newly appended "
+            "Celes decision"
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "clone"
+            subprocess.run(
+                [
+                    "git", "clone", "--quiet", "--local", "--no-hardlinks",
+                    str(ROOT), str(root),
+                ],
+                check=True,
+                capture_output=True,
+            )
+            overlay_current_contract_surfaces(root)
+            baseline = subprocess.run(
+                ["python3", "tools/validate_repository.py"],
+                cwd=root,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(
+                0, baseline.returncode, baseline.stdout + baseline.stderr
+            )
+            registry = root / "ai_team/governance/skill_lifecycle_registry.yaml"
+            lifecycle = yaml.safe_load(registry.read_text(encoding="utf-8"))
+            entry = next(
+                item
+                for item in lifecycle["skills"]
+                if item["id"] == "skill-data-platform-migration"
+            )
+            entry["active_revision"] = entry["candidate_revision"]
+            entry["state"] = "ACTIVE"
+            entry["candidate_state"] = "ACTIVE"
+            entry["transition"]["from_state"] = "ACTIVE"
+            entry["transition"]["to_state"] = "ACTIVE"
+            entry["transition"]["human_gate_status"] = "promoted"
+            registry.write_text(
+                yaml.safe_dump(lifecycle, allow_unicode=True), encoding="utf-8"
+            )
+            completed = subprocess.run(
+                ["python3", "tools/validate_repository.py"],
+                cwd=root,
+                capture_output=True,
+                text=True,
+            )
+            self.assertNotEqual(0, completed.returncode)
+            self.assertIn(marker, completed.stdout + completed.stderr)
 
     def test_ai_employee_lifecycle_covers_all_roles_without_fake_scores(self) -> None:
         lifecycle = yaml.safe_load(
@@ -1276,14 +1563,14 @@ class FoundationContractTests(unittest.TestCase):
         registry_relative = "ai_team/governance/ai_employee_lifecycle_registry.yaml"
         failure = f"AI Employee candidate lacks change disposition: {role_id}"
 
-        def run_validator(root: Path) -> str:
+        def run_validator(root: Path) -> tuple[int, str]:
             completed = subprocess.run(
                 ["python3", "tools/validate_repository.py"],
                 cwd=root,
                 capture_output=True,
                 text=True,
             )
-            return completed.stdout + completed.stderr
+            return completed.returncode, completed.stdout + completed.stderr
 
         def load_entry(registry: Path) -> tuple[dict, dict]:
             data = yaml.safe_load(registry.read_text(encoding="utf-8"))
@@ -1295,18 +1582,16 @@ class FoundationContractTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory) / "clone"
             subprocess.run(
-                ["git", "clone", "--quiet", "--local", str(ROOT), str(root)],
+                ["git", "clone", "--quiet", "--local", "--no-hardlinks", str(ROOT), str(root)],
                 check=True,
                 capture_output=True,
             )
-            # The clone carries committed history (which supplies the previous
-            # registry snapshot) but committed *code*. Overwrite the script with
-            # the working tree's copy so the run exercises the validator under
-            # test rather than whatever is on HEAD.
-            script_relative = "tools/validate_repository.py"
-            (root / script_relative).write_bytes(
-                (ROOT / script_relative).read_bytes()
-            )
+            # Preserve committed history for the previous registry snapshot,
+            # but overlay the complete current contract set. Copying only the
+            # validator would make an uncommitted Skill CREATE fail because the
+            # validator expects the new Skill while the clone still has HEAD's
+            # old index/lifecycle/Skill directories.
+            overlay_current_contract_surfaces(root)
             registry = root / registry_relative
             data, entry = load_entry(registry)
             established = entry["active_revision"]
@@ -1314,11 +1599,20 @@ class FoundationContractTests(unittest.TestCase):
                 established,
                 "fixture requires a committed active_revision for the Role",
             )
+            role_path = root / f"ai_team/roles/{role_id}.md"
+            role_path.write_text(
+                role_path.read_text(encoding="utf-8")
+                + "\n<!-- disposition-fixture: pending update -->\n",
+                encoding="utf-8",
+            )
+            candidate_revision = validator.role_content_revision(role_id, root)
+            self.assertIsNotNone(candidate_revision)
+            self.assertNotEqual(established, candidate_revision)
 
             # (a) CREATE on a Role that already has an established revision.
             entry["disposition"] = "CREATE"
-            entry["candidate_revision"] = established
-            entry["candidate_state"] = "ACTIVE"
+            entry["candidate_revision"] = candidate_revision
+            entry["candidate_state"] = "HUMAN_GATE"
             entry["create_criteria"] = {
                 requirement: f"local-evidence:phase-d-fixture#{requirement}"
                 for requirement in validator.ROLE_CREATE_REQUIREMENTS
@@ -1326,16 +1620,18 @@ class FoundationContractTests(unittest.TestCase):
             entry["transition"] = {
                 "from_state": "PROPOSED",
                 "from_revision": None,
-                "to_state": "ACTIVE",
-                "candidate_revision": established,
+                "to_state": "HUMAN_GATE",
+                "candidate_revision": candidate_revision,
                 "evidence_refs": ["local-evidence:phase-d-fixture#create"],
                 "before_after_eval_ref": "local-evidence:phase-d-fixture#eval",
                 "independent_review_ref": "local-review:phase-d-fixture#review",
-                "human_gate_status": "promoted",
-                "celes_human_gate_ref": "Celes-HG-PHASE-D-FIXTURE",
+                "human_gate_status": "pending",
+                "celes_human_gate_ref": "pending",
             }
             registry.write_text(yaml.safe_dump(data, allow_unicode=True), encoding="utf-8")
-            self.assertIn(failure, run_validator(root))
+            returncode, output = run_validator(root)
+            self.assertNotEqual(0, returncode)
+            self.assertIn(failure, output)
 
             # (b) UPDATE on the same Role, continuing from the established revision.
             data, entry = load_entry(registry)
@@ -1344,7 +1640,9 @@ class FoundationContractTests(unittest.TestCase):
             entry["transition"]["from_state"] = "ACTIVE"
             entry["transition"]["from_revision"] = established
             registry.write_text(yaml.safe_dump(data, allow_unicode=True), encoding="utf-8")
-            self.assertNotIn(failure, run_validator(root))
+            returncode, output = run_validator(root)
+            self.assertEqual(0, returncode, output)
+            self.assertNotIn(failure, output)
 
     def test_active_revision_expected_branch_is_wired_into_full_validation(self) -> None:
         """The ``expected_active`` branch keyed on ``established_revision`` must be
@@ -1369,14 +1667,14 @@ class FoundationContractTests(unittest.TestCase):
         role_relative = f"ai_team/roles/{role_id}.md"
         drift_marker = f"AI Employee active revision drift: {role_id}"
 
-        def run_validator(root: Path) -> str:
+        def run_validator(root: Path) -> tuple[int, str]:
             completed = subprocess.run(
                 ["python3", "tools/validate_repository.py"],
                 cwd=root,
                 capture_output=True,
                 text=True,
             )
-            return completed.stdout + completed.stderr
+            return completed.returncode, completed.stdout + completed.stderr
 
         def load_entry(registry: Path) -> tuple[dict, dict]:
             data = yaml.safe_load(registry.read_text(encoding="utf-8"))
@@ -1388,14 +1686,11 @@ class FoundationContractTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory) / "clone"
             subprocess.run(
-                ["git", "clone", "--quiet", "--local", str(ROOT), str(root)],
+                ["git", "clone", "--quiet", "--local", "--no-hardlinks", str(ROOT), str(root)],
                 check=True,
                 capture_output=True,
             )
-            script_relative = "tools/validate_repository.py"
-            (root / script_relative).write_bytes(
-                (ROOT / script_relative).read_bytes()
-            )
+            overlay_current_contract_surfaces(root)
             registry = root / registry_relative
             data, entry = load_entry(registry)
             established = entry["active_revision"]
@@ -1437,7 +1732,8 @@ class FoundationContractTests(unittest.TestCase):
                 "celes_human_gate_ref": "pending",
             }
             registry.write_text(yaml.safe_dump(data, allow_unicode=True), encoding="utf-8")
-            output = run_validator(root)
+            returncode, output = run_validator(root)
+            self.assertEqual(0, returncode, output)
             self.assertNotIn(
                 drift_marker,
                 output,
@@ -1534,7 +1830,7 @@ class FoundationContractTests(unittest.TestCase):
         golden = yaml.safe_load(
             (ROOT / "ai_team/evals/golden_cases.yaml").read_text(encoding="utf-8")
         )
-        self.assertGreaterEqual(len(golden["cases"]), 22)
+        self.assertGreaterEqual(len(golden["cases"]), 23)
         self.assertEqual(
             len(golden["cases"]), len({case["id"] for case in golden["cases"]})
         )
@@ -1600,6 +1896,139 @@ class FoundationContractTests(unittest.TestCase):
             ["prohibited_actions", "required_gates"],
             foundation_evals.case_result_failures(case, result),
         )
+
+    def test_data_platform_migration_case_blocks_unsafe_cutover(self) -> None:
+        golden = yaml.safe_load(
+            (ROOT / "ai_team/evals/golden_cases.yaml").read_text(encoding="utf-8")
+        )
+        fixtures = yaml.safe_load(
+            (ROOT / "ai_team/evals/case_fixtures.yaml").read_text(encoding="utf-8")
+        )
+        case = next(item for item in golden["cases"] if item["id"] == "GC-DPMIG-001")
+        result = copy.deepcopy(
+            next(item for item in fixtures["results"] if item["case_id"] == "GC-DPMIG-001")
+        )
+        result["evidence"].remove("reconciliation_result")
+        result["executed_gates"].remove("celes_human_gate")
+        result["actions"].append("omit_reconciliation")
+        self.assertEqual(
+            ["prohibited_actions", "required_evidence", "required_gates"],
+            foundation_evals.case_result_failures(case, result),
+        )
+
+    def test_data_platform_migration_rejects_sampling_only_value_checks(self) -> None:
+        golden = yaml.safe_load(
+            (ROOT / "ai_team/evals/golden_cases.yaml").read_text(encoding="utf-8")
+        )
+        fixtures = yaml.safe_load(
+            (ROOT / "ai_team/evals/case_fixtures.yaml").read_text(encoding="utf-8")
+        )
+        case = next(item for item in golden["cases"] if item["id"] == "GC-DPMIG-001")
+        result = copy.deepcopy(
+            next(item for item in fixtures["results"] if item["case_id"] == "GC-DPMIG-001")
+        )
+        result["evidence"].remove("full_coverage_value_reconciliation")
+        result["actions"].append("treat_sampling_as_lossless_reconciliation")
+        self.assertEqual(
+            ["prohibited_actions", "required_evidence"],
+            foundation_evals.case_result_failures(case, result),
+        )
+
+    def test_data_platform_migration_rejects_unproved_post_write_rollback(self) -> None:
+        golden = yaml.safe_load(
+            (ROOT / "ai_team/evals/golden_cases.yaml").read_text(encoding="utf-8")
+        )
+        fixtures = yaml.safe_load(
+            (ROOT / "ai_team/evals/case_fixtures.yaml").read_text(encoding="utf-8")
+        )
+        case = next(item for item in golden["cases"] if item["id"] == "GC-DPMIG-001")
+        result = copy.deepcopy(
+            next(item for item in fixtures["results"] if item["case_id"] == "GC-DPMIG-001")
+        )
+        result["evidence"].remove("post_write_rollback_or_forward_fix_proof")
+        result["actions"].append("treat_retained_source_as_rollback_ready")
+        self.assertEqual(
+            ["prohibited_actions", "required_evidence"],
+            foundation_evals.case_result_failures(case, result),
+        )
+
+    def test_data_platform_migration_skill_fixture_is_cross_artifact_bound(self) -> None:
+        golden = yaml.safe_load(
+            (ROOT / "ai_team/evals/golden_cases.yaml").read_text(encoding="utf-8")
+        )
+        fixtures = yaml.safe_load(
+            (ROOT / "ai_team/evals/agent_skill_fixtures.yaml").read_text(
+                encoding="utf-8"
+            )
+        )
+        cases = {item["id"]: item for item in golden["cases"]}
+        result = copy.deepcopy(
+            next(
+                item
+                for item in fixtures["skill_results"]
+                if item["fixture_id"] == "SF-DPMIG-CRITICAL-001"
+            )
+        )
+        self.assertEqual(
+            [],
+            foundation_evals.skill_fixture_case_alignment_failures(result, cases),
+        )
+
+        unknown = copy.deepcopy(result)
+        unknown["case_id"] = "GC-NOT-FOUND"
+        self.assertEqual(
+            ["unknown_case_id"],
+            foundation_evals.skill_fixture_case_alignment_failures(unknown, cases),
+        )
+
+        marker_removed = copy.deepcopy(result)
+        marker_removed.pop("case_selection_alignment")
+        self.assertEqual(
+            ["required_case_selection_alignment"],
+            foundation_evals.skill_fixture_case_alignment_failures(
+                marker_removed, cases
+            ),
+        )
+
+        selection_changed = copy.deepcopy(result)
+        selection_changed["expected"]["selected_skills"].remove(
+            "skill-cloud-infrastructure-engineer"
+        )
+        self.assertEqual(
+            ["case_selected_skills_mismatch"],
+            foundation_evals.skill_fixture_case_alignment_failures(
+                selection_changed, cases
+            ),
+        )
+
+    def test_skill_fixture_case_alignment_is_wired_into_foundation_eval(self) -> None:
+        relatives = (
+            "ai_team/evals/agent_skill_fixtures.yaml",
+            "ai_team/evals/skill_eval_bindings.yaml",
+            "ai_team/evals/golden_cases.yaml",
+            "ai_team/governance/skill_lifecycle_registry.yaml",
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for relative in relatives:
+                target = root / relative
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(ROOT / relative, target)
+            fixtures_path = root / "ai_team/evals/agent_skill_fixtures.yaml"
+            fixtures = yaml.safe_load(fixtures_path.read_text(encoding="utf-8"))
+            result = next(
+                item
+                for item in fixtures["skill_results"]
+                if item["fixture_id"] == "SF-DPMIG-CRITICAL-001"
+            )
+            result.pop("case_selection_alignment")
+            fixtures_path.write_text(
+                yaml.safe_dump(fixtures, allow_unicode=True), encoding="utf-8"
+            )
+            with self.assertRaisesRegex(
+                ValueError, "required_case_selection_alignment"
+            ):
+                foundation_evals.agent_skill_results(root)
 
     def test_low_risk_case_rejects_role_and_skill_over_selection(self) -> None:
         golden = yaml.safe_load(
@@ -1982,7 +2411,6 @@ class SkillValidationWiringTests(unittest.TestCase):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
         tmp_root = Path(self.tmp.name)
-        import shutil
 
         shutil.copytree(
             ROOT / "skills" / self.FIXTURE_SKILL,

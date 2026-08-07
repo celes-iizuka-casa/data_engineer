@@ -20,7 +20,7 @@
 | Frontend | UI / UX・画面設計 | AI Frontend Engineer / AI Fullstack Engineer | skill-frontend-engineer / skill-fullstack-engineer | 画面設計・実装 | Skill更新 |
 | Backend | API・業務ロジック・DB | AI Backend Engineer / AI Fullstack Engineer | skill-backend-engineer / skill-fullstack-engineer | API契約・実装 | Skill更新 |
 | Data Engineering | 取得・ETL / ELT・品質 | AI Data Engineer | skill-data-engineer | pipeline設計・DDL / dbt | Skill更新 |
-| Data Platform | 基盤標準・カタログ | AI Data Platform Engineer | skill-data-platform-engineer | 基盤設計・標準 | Skill更新 |
+| Data Platform | 基盤標準・カタログ・移行統制 | AI Data Platform Engineer | skill-data-platform-engineer / skill-data-platform-migration | 基盤設計・標準、migration inventory / mapping / wave / reconciliation / cutover・rollback | Skill更新 |
 | Cloud / Infrastructure | クラウド・IaC・ネットワーク | AI Cloud / Infrastructure Engineer | skill-cloud-infrastructure-engineer | IaC・構成図 | Skill更新 |
 | SRE / Operations | 監視・運用・インシデント | AI SRE / Platform Engineer | skill-sre-platform-engineer | runbook・SLO | Skill更新 |
 | Security / Governance | 認証認可・秘密管理・PII | AI Security / Governance Engineer | skill-security-governance-engineer | 脅威分析・権限設計 | Skill更新 |
@@ -81,3 +81,4 @@
 |---|---|---|
 | 2026-08-02 | 初版作成。24分類 + Capability Governance を登録 | セレス指示（Capability Gap / Agent Creation機構の追加依頼） |
 | 2026-08-05 | Quality Review を追加（計26分類）。独立品質レビューはMedium以上で必須ゲートだが、本viewから逆引きできず `skill-deliverable-quality-reviewer` がどこにも現れていなかった | リポジトリ全体監査の指摘（`output/Celestian/20260804/local-capability-layer/_internal/quality_review_report.md` の後続監査） |
+| 2026-08-07 | Data Platform分類へ基盤移行のwave・定量照合・cutover/rollback候補を追加 | CelesのSkill実装指示。Lifecycleは独立レビュー済み/HUMAN_GATE pending、ACTIVE未昇格 |

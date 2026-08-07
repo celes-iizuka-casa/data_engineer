@@ -23,7 +23,7 @@
 | AI Frontend Engineer | skill-frontend-engineer | — | skill-fullstack-engineer | — |
 | AI Backend Engineer | skill-backend-engineer | — | skill-fullstack-engineer / skill-integration-engineer | — |
 | AI Data Engineer | skill-data-engineer | — | skill-data-platform-engineer / skill-qa-test-automation-engineer | — |
-| AI Data Platform Engineer | skill-data-platform-engineer | — | skill-data-engineer / skill-cloud-infrastructure-engineer | — |
+| AI Data Platform Engineer | skill-data-platform-engineer | skill-data-platform-migration | skill-data-engineer / skill-cloud-infrastructure-engineer | 移行Skillはinventory・wave・照合・cutover/rollbackを担当 |
 | AI Cloud / Infrastructure Engineer | skill-cloud-infrastructure-engineer | — | skill-sre-platform-engineer / skill-security-governance-engineer | — |
 | AI SRE / Platform Engineer | skill-sre-platform-engineer | — | skill-cloud-infrastructure-engineer / skill-qa-test-automation-engineer | — |
 | AI Security / Governance Engineer | skill-security-governance-engineer | — | skill-cloud-infrastructure-engineer / skill-backend-engineer | — |
@@ -49,3 +49,4 @@
 | 日付 | 内容 | 根拠 |
 |---|---|---|
 | 2026-08-02 | 初版作成。20Role×33Skillの対応を登録 | セレス指示（Capability Gap / Agent Creation機構の追加依頼） |
+| 2026-08-07 | AI Data Platform EngineerのOptional Skill候補として`skill-data-platform-migration`を追加（20Role×34Skill） | CelesのSkill実装指示。Lifecycleは独立レビュー済み/HUMAN_GATE pending、ACTIVE未昇格 |

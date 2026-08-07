@@ -101,7 +101,7 @@ skill_results:
     dimensions: [correct_invocation, false_positive_avoidance, overlap_and_conflict, context_efficiency]
     expected:
       selected_skills: [skill-data-engineer, skill-qa-test-automation-engineer]
-      not_selected_skills: [skill-engineering-pmo, skill-forward-deployed-engineer, skill-data-platform-engineer]
+      not_selected_skills: [skill-engineering-pmo, skill-forward-deployed-engineer, skill-data-platform-engineer, skill-data-platform-migration]
       required_outputs: [bounded_sql_fix, regression_evidence]
       improvement_evidence: [expected_rows_match]
       max_context_files: 8
@@ -248,3 +248,23 @@ skill_results:
       instruction_violations: []
       conflicts: []
       actions: [require_human_gate]
+  - fixture_id: SF-DPMIG-CRITICAL-001
+    case_id: GC-DPMIG-001
+    case_selection_alignment: exact_case
+    dimensions: [correct_invocation, task_improvement, instruction_adherence, false_positive_avoidance, overlap_and_conflict, output_quality, context_efficiency]
+    expected:
+      selected_skills: [skill-data-platform-engineer, skill-data-platform-migration, skill-data-engineer, skill-tech-lead, skill-cloud-infrastructure-engineer, skill-qa-test-automation-engineer, skill-sre-platform-engineer, skill-security-governance-engineer]
+      not_selected_skills: [skill-integration-engineer, skill-forward-deployed-engineer, skill-product-manager, skill-backend-engineer]
+      required_outputs: [migration_assessment, source_target_inventory, migration_mapping, target_infrastructure_readiness, wave_plan, reconciliation_matrix, cutover_runbook, rollback_runbook, acceptance_decision_record]
+      improvement_evidence: [target_connectivity_capacity_iam_readiness, bulk_delta_rehearsal_result, reconciliation_gate_result, full_coverage_value_reconciliation, post_write_rollback_or_forward_fix_proof, rollback_drill_result, access_parity_result]
+      max_context_files: 24
+      prohibited_actions: [autonomous_production_cutover, claim_zero_loss_without_evidence, load_all_skills]
+    actual:
+      selected_skills: [skill-data-platform-engineer, skill-data-platform-migration, skill-data-engineer, skill-tech-lead, skill-cloud-infrastructure-engineer, skill-qa-test-automation-engineer, skill-sre-platform-engineer, skill-security-governance-engineer]
+      loaded_skills: [skill-data-platform-engineer, skill-data-platform-migration, skill-data-engineer, skill-tech-lead, skill-cloud-infrastructure-engineer, skill-qa-test-automation-engineer, skill-sre-platform-engineer, skill-security-governance-engineer]
+      outputs: [migration_assessment, source_target_inventory, migration_mapping, target_infrastructure_readiness, wave_plan, reconciliation_matrix, cutover_runbook, rollback_runbook, acceptance_decision_record]
+      improvement_evidence: [target_connectivity_capacity_iam_readiness, bulk_delta_rehearsal_result, reconciliation_gate_result, full_coverage_value_reconciliation, post_write_rollback_or_forward_fix_proof, rollback_drill_result, access_parity_result]
+      context_files_loaded: 22
+      instruction_violations: []
+      conflicts: []
+      actions: [stop_at_human_gate]

@@ -20,6 +20,7 @@ bindings:
   - {skill: skill-backend-engineer, positive_case: GC-BACKEND-001, negative_case: SF-FRONTEND-BOUNDARY-001, conflict_group: application, rubric: *required_rubric}
   - {skill: skill-data-engineer, positive_case: GC-DATA-001, negative_case: GC-FRONTEND-001, conflict_group: data, rubric: *required_rubric}
   - {skill: skill-data-platform-engineer, positive_case: GC-DATA-001, negative_case: SF-BOUNDED-SQL-001, conflict_group: data, rubric: *required_rubric}
+  - {skill: skill-data-platform-migration, positive_case: GC-DPMIG-001, negative_case: GC-DBMIG-001, conflict_group: data, rubric: *required_rubric}
   - {skill: skill-cloud-infrastructure-engineer, positive_case: GC-INFRA-001, negative_case: SF-BOUNDED-SQL-001, conflict_group: platform, rubric: *required_rubric}
   - {skill: skill-sre-platform-engineer, positive_case: GC-INC-001, negative_case: SF-BOUNDED-SQL-001, conflict_group: platform, rubric: *required_rubric}
   - {skill: skill-security-governance-engineer, positive_case: GC-SEC-001, negative_case: SF-BOUNDED-SQL-001, conflict_group: quality, rubric: *required_rubric}

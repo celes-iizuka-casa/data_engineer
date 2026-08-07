@@ -17,6 +17,14 @@ revision_strategy:
     algorithm: sha256
     input: "For each covered Skill id sorted ascending: id (utf-8) + NUL + its candidate_revision string (utf-8) + NUL, concatenated in that order."
     value_format: "sha256:<hex>"
+promotion_subject_binding_contract:
+  required_fields: [gate_id, subject_id, subject_revision, covered_skills]
+  covered_skill_required_fields: [id, promoted_revision, disposition, independent_review_ref]
+  rules:
+    - "Append one immutable binding with every new promotion_history decision; never rewrite a prior binding."
+    - "The latest decision and latest gate_id-matched binding are one-to-one and share gate_id, subject_id, and subject_revision."
+    - "Compute subject_revision from the binding's promoted_revision snapshots using revision_strategy.batch_subject_revision."
+    - "At PROMOTE, covered_skills must exactly match the newly promoted Skill set and each snapshot must match that Skill's promoted revision, disposition, and independent review."
 lifecycle_states: [DISCOVERED, PROPOSED, CANDIDATE, EVALUATED, INDEPENDENTLY_REVIEWED, HUMAN_GATE, ACTIVE, DEPRECATED]
 dispositions: [CREATE, KEEP, UPDATE, MERGE, SPLIT, DEPRECATE, UNKNOWN]
 transition_record_contract:
@@ -41,14 +49,23 @@ candidate:
   # "no candidate" steady state -- unlike the Role registry, validate_repository.py
   # requires candidate_state to be one of lifecycle_states, so null is invalid).
   # changed_skills therefore counts the Skills this batch actually changed.
-  source: "Celes-instructed next-cycle follow-up, closing the 2 items the 2026-08-05 skill-surface-alignment-2 independent review deferred (request of 2026-08-05)"
-  purpose: "Add direct unit tests (SkillValidationWiringTests) exercising the SKILL_MD_REQUIRED_HEADINGS / skill_item_matches wiring inside validate_skills() itself via a mutated real-Skill fixture; consolidate skill-agent-registry-management's 3 duplicated 必須出力 bullets into 1 (skill.yaml outputs: 5 items -> 3, SKILL.md correspondingly updated)"
-  human_gate_status: promoted
+  source: "Celes-authorized representative Skill implementation after model/effort selection; promotion awaits representative-output review (request of 2026-08-07)"
+  purpose: "Create skill-data-platform-migration as the governed migration-orchestration and acceptance contract for inventory, compatibility mapping, wave planning, bulk/delta rehearsal, quantitative reconciliation, cutover, rollback, security parity, and post-cutover observability; keep analytics delivery and capability-gap Skill follow-ups outside this iteration"
+  human_gate_status: pending
   changed_skills: 1
   effectiveness: not_evaluated
   improvement_type: structural_contract
   effectiveness_claim: "UNKNOWN — insufficient live evidence"
 current_candidate_decision: null
+promotion_subject_bindings:
+  - gate_id: "Celes-HG-20260805-SKILL-SURFACE-ALIGNMENT-3"
+    subject_id: skill-surface-alignment-20260805-3
+    subject_revision: "sha256:dd5e412c33f983708d201661e35f14414840857ed8c9d318da714248710eaf86"
+    covered_skills:
+      - id: skill-agent-registry-management
+        promoted_revision: "sha256:9a8965c82943854e3194e57762f5dcb2a199817b23aefa7a31b437abf2e392b3"
+        disposition: UPDATE
+        independent_review_ref: "local-review:skill-surface-alignment-3-20260805/quality_review_report"
 promotion_history:
   - schema_version: "1.1"
     gate_id: "Celes-HG-20260714-AI-ORG-PROMOTE"
@@ -386,6 +403,32 @@ skills:
     evidence:
       - type: structural
         value: "listed in skills/index.yaml and passed baseline repository validation"
+  - id: skill-data-platform-migration
+    active_revision: null
+    candidate_revision: "sha256:f708cd492beda11774ce6ba5af21469dd783479541c021fafcdedb4d0e033bc2"
+    state: CANDIDATE
+    candidate_state: HUMAN_GATE
+    disposition: CREATE
+    transition:
+      from_state: CANDIDATE
+      to_state: HUMAN_GATE
+      candidate_revision: "sha256:f708cd492beda11774ce6ba5af21469dd783479541c021fafcdedb4d0e033bc2"
+      evidence_refs:
+        - "output/Celestian/20260807/skill-capability-growth-implementation/_internal/new_skill_creation_report.md"
+        - "output/Celestian/20260807/skill-capability-growth-implementation/_internal/before_after_evaluation.md"
+        - "output/Celestian/20260807/skill-capability-growth-implementation/_internal/forward_test_report.md"
+        - "output/Celestian/20260807/skill-capability-growth-implementation/_internal/specialist_rereview_report.md"
+        - "output/Celestian/20260807/skill-capability-growth-implementation/_internal/execution_evidence.yaml"
+      independent_review_ref: "output/Celestian/20260807/skill-capability-growth-implementation/_internal/quality_review_report.md"
+      human_gate_status: pending
+    disposition_confidence: structural_only
+    effectiveness: not_evaluated
+    usage_evidence: unavailable
+    evidence:
+      - type: declared
+        value: "candidate implemented per Celes written instruction of 2026-08-07 after model/effort selection; promotion remains pending"
+      - type: structural
+        value: "Skill 4 faces, positive/near-negative evals, specialist review, repository validator, and foundation eval; no active revision until Human Gate"
   - id: skill-cloud-infrastructure-engineer
     active_revision: "sha256:30ca5d948896f21234ebf8300b901706f93652069fab27989aed0f90501f0a76"
     candidate_revision: "sha256:30ca5d948896f21234ebf8300b901706f93652069fab27989aed0f90501f0a76"

@@ -78,7 +78,18 @@ Skillは、Roleが依頼を扱う際の専門的な実行指針です。Roleが�
 - `skills/*/README.md`: 利用者向け説明
 - `skills/*/agents/openai.yaml`: Runtime UI用アダプター。Role/SkillのIdentity Authorityではありません。
 
-現在のSkill Registryには33 Skillがあります。20 Roleに対応する主要Skill、FDEの10 Sub-skill（Discovery、業務フロー、Stakeholder、MVP、Engineering Handoff、Adoption、Metricsなど）、Capability Architectの4 Skill（Capability Gap分析、Agent Creation、Skill Creation、Agent Registry管理）で構成されます。全一覧は [Skills README](skills/README.md) を参照してください。
+現在のSkill Registryには34 Skillがあります。このうち33 Skillは `ACTIVE`、1 SkillはHuman Gate待ちのCandidateです。20 Roleに対応する主要Skill、FDEの10 Sub-skill（Discovery、業務フロー、Stakeholder、MVP、Engineering Handoff、Adoption、Metricsなど）、Capability Architectの4 Skill（Capability Gap分析、Agent Creation、Skill Creation、Agent Registry管理）で構成されます。全一覧は [Skills README](skills/README.md) を参照してください。
+
+### 現在のSkill Candidate: Data Platform Migration
+
+`skill-data-platform-migration` は、DWH / Lakehouseなど分析データ基盤のcross-platform移行を対象にした、AI Data Platform Engineer向けのOptional Skillです。既存Roleを増やさず、移行の統制・受入契約だけを再利用可能にします。
+
+- 対象: inventory、source/target mapping、wave、bulk + delta/CDC、rehearsal、定量照合、cutover、rollback / forward-fix、事後監視
+- 安全条件: lossless対象はfull-coverage row/value parityを必須とし、samplingは補助診断のみ。target-only write後のrollbackは検証済みreturn pathがある場合だけ可能とする
+- 役割分担: Data Engineerはdata-plane実装、Cloud / SRE / Security / QAは各専門Evidence、最終Go/No-GoはCelesと顧客責任者が担う
+- 対象外: 単一application databaseのschema/table migration。本SkillはBackend Engineerへhandoffする
+
+このSkillは `CANDIDATE / HUMAN_GATE pending` であり、Celesの明示PROMOTEまでは通常のActive Skillとして選定・配布しません。検証結果や残存Riskは [Skill Lifecycle Registry](ai_team/governance/skill_lifecycle_registry.yaml) と案件別のlocal `output/` に記録します。
 
 ### Team Formation
 
@@ -244,7 +255,7 @@ DISCOVERED → PROPOSED → CANDIDATE → EVALUATED
 
 Skillも同じく `DISCOVERED` から `ACTIVE`、`DEPRECATED` までのLifecycleを持ちます。新Skillは、EvidenceのあるCapability Gapがあり、既存Skill更新・統合・Workflow・Documentation・Toolなどでは解決できず、再利用可能かつ評価可能な場合だけ候補にできます。
 
-現在のRegistryでは、20 Roleは `ACTIVE`、33 Skillは `ACTIVE` と登録されています。ただし、これは構造・統制上の登録状態です。Live usage evidenceがないため、Role / Skill effectivenessは `not_evaluated` です。
+現在のRegistryでは、20 Roleと33 Skillは `ACTIVE`、`skill-data-platform-migration` は `CANDIDATE / HUMAN_GATE pending` と登録されています。CandidateはCelesの明示PROMOTEまではActive扱いにしません。いずれもLive usage evidenceがないため、Role / Skill effectivenessは `not_evaluated` です。
 
 ## Local Privacy BoundaryとGit Safety
 
@@ -428,6 +439,7 @@ Role / Skill / Workflowに定義がある依頼例です。個別の技術スタ
 | 画面、UX、フロント実装、MVP | Frontend / Full-stack Engineer |
 | ETL / ELT、SQL、データ品質、DWH | Data Engineer |
 | データアーキテクチャ、カタログ、共通基盤 | Data Platform Engineer |
+| DWH / Lakehouse移行、bulk + CDC、定量照合、cutover / rollback | Data Platform Engineer + Data Engineer + Cloud / SRE / Security / QA（Candidate SkillのHuman Gate後に利用） |
 | Cloud、Terraform、ネットワーク、IAM | Cloud / Infrastructure Engineer |
 | 監視、SLO、障害、リリース安全性 | SRE / Platform Engineer |
 | 脅威分析、認証認可、secrets、privacy | Security / Governance Engineer |
